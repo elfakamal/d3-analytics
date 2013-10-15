@@ -1,0 +1,42 @@
+/*
+    Document   : collection
+    Created on : Oct 15, 2013, 4:07:55 AM
+    Author     : kamal
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+ul#ul-collections-list li
+{
+	text-indent: 20px;
+	/*background-color: lightblue;*/
+	margin-top: 1px;
+	height: 20px;
+	font-size: 14px;
+	line-height: 20px;
+}
+
+
+
+ul#ul-collections-list #li-add-list
+{
+	text-align: right;
+}
+
+ul#ul-collections-list #button-add-list
+{
+	border: 0px solid #eeeeee;
+	height: 20px;
+	line-height: 14px;
+	font-family: "Titillium Web", sans-serif;
+	font-size: 14px;
+
+
+	border-radius: 2px;
+	-moz-border-radius: 2px;
+	-webkit-border-radius: 2px;
+
+/*	width: 100%;
+	text-align: right;*/
+}
+
