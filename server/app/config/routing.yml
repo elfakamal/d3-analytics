@@ -1,0 +1,4 @@
+d3_analytics:
+    resource: "@D3AnalyticsBundle/Resources/config/routing.yml"
+    prefix:   /
+

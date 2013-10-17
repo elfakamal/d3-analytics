@@ -1,0 +1,19 @@
+D3\AnalyticsBundle\Entity\DataSource:
+  type: entity
+  table: data_source
+  uniqueConstraints:
+    fileName_unique_idx:
+      columns: [ fileName ]
+  fields:
+    id:
+      type: integer
+      id: true
+      generator:
+        strategy: AUTO
+    name:
+      type: string
+      length: 255
+    fileName:
+      type: string
+      length: '32'
+  lifecycleCallbacks: {  }

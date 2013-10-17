@@ -16,27 +16,84 @@ ul#ul-collections-list li
 	line-height: 20px;
 }
 
-
-
-ul#ul-collections-list #li-add-list
+.collection_name
 {
-	text-align: right;
+	display: block;
+	float: left;
+	width: 80%;
+	/*background-color: #72CAEF;*/
 }
+
+.collection_number
+{
+	display: block;
+	float: left;
+	width: 20%;
+	/*background-color: tomato;*/
+	text-align: center;
+	text-indent: 0px;
+	font-size: 12px;
+}
+
 
 ul#ul-collections-list #button-add-list
 {
+	margin: 0px;
 	border: 0px solid #eeeeee;
 	height: 20px;
 	line-height: 14px;
 	font-family: "Titillium Web", sans-serif;
-	font-size: 14px;
-
+	font-size: 12px;
 
 	border-radius: 2px;
 	-moz-border-radius: 2px;
 	-webkit-border-radius: 2px;
 
-/*	width: 100%;
-	text-align: right;*/
+	background-color: #eee;
+}
+
+#aside-side-pane .spacer.h20
+{
+	height: 20px;
+}
+
+#aside-side-pane .spacer,
+#aside-side-pane .spacer.h10
+{
+	height: 10px;
+}
+
+#aside-side-pane hr
+{
+	margin: 0px;
+	border: 0px;
+
+	height: 10px;
+
+	border-bottom: 1px dotted #eee !important;
+}
+
+
+#aside-side-pane a
+{
+	color: #777;
+	text-decoration: none;
+}
+
+#aside-side-pane a:hover
+{
+	color: #72CAEF;
+}
+
+
+
+.system-collection a
+{
+	font-weight: 700;
+}
+
+.regular-collection a
+{
+	font-weight: 600;
 }
 

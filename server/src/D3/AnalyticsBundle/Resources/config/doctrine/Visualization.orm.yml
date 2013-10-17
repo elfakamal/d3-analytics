@@ -1,0 +1,52 @@
+D3\AnalyticsBundle\Entity\Visualization:
+  type: entity
+  table: visualization
+  collate: utf8_bin
+
+  fields:
+    id:
+      type: integer
+      id: true
+      generator:
+        strategy: AUTO
+    name:
+      type: string
+      length: 255
+    description:
+      type: text
+    visualizationTypeId:
+      type: integer
+    creationDate:
+      type: datetime
+    updateDate:
+      type: datetime
+
+  manyToMany:
+    collections:
+      targetEntity: Collection
+      joinTable:
+        name: visualization_collection_assoc
+        joinColumns:
+          visualization_id:
+            referencedColumnName: id
+            onDelete: CASCADE
+        inverseJoinColumns:
+          collection_id:
+            referencedColumnName: id
+            onDelete: CASCADE
+
+    dataSources:
+      targetEntity: DataSource
+      joinTable:
+        name: visualization_data_source_assoc
+        joinColumns:
+          visualization_id:
+            referencedColumnName: id
+            onDelete: CASCADE
+        inverseJoinColumns:
+          data_source_id:
+            referencedColumnName: id
+            onDelete: CASCADE
+
+  lifecycleCallbacks: {  }
+

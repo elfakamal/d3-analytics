@@ -1,0 +1,19 @@
+D3\AnalyticsBundle\Entity\Collection:
+    type: entity
+    table: collection
+    fields:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+        name:
+            type: string
+            length: 255
+        description:
+            type: text
+        creationDate:
+            type: datetime
+        updateDate:
+            type: datetime
+    lifecycleCallbacks: {  }

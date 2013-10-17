@@ -14,13 +14,13 @@
 	color: #DEF0F8;
 }
 
-a
+#ul-menu a
 {
 	color: #DEF0F8;
 	text-decoration: none;
 }
 
-a:hover
+#ul-menu a:hover
 {
 	color: #FFFFFF;
 }
