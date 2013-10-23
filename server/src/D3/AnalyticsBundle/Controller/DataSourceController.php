@@ -2,222 +2,159 @@
 
 namespace D3\AnalyticsBundle\Controller;
 
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use FOS\RestBundle\Controller\FOSRestController;
 
 use D3\AnalyticsBundle\Entity\DataSource;
 use D3\AnalyticsBundle\Form\DataSourceType;
 
+use FOS\RestBundle\Routing\ClassResourceInterface;
+use FOS\RestBundle\Controller\Annotations as Rest;
+use FOS\RestBundle\Util\Codes;
+
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+
 /**
  * DataSource controller.
  *
+ * @Rest\RouteResource("DataSource");
  */
-class DataSourceController extends Controller
+class DataSourceController extends FOSRestController implements ClassResourceInterface
 {
 
     /**
      * Lists all DataSource entities.
      *
+	 * @Rest\View()
      */
-    public function indexAction()
+    public function cgetAction()
     {
-        $em = $this->getDoctrine()->getManager();
+        $em			= $this->getDoctrine()->getManager();
+        $entities	= $em->getRepository('D3AnalyticsBundle:DataSource')->findAll();
 
-        $entities = $em->getRepository('D3AnalyticsBundle:DataSource')->findAll();
-
-        return $this->render('D3AnalyticsBundle:DataSource:index.html.twig', array(
-            'entities' => $entities,
-        ));
-    }
-    /**
-     * Creates a new DataSource entity.
-     *
-     */
-    public function createAction(Request $request)
-    {
-        $entity = new DataSource();
-        $form = $this->createCreateForm($entity);
-        $form->handleRequest($request);
-
-        if ($form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($entity);
-            $em->flush();
-
-            return $this->redirect($this->generateUrl('datasource_show', array('id' => $entity->getId())));
-        }
-
-        return $this->render('D3AnalyticsBundle:DataSource:new.html.twig', array(
-            'entity' => $entity,
-            'form'   => $form->createView(),
-        ));
+        return array('entities' => $entities);
     }
 
-    /**
-    * Creates a form to create a DataSource entity.
-    *
-    * @param DataSource $entity The entity
-    *
-    * @return \Symfony\Component\Form\Form The form
-    */
-    private function createCreateForm(DataSource $entity)
-    {
-        $form = $this->createForm(new DataSourceType(), $entity, array(
-            'action' => $this->generateUrl('datasource_create'),
-            'method' => 'POST',
-        ));
+	/**
+	 *
+	 * @param integer $id
+	 */
+	protected function getDataSource( $id )
+	{
+		$em			= $this->getDoctrine()->getManager();
+        $dataSource	= $em->getRepository('D3AnalyticsBundle:DataSource')->findOneById($id);
 
-        $form->add('submit', 'submit', array('label' => 'Create'));
+		if( !$dataSource || empty($dataSource) )
+		{
+			throw new NotFoundHttpException("Sorry, there is no such data source");
+		}
 
-        return $form;
-    }
+		return $dataSource;
+	}
 
-    /**
-     * Displays a form to create a new DataSource entity.
-     *
-     */
-    public function newAction()
-    {
-        $entity = new DataSource();
-        $form   = $this->createCreateForm($entity);
+	/**
+	 *
+	 * @return Array
+	 *
+	 * @Rest\View(statusCode="200")
+	 */
+	public function getAction($id)
+	{
+		if( empty($id) || !is_numeric($id) )
+		{
+			throw new NotFoundHttpException("Sorry, there is no such data source");
+		}
 
-        return $this->render('D3AnalyticsBundle:DataSource:new.html.twig', array(
-            'entity' => $entity,
-            'form'   => $form->createView(),
-        ));
-    }
+		$dataSource = $this->getDataSource($id);
 
-    /**
-     * Finds and displays a DataSource entity.
-     *
-     */
-    public function showAction($id)
-    {
-        $em = $this->getDoctrine()->getManager();
+		return $dataSource;
+	}
 
-        $entity = $em->getRepository('D3AnalyticsBundle:DataSource')->find($id);
+	/**
+	 *
+	 * @param string $name
+	 * @return Array
+	 *
+	 * @Rest\View(statusCode="201")
+	 */
+	public function postAction()
+	{
+		$request	= $this->getRequest();
+		$dataSource	= new DataSource();
+		$form		= $this->createForm(new DataSourceType(), $dataSource);
 
-        if (!$entity) {
-            throw $this->createNotFoundException('Unable to find DataSource entity.');
-        }
+		$form->bind($request);
 
-        $deleteForm = $this->createDeleteForm($id);
+		if($form->isValid())
+		{
+			$em = $this->getDoctrine()->getEntityManager();
 
-        return $this->render('D3AnalyticsBundle:DataSource:show.html.twig', array(
-            'entity'      => $entity,
-            'delete_form' => $deleteForm->createView(),        ));
-    }
+			//fill in the data source object fields
+			$dataSource->setFileName($this->generateUniqueFileName() . ".csv");
 
-    /**
-     * Displays a form to edit an existing DataSource entity.
-     *
-     */
-    public function editAction($id)
-    {
-        $em = $this->getDoctrine()->getManager();
+			$em->persist($dataSource);
+			$em->flush();
 
-        $entity = $em->getRepository('D3AnalyticsBundle:DataSource')->find($id);
+			return $dataSource;
+		}
 
-        if (!$entity) {
-            throw $this->createNotFoundException('Unable to find DataSource entity.');
-        }
+		return array('form' => $form);
+	}
 
-        $editForm = $this->createEditForm($entity);
-        $deleteForm = $this->createDeleteForm($id);
 
-        return $this->render('D3AnalyticsBundle:DataSource:edit.html.twig', array(
-            'entity'      => $entity,
-            'edit_form'   => $editForm->createView(),
-            'delete_form' => $deleteForm->createView(),
-        ));
-    }
+	/**
+	 * Generate unique file name.
+	 *
+	 * @return string An unique file name.
+	 */
+	private function generateUniqueFileName()
+	{
+		return md5(base64_encode(pack('N6', mt_rand(), mt_rand(), mt_rand(), mt_rand(), mt_rand(), uniqid())));
+	}
 
-    /**
-    * Creates a form to edit a DataSource entity.
-    *
-    * @param DataSource $entity The entity
-    *
-    * @return \Symfony\Component\Form\Form The form
-    */
-    private function createEditForm(DataSource $entity)
-    {
-        $form = $this->createForm(new DataSourceType(), $entity, array(
-            'action' => $this->generateUrl('datasource_update', array('id' => $entity->getId())),
-            'method' => 'PUT',
-        ));
 
-        $form->add('submit', 'submit', array('label' => 'Update'));
+	/**
+	 *
+	 * updates a Visualization
+	 *
+	 * @param integer $id Visualization database identifier
+	 *
+	 * @Rest\View(statusCode="200")
+	 */
+	public function putAction( $id )
+	{
+		$request	= $this->getRequest();
+		$dataSource	= $this->getDataSource($id);
+		$form		= $this->createForm(new DataSourceType(), $dataSource);
 
-        return $form;
-    }
-    /**
-     * Edits an existing DataSource entity.
-     *
-     */
-    public function updateAction(Request $request, $id)
-    {
-        $em = $this->getDoctrine()->getManager();
+		$form->bind($request);
 
-        $entity = $em->getRepository('D3AnalyticsBundle:DataSource')->find($id);
+		if($form->isValid())
+		{
+			$em = $this->getDoctrine()->getEntityManager();
+			$em->persist($dataSource);
+			$em->flush();
 
-        if (!$entity) {
-            throw $this->createNotFoundException('Unable to find DataSource entity.');
-        }
+			return $dataSource;
+		}
 
-        $deleteForm = $this->createDeleteForm($id);
-        $editForm = $this->createEditForm($entity);
-        $editForm->handleRequest($request);
+		return array('form' => $form);
+	}
 
-        if ($editForm->isValid()) {
-            $em->flush();
+	/**
+	 *
+	 * @param integer $id
+	 *
+	 * @Rest\View()
+	 */
+	public function deleteAction( $id )
+	{
+		$dataSource	= $this->getDataSource($id);
 
-            return $this->redirect($this->generateUrl('datasource_edit', array('id' => $id)));
-        }
+		$em = $this->getDoctrine()->getEntityManager();
+		$em->remove($dataSource);
+		$em->flush();
 
-        return $this->render('D3AnalyticsBundle:DataSource:edit.html.twig', array(
-            'entity'      => $entity,
-            'edit_form'   => $editForm->createView(),
-            'delete_form' => $deleteForm->createView(),
-        ));
-    }
-    /**
-     * Deletes a DataSource entity.
-     *
-     */
-    public function deleteAction(Request $request, $id)
-    {
-        $form = $this->createDeleteForm($id);
-        $form->handleRequest($request);
+		return $this->view(null, Codes::HTTP_NO_CONTENT);
+	}
 
-        if ($form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $entity = $em->getRepository('D3AnalyticsBundle:DataSource')->find($id);
-
-            if (!$entity) {
-                throw $this->createNotFoundException('Unable to find DataSource entity.');
-            }
-
-            $em->remove($entity);
-            $em->flush();
-        }
-
-        return $this->redirect($this->generateUrl('datasource'));
-    }
-
-    /**
-     * Creates a form to delete a DataSource entity by id.
-     *
-     * @param mixed $id The entity id
-     *
-     * @return \Symfony\Component\Form\Form The form
-     */
-    private function createDeleteForm($id)
-    {
-        return $this->createFormBuilder()
-            ->setAction($this->generateUrl('datasource_delete', array('id' => $id)))
-            ->setMethod('DELETE')
-            ->add('submit', 'submit', array('label' => 'Delete'))
-            ->getForm()
-        ;
-    }
 }

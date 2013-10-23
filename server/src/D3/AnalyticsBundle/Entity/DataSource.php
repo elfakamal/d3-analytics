@@ -3,6 +3,10 @@
 namespace D3\AnalyticsBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
+
+use D3\AnalyticsBundle\Entity\DataStore;
+use D3\AnalyticsBundle\Entity\Visualization;
 
 /**
  * DataSource
@@ -24,7 +28,25 @@ class DataSource
      */
     private $fileName;
 
+	/**
+	 *
+	 * @var ArrayCollection
+	 */
 	private $visualizations;
+
+	/**
+	 *
+	 * @var ArrayCollection
+	 */
+	private $dataStores;
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->dataStores = new ArrayCollection();
+    }
 
     /**
      * Get id
@@ -80,5 +102,64 @@ class DataSource
     public function getFileName()
     {
         return $this->fileName;
+    }
+
+	public function getVisualizations()
+	{
+		return $this->visualizations;
+	}
+
+	public function getDataStores()
+	{
+		return $this->dataStores;
+	}
+
+
+
+    /**
+     * Add Visualizations
+     *
+     * @param \D3\AnalyticsBundle\Entity\Visualization $visualizations
+     * @return DataSource
+     */
+    public function addVisualization(Visualization $visualizations)
+    {
+        $this->visualizations[] = $visualizations;
+
+        return $this;
+    }
+
+    /**
+     * Remove visualizations
+     *
+     * @param \D3\AnalyticsBundle\Entity\Visualization $visualizations
+     */
+    public function removeVisualization(Visualization $visualizations)
+    {
+        $this->visualizations->removeElement($visualizations);
+    }
+
+
+    /**
+     * Add dataStores
+     *
+     * @param \D3\AnalyticsBundle\Entity\DataStore $dataStores
+     * @return DataSource
+     */
+    public function addDataStore(DataStore $dataStores)
+    {
+        $this->dataStores[] = $dataStores;
+
+        return $this;
+    }
+
+    /**
+     * Remove dataStores
+     *
+     * @param \D3\AnalyticsBundle\Entity\DataStore $dataStores
+     */
+    public function removeDataStore(DataStore $dataStores)
+    {
+        $this->dataStores->removeElement($dataStores);
     }
 }

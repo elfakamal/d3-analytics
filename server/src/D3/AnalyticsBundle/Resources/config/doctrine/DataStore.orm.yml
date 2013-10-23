@@ -1,6 +1,8 @@
-D3\AnalyticsBundle\Entity\Collection:
+D3\AnalyticsBundle\Entity\DataStore:
   type: entity
-  table: collection
+  table: data_store
+  collate: utf8_bin
+
   fields:
     id:
       type: integer

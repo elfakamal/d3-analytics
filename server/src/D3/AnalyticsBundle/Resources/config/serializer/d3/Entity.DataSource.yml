@@ -1,0 +1,14 @@
+D3\AnalyticsBundle\Entity\DataSource:
+    exclusion_policy: ALL
+    properties :
+      id :
+        expose : true
+      name :
+        expose : true
+      fileName :
+        expose : true
+      dataStores:
+        expose: false
+
+
+

@@ -16,4 +16,21 @@ D3\AnalyticsBundle\Entity\DataSource:
     fileName:
       type: string
       length: '32'
+
+  manyToMany:
+
+    dataStores:
+      targetEntity: DataStore
+      joinTable:
+        name: data_store_data_source_assoc
+        joinColumns:
+          data_store_id:
+            referencedColumnName: id
+            onDelete: CASCADE
+        inverseJoinColumns:
+          data_source_id:
+            referencedColumnName: id
+            onDelete: CASCADE
+
+
   lifecycleCallbacks: {  }

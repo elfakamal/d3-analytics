@@ -1,0 +1,20 @@
+
+
+################################################################################
+# Visualization
+
+visualization:
+  type: rest
+  resource: D3\AnalyticsBundle\Controller\VisualizationController
+
+
+
+################################################################################
+# DATA SOURCE
+
+datasource:
+  type: rest
+  resource: D3\AnalyticsBundle\Controller\DataSourceController
+
+
+

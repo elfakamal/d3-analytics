@@ -2,13 +2,12 @@
 
 namespace D3\AnalyticsBundle\Entity;
 
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Collection
+ * DataStore
  */
-class Collection
+class DataStore
 {
     /**
      * @var integer
@@ -35,11 +34,11 @@ class Collection
      */
     private $updateDate;
 
-
 	/**
+	 *
 	 * @var ArrayCollection
 	 */
-	private $visualizations;
+	protected $dataSources;
 
     /**
      * Get id
@@ -55,7 +54,7 @@ class Collection
      * Set name
      *
      * @param string $name
-     * @return Collection
+     * @return DataStore
      */
     public function setName($name)
     {
@@ -78,7 +77,7 @@ class Collection
      * Set description
      *
      * @param string $description
-     * @return Collection
+     * @return DataStore
      */
     public function setDescription($description)
     {
@@ -101,7 +100,7 @@ class Collection
      * Set creationDate
      *
      * @param \DateTime $creationDate
-     * @return Collection
+     * @return DataStore
      */
     public function setCreationDate($creationDate)
     {
@@ -124,11 +123,11 @@ class Collection
      * Set updateDate
      *
      * @param \DateTime $updateDate
-     * @return Collection
+     * @return DataStore
      */
     public function setUpdateDate($updateDate)
     {
-        $this->upde = $updateDate;
+        $this->updateDate = $updateDate;
 
         return $this;
     }

@@ -48,5 +48,6 @@ D3\AnalyticsBundle\Entity\Visualization:
             referencedColumnName: id
             onDelete: CASCADE
 
-  lifecycleCallbacks: {  }
+  lifecycleCallbacks:
+    preUpdate: [ setAsUpdated ]
 

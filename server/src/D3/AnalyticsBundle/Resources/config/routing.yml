@@ -1,9 +1,7 @@
 
+
 ################################################################################
-#
 # HOME
-#
-################################################################################
 
 D3AnalyticsBundle_index:
     pattern: /
@@ -18,45 +16,45 @@ D3AnalyticsBundle_about:
         _method: GET
 
 
+D3AnalyticsBundle_contact:
+    pattern: /contact
+    defaults: { _controller: D3AnalyticsBundle:Front:contact }
+    requirements:
+        _method: GET|POST
+
+
+
 
 ################################################################################
-#
-# DATA SOURCE
-#
-################################################################################
+# DATA STORE
 
-datasource:
-    pattern:  /
-    defaults: { _controller: "D3AnalyticsBundle:DataSource:index" }
+datastore:
+    pattern:  /datastore
+    defaults: { _controller: "D3AnalyticsBundle:DataStore:index" }
 
-datasource_show:
-    pattern:  /{id}/show
-    defaults: { _controller: "D3AnalyticsBundle:DataSource:show" }
+datastore_show:
+    pattern:  /datastore/{id}/show
+    defaults: { _controller: "D3AnalyticsBundle:DataStore:show" }
 
-datasource_new:
-    pattern:  /new
-    defaults: { _controller: "D3AnalyticsBundle:DataSource:new" }
+datastore_new:
+    pattern:  /datastore/new
+    defaults: { _controller: "D3AnalyticsBundle:DataStore:new" }
 
-datasource_create:
-    pattern:  /create
-    defaults: { _controller: "D3AnalyticsBundle:DataSource:create" }
+datastore_create:
+    pattern:  /datastore/create
+    defaults: { _controller: "D3AnalyticsBundle:DataStore:create" }
     requirements: { _method: post }
 
-datasource_edit:
-    pattern:  /{id}/edit
-    defaults: { _controller: "D3AnalyticsBundle:DataSource:edit" }
+datastore_edit:
+    pattern:  /datastore/{id}/edit
+    defaults: { _controller: "D3AnalyticsBundle:DataStore:edit" }
 
-datasource_update:
-    pattern:  /{id}/update
-    defaults: { _controller: "D3AnalyticsBundle:DataSource:update" }
+datastore_update:
+    pattern:  /datastore/{id}/update
+    defaults: { _controller: "D3AnalyticsBundle:DataStore:update" }
     requirements: { _method: post|put }
 
-datasource_delete:
-    pattern:  /{id}/delete
-    defaults: { _controller: "D3AnalyticsBundle:DataSource:delete" }
+datastore_delete:
+    pattern:  /datastore/{id}/delete
+    defaults: { _controller: "D3AnalyticsBundle:DataStore:delete" }
     requirements: { _method: post|delete }
-
-
-
-
-
