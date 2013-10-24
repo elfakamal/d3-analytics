@@ -8,6 +8,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 use D3\AnalyticsBundle\Entity\DataStore;
 use D3\AnalyticsBundle\Entity\Visualization;
 
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+
 /**
  * DataSource
  */
@@ -30,6 +32,12 @@ class DataSource
 
 	/**
 	 *
+	 * @var \Symfony\Component\HttpFoundation\File\UploadedFile
+	 */
+    private $file;
+
+	/**
+	 *
 	 * @var ArrayCollection
 	 */
 	private $visualizations;
@@ -47,6 +55,63 @@ class DataSource
     {
         $this->dataStores = new ArrayCollection();
     }
+
+    public function getAbsolutePath()
+    {
+		if( null === $this->fileName )
+		{
+			return null;
+		}
+		else
+		{
+			return $this->getUploadRootDir() . '/' . $this->fileName;
+		}
+    }
+
+    public function getWebPath()
+    {
+		if( null === $this->fileName )
+		{
+			return null;
+		}
+		else
+		{
+			return $this->getUploadDir() . '/' . $this->fileName;
+		}
+    }
+
+    protected function getUploadRootDir()
+    {
+        // the absolute directory path where uploaded
+        // documents should be saved
+        return __DIR__ . '/../../../../web/' . $this->getUploadDir();
+    }
+
+    protected function getUploadDir()
+    {
+        // get rid of the __DIR__ so it doesn't screw up
+        // when displaying uploaded doc/image in the view.
+        return 'uploads/datasources';
+    }
+
+	public function upload()
+	{
+		// the file property can be empty if the field is not required
+		if (null === $this->getFile())
+		{
+			return;
+		}
+
+		// use the original file name here but you should
+		// sanitize it at least to avoid any security issues
+
+		// move takes the target directory and then the
+		// target filename to move to
+		$this->getFile()->move($this->getUploadRootDir(), $this->getFileName());
+
+		// clean up the file property as you won't need it anymore
+		$this->file = null;
+	}
 
     /**
      * Get id
@@ -114,8 +179,6 @@ class DataSource
 		return $this->dataStores;
 	}
 
-
-
     /**
      * Add Visualizations
      *
@@ -162,4 +225,25 @@ class DataSource
     {
         $this->dataStores->removeElement($dataStores);
     }
+
+    /**
+     * Sets file.
+     *
+     * @param UploadedFile $file
+     */
+    public function setFile(UploadedFile $file = null)
+    {
+        $this->file = $file;
+    }
+
+    /**
+     * Get file.
+     *
+     * @return UploadedFile
+     */
+    public function getFile()
+    {
+        return $this->file;
+    }
+
 }

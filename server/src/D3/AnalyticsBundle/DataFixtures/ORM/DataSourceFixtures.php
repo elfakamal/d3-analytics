@@ -21,8 +21,6 @@ class DataSourceFixtures implements FixtureInterface
 
 	public function load( ObjectManager $manager )
 	{
-		return;
-		
 		$dataSource1 = new DataSource();
 		$dataSource1->setName("fb users");
 		$dataSource1->setFileName("1111.csv");

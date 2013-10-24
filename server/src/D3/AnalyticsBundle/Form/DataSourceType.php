@@ -16,6 +16,7 @@ class DataSourceType extends AbstractType
     {
         $builder
             ->add('name')
+		    ->add('file')
 //            ->add('fileName')
         ;
     }

@@ -65,7 +65,7 @@ module.exports = function (grunt) {
     connect: {
       livereload: {
         options: {
-          port: 9000,
+          port: 1984,
           middleware: function (connect) {
             return [
               lrSnippet,

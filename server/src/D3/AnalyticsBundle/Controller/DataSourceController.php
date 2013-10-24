@@ -90,6 +90,7 @@ class DataSourceController extends FOSRestController implements ClassResourceInt
 
 			//fill in the data source object fields
 			$dataSource->setFileName($this->generateUniqueFileName() . ".csv");
+			$dataSource->upload();
 
 			$em->persist($dataSource);
 			$em->flush();
