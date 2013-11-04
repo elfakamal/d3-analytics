@@ -17,18 +17,19 @@ class DataStoreType extends AbstractType
         $builder
             ->add('name')
             ->add('description')
-            ->add('creationDate')
-            ->add('updateDate')
+//            ->add('creationDate')
+//            ->add('updateDate')
         ;
     }
-    
+
     /**
      * @param OptionsResolverInterface $resolver
      */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'D3\AnalyticsBundle\Entity\DataStore'
+            'data_class'		=> 'D3\AnalyticsBundle\Entity\DataStore',
+			'csrf_protection'	=> false
         ));
     }
 
@@ -37,6 +38,6 @@ class DataStoreType extends AbstractType
      */
     public function getName()
     {
-        return 'd3_analyticsbundle_datastore';
+        return '';
     }
 }

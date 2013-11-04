@@ -1,0 +1,6 @@
+<select id="select-collection" name="collections">
+	<option value="0" selected>Select a collection</option>
+	<% _.each(d3collections, function(d3collection) { %>
+		<option value="<%= d3collection.get('id') %>"><%= d3collection.get('name') %></option>
+	<% }) %>
+</select>

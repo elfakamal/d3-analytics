@@ -27,8 +27,7 @@ class DataSourceType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class'		=> 'D3\AnalyticsBundle\Entity\DataSource',
-			'csrf_protection'	=> false
+            'data_class'		=> 'D3\AnalyticsBundle\Entity\DataSource'
         ));
     }
 

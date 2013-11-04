@@ -2,7 +2,6 @@
 
 namespace D3\AnalyticsBundle\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 
 use D3\AnalyticsBundle\Entity\DataStore;
@@ -18,35 +17,35 @@ class DataSource
     /**
      * @var integer
      */
-    private $id;
+    protected $id;
 
     /**
      * @var string
      */
-    private $name;
+    protected $name;
 
     /**
      * @var string
      */
-    private $fileName;
+    protected $fileName;
 
 	/**
 	 *
 	 * @var \Symfony\Component\HttpFoundation\File\UploadedFile
 	 */
-    private $file;
+    protected $file;
 
 	/**
 	 *
 	 * @var ArrayCollection
 	 */
-	private $visualizations;
+	protected $visualizations;
 
 	/**
 	 *
 	 * @var ArrayCollection
 	 */
-	private $dataStores;
+	protected $dataStores;
 
     /**
      * Constructor

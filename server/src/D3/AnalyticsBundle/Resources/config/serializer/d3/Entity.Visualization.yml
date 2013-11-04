@@ -9,6 +9,10 @@ D3\AnalyticsBundle\Entity\Visualization:
         expose : true
       visualizationTypeId :
         expose : true
+      isStarred :
+        expose : true
+      isActive :
+        expose : true
       creationDate:
         expose: true
       updateDate:

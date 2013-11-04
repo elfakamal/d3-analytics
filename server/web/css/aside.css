@@ -1,0 +1,56 @@
+/*
+    Document   : aside
+    Created on : Oct 27, 2013, 3:01:00 AM
+    Author     : kamal
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+
+aside#aside-side-pane
+{
+	width: 15%;
+	/*min-width: 200px;*/
+	background-color: #FAFAFA;
+	float: left;
+}
+
+
+#aside-side-pane .spacer.h20
+{
+	height: 20px;
+}
+
+#aside-side-pane .spacer,
+#aside-side-pane .spacer.h10
+{
+	height: 10px;
+}
+
+#aside-side-pane hr
+{
+	margin: 0px;
+	border: 0px;
+
+	height: 10px;
+
+	border-bottom: 1px dotted #eee !important;
+}
+
+
+#aside-side-pane a
+{
+	color: #777;
+	text-decoration: none;
+}
+
+#aside-side-pane a:hover
+{
+	color: #72CAEF;
+}
+
+#aside-side-pane ul li
+{
+	text-indent: 20px;
+}
+

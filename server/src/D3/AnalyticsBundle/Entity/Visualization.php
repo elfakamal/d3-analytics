@@ -2,64 +2,82 @@
 
 namespace D3\AnalyticsBundle\Entity;
 
-use D3\AnalyticsBundle\Entity\Collection;
+use D3\AnalyticsBundle\Entity\D3Collection;
 use D3\AnalyticsBundle\Entity\DataSource;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Visualization
  */
 class Visualization
 {
+	const VIZ_VERTICAL_BARS			= 1;
+	const VIZ_HORIZONTAL_BARS		= 2;
 
 	/**
 	 * @var integer
 	 */
-	private $id;
+	protected $id;
 
 	/**
 	 * @var string
 	 */
-	private $name;
+	protected $name;
 
 	/**
 	 * @var string
 	 */
-	private $description;
+	protected $description;
 
 	/**
 	 * @var integer
 	 */
-	private $visualizationTypeId;
+	protected $visualizationTypeId;
+
+	/**
+	 *
+	 * @var boolean
+	 */
+	protected $isStarred;
+
+	/**
+	 *
+	 * @var boolean
+	 */
+	protected $isActive;
 
 	/**
 	 * @var \DateTime
 	 */
-	private $creationDate;
+	protected $creationDate;
 
 	/**
 	 * @var \DateTime
 	 */
-	private $updateDate;
+	protected $updateDate;
 
 
 	/**
 	 * @var ArrayCollection
 	 */
-	private $collections;
+	protected $collections;
 
 	/**
 	 * @var ArrayCollection
 	 */
-	private $dataSources;
+	protected $dataSources;
 
 	/**
 	 * Constructor
 	 */
 	public function __construct()
 	{
+		$this->setVisualizationTypeId(self::VIZ_VERTICAL_BARS);
+
+		$this->setIsActive(true);
+		$this->setIsStarred(false);
+
 		$this->setCreationDate(new \DateTime());
 		$this->setUpdateDate(new \DateTime());
 
@@ -202,12 +220,12 @@ class Visualization
 	/**
 	 * Add collections
 	 *
-	 * @param Collection $collection
+	 * @param D3Collection $collection
 	 * @return Visualization
 	 */
-	public function addCollection( Collection $collection )
+	public function addCollection( D3Collection $collection )
 	{
-		$this->collections[] = $collection;
+		$this->collections->add($collection);
 
 		return $this;
 	}
@@ -215,11 +233,24 @@ class Visualization
 	/**
 	 * Remove collections
 	 *
-	 * @param Collection $collection
+	 * @param D3Collection $collection
 	 */
-	public function removeCollection( Collection $collection )
+	public function removeCollection( D3Collection $collection )
 	{
 		$this->collections->removeElement($collection);
+	}
+
+	/**
+	 * Set collections
+	 *
+	 * @param $collections Array
+	 * @return Visualization
+	 */
+	public function setCollections($collectons)
+	{
+		$this->collections = $collectons;
+
+		return $this;
 	}
 
 	/**
@@ -265,4 +296,50 @@ class Visualization
 		return $this->dataSources;
 	}
 
+
+    /**
+     * Set isStarred
+     *
+     * @param boolean $isStarred
+     * @return Visualization
+     */
+    public function setIsStarred($isStarred)
+    {
+        $this->isStarred = $isStarred;
+
+        return $this;
+    }
+
+    /**
+     * Get isStarred
+     *
+     * @return boolean
+     */
+    public function getIsStarred()
+    {
+        return $this->isStarred;
+    }
+
+    /**
+     * Set isActive
+     *
+     * @param boolean $isActive
+     * @return Visualization
+     */
+    public function setIsActive($isActive)
+    {
+        $this->isActive = $isActive;
+
+        return $this;
+    }
+
+    /**
+     * Get isActive
+     *
+     * @return boolean
+     */
+    public function getIsActive()
+    {
+        return $this->isActive;
+    }
 }

@@ -1,20 +1,29 @@
+################################################################################
+# D3Collection
 
+d3_collection:
+  type: rest
+  resource: D3\AnalyticsBundle\Controller\D3CollectionController
+
+################################################################################
+# DATA STORE
+
+datastore:
+  type: rest
+  resource: D3\AnalyticsBundle\Controller\DataStoreController
 
 ################################################################################
 # Visualization
 
 visualization:
   type: rest
+  parent: d3_collection
   resource: D3\AnalyticsBundle\Controller\VisualizationController
-
-
 
 ################################################################################
 # DATA SOURCE
 
 datasource:
   type: rest
+  parent: datastore
   resource: D3\AnalyticsBundle\Controller\DataSourceController
-
-
-

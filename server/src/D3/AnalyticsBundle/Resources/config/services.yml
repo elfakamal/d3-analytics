@@ -1,7 +1,11 @@
 parameters:
-#    d3_analytics.example.class: D3\AnalyticsBundle\Example
+  d3_analytics.json_response_listener.class: D3\AnalyticsBundle\EventListener\JsonResponseListener
 
 services:
-#    d3_analytics.example:
-#        class: %d3_analytics.example.class%
-#        arguments: [@service_id, "plain_value", %parameter%]
+  d3_analytics.json_response_listener:
+    class: %d3_analytics.json_response_listener.class%
+    tags:
+      - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse }
+
+#    arguments: [@service_id, "plain_value", %parameter%]
+

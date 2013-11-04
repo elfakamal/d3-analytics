@@ -14,9 +14,16 @@ D3\AnalyticsBundle\Entity\DataStore:
       length: 255
     description:
       type: text
+    dataStoreTypeId:
+      type: integer
     creationDate:
       type: datetime
     updateDate:
       type: datetime
+
+  manyToMany:
+    dataSources:
+      targetEntity: DataSource
+      mappedBy: dataStores
 
   lifecycleCallbacks: {  }

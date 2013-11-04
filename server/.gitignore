@@ -1,5 +1,8 @@
 /web/uploads/datasources/*
 /web/bundles/
+/web/js/app/bower_components/
+/web/js/node_modules/
+/web/js/dist/
 /app/bootstrap.php.cache
 /app/cache/*
 /app/config/parameters.yml

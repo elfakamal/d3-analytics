@@ -96,6 +96,14 @@ define(['underscore', 'jquery'], function(_, $) {
 
 			return loading.promise();
 		});
+
+//		app.components.loadTemplates = function(names, widget)
+//		{
+//			var loading = manager.load(names, widget);
+//			loading.done(_.bind(function(templates) {
+//				this._templates = templates;
+//			}, this));
+//		};
 	};
 
 });

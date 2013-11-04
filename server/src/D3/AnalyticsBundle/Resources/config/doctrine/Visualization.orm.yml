@@ -1,6 +1,7 @@
 D3\AnalyticsBundle\Entity\Visualization:
   type: entity
   table: visualization
+  repositoryClass: D3\AnalyticsBundle\Entity\Repository\VisualizationRepository
   collate: utf8_bin
 
   fields:
@@ -16,6 +17,11 @@ D3\AnalyticsBundle\Entity\Visualization:
       type: text
     visualizationTypeId:
       type: integer
+    isStarred:
+      type: boolean
+    isActive:
+      type: boolean
+      default: 1
     creationDate:
       type: datetime
     updateDate:
@@ -23,7 +29,8 @@ D3\AnalyticsBundle\Entity\Visualization:
 
   manyToMany:
     collections:
-      targetEntity: Collection
+      targetEntity: D3Collection
+      inversedBy: visualizations
       joinTable:
         name: visualization_collection_assoc
         joinColumns:
@@ -37,6 +44,7 @@ D3\AnalyticsBundle\Entity\Visualization:
 
     dataSources:
       targetEntity: DataSource
+      inversedBy: visualizations
       joinTable:
         name: visualization_data_source_assoc
         joinColumns:

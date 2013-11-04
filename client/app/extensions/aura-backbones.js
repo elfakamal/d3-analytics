@@ -12,9 +12,17 @@ define({
 		}
 	},
 
+	_syncoo: null,
+
 	initialize: function(app)
 	{
 		var Backbone = require('backbone');
+
+//		this._syncoo = Backbone.sync;
+//		Backbone.sync = this.backboneSync;
+
+//		Backbone.emulateJSON = true;
+//		Backbone.emulateHTTP = true;
 		app.core.mvc =  Backbone;
 
 		var Views = {};
@@ -23,7 +31,7 @@ define({
 		// This View's class will be built and cached this first time the component is included.
 		app.components.before('initialize', function(options)
 		{
-			var View = Views[options.ref]
+			var View = Views[options.ref];
 			if (!View)
 			{
 				Views[options.ref] = View = Backbone.View.extend(this.View);
@@ -41,5 +49,16 @@ define({
 			this.view && this.view.stopListening();
 		});
 
+	},
+
+	backboneSync: function(method, model, options)
+	{
+		var base = _.isFunction(model['url']) ? model['url']() : model['url'];
+
+		options.url = "http://localhost/d3analyticsRestAPI/api/" + base;
+
+		//Call back the default Backbone.Sync function
+		return this._syncoo(method, model, options);
 	}
+
 });

@@ -1,0 +1,143 @@
+/*
+    Document   : visualization-form
+    Created on : Oct 27, 2013, 1:34:37 PM
+    Author     : kamal
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+#section-entity-form-component
+{
+	width: 500px;
+	/*height: 400px;*/
+	/*background-color: yellowgreen;*/
+	background-color: #F5F5F5;
+	margin: 50px auto auto auto;
+}
+
+#section-entity-form-component h2
+{
+	color: white;
+}
+
+#ul-add-entity li
+{
+	margin-top: 5px;
+	text-align: center;
+}
+
+#ul-add-entity #li-title
+{
+	font-size: 30px;
+	font-weight: 700;
+	color: #777;
+}
+
+#ul-add-entity input,
+#ul-add-entity select,
+#ul-add-entity textArea
+{
+	border: 0px;
+	/*border-bottom: 1px solid #eeeeee !important;*/
+
+	height: 40px;
+	width: 90%;
+
+	font-family: "Titillium Web", sans-serif;
+	font-weight: 400;
+	font-size: 18px;
+	color: darkgray;
+
+	background-color: #fdfdfd;
+
+	padding: 5px;
+}
+
+#ul-add-entity textArea
+{
+	height: 100px;
+}
+
+#ul-add-entity select
+{
+	width: 92% !important;
+	padding: 0px !important;
+}
+
+#ul-add-entity #li-buttons
+{
+	padding-top: 20px;
+	padding-bottom: 20px;
+	margin: 0px;
+}
+
+#ul-add-entity button
+{
+	border: 0px;
+	/*border-bottom: 1px solid #eeeeee !important;*/
+
+	height: 50px;
+	width: 45%;
+
+	font-family: "Titillium Web", sans-serif;
+	font-weight: 700;
+	font-size: 22px;
+	line-height: 22px;
+
+	color: white;
+	cursor: pointer;
+
+	padding: 5px;
+}
+
+#ul-add-entity button#button-save
+{
+	background-color: yellowgreen;
+}
+
+#ul-add-entity button#button-cancel
+{
+	background-color: skyblue;
+}
+
+
+
+
+#section-entity-form-component #li-datasource-upload
+{
+	height: 120px;
+}
+
+#section-entity-form-component #div-file-back
+{
+	border: 2px dashed #eee;
+	height: 110px;
+	width: 92%;
+
+	background-color: white;
+
+	color: darkgray;
+	font-size: 24px;
+	line-height: 105px;
+	text-align: center !important;
+
+	position: relative;
+	margin: 0 auto;
+	cursor: pointer;
+}
+
+#section-entity-form-component input[type="file"]
+{
+	border: 2px dashed #eee;
+	height: 100px;
+	vertical-align: middle;
+	line-height: 90px;
+	text-align: center !important;
+	cursor: pointer;
+
+	opacity: 0;
+
+	position: relative;
+	top: -115px
+}
+

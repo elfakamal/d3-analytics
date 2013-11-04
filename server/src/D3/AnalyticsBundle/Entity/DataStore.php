@@ -2,43 +2,60 @@
 
 namespace D3\AnalyticsBundle\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
-
 /**
  * DataStore
  */
 class DataStore
 {
+	const SYSTEM_DATA_STORE		= 1;
+	const REGULAR_DATA_STORE	= 2;
+
     /**
      * @var integer
      */
-    private $id;
+    protected $id;
 
     /**
      * @var string
      */
-    private $name;
+    protected $name;
 
     /**
      * @var string
      */
-    private $description;
+    protected $description;
+
+	/**
+	 *
+	 * @var integer
+	 */
+	protected $dataStoreTypeId;
 
     /**
      * @var \DateTime
      */
-    private $creationDate;
+    protected $creationDate;
 
     /**
      * @var \DateTime
      */
-    private $updateDate;
+    protected $updateDate;
 
 	/**
 	 *
 	 * @var ArrayCollection
 	 */
 	protected $dataSources;
+
+
+	public function __construct()
+	{
+		$this->setCreationDate(new \DateTime());
+		$this->setUpdateDate(new \DateTime());
+
+		$this->setDataStoreTypeId(self::REGULAR_DATA_STORE);
+	}
+
 
     /**
      * Get id
@@ -140,5 +157,28 @@ class DataStore
     public function getUpdateDate()
     {
         return $this->updateDate;
+    }
+
+    /**
+     * Set dataStoreTypeId
+     *
+     * @param integer $dataStoreTypeId
+     * @return DataStore
+     */
+    public function setDataStoreTypeId($dataStoreTypeId)
+    {
+        $this->dataStoreTypeId = $dataStoreTypeId;
+
+        return $this;
+    }
+
+    /**
+     * Get dataStoreTypeId
+     *
+     * @return integer
+     */
+    public function getDataStoreTypeId()
+    {
+        return $this->dataStoreTypeId;
     }
 }

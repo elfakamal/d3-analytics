@@ -23,10 +23,11 @@ class DataSourceController extends FOSRestController implements ClassResourceInt
 
     /**
      * Lists all DataSource entities.
-     *
+	 *
+     * @param integer $dataStoreId
 	 * @Rest\View()
      */
-    public function cgetAction()
+    public function cgetAction($dataStoreId)
     {
         $em			= $this->getDoctrine()->getManager();
         $entities	= $em->getRepository('D3AnalyticsBundle:DataSource')->findAll();
@@ -36,12 +37,12 @@ class DataSourceController extends FOSRestController implements ClassResourceInt
 
 	/**
 	 *
-	 * @param integer $id
+	 * @param integer $dataStoreId
 	 */
-	protected function getDataSource( $id )
+	protected function getDataSource( $dataStoreId, $dataSourceId )
 	{
 		$em			= $this->getDoctrine()->getManager();
-        $dataSource	= $em->getRepository('D3AnalyticsBundle:DataSource')->findOneById($id);
+        $dataSource	= $em->getRepository('D3AnalyticsBundle:DataSource')->findOneById($dataStoreId);
 
 		if( !$dataSource || empty($dataSource) )
 		{
@@ -53,20 +54,39 @@ class DataSourceController extends FOSRestController implements ClassResourceInt
 
 	/**
 	 *
+	 * @param integer $dataStoreId
+	 * @param integer $dataSourceId
 	 * @return Array
-	 *
 	 * @Rest\View(statusCode="200")
 	 */
-	public function getAction($id)
+	public function getAction($dataStoreId, $dataSourceId)
 	{
-		if( empty($id) || !is_numeric($id) )
+		if( empty($dataSourceId) || !is_numeric($dataSourceId) )
 		{
 			throw new NotFoundHttpException("Sorry, there is no such data source");
 		}
 
-		$dataSource = $this->getDataSource($id);
+		$dataSource = $this->getDataSource($dataSourceId);
 
 		return $dataSource;
+	}
+
+	/**
+	 * 78274616d4a09295689a021bc5fdc83219f74774
+	 * @return Array
+	 *
+	 * @Rest\View(statusCode="200")
+	 */
+	public function getFormAction()
+	{
+		$dataSource	= new DataSource();
+		$form		= $this->createForm(new DataSourceType(), $dataSource);
+
+		$token		= $form->createView()->children['_token'];
+		$CSRF_name	= $token->vars['name'];
+		$CSRF_value	= $token->vars['value'];
+
+		return array('token_name' => $CSRF_name, 'token_value' => $CSRF_value);
 	}
 
 	/**
@@ -76,9 +96,17 @@ class DataSourceController extends FOSRestController implements ClassResourceInt
 	 *
 	 * @Rest\View(statusCode="201")
 	 */
-	public function postAction()
+	public function postAction($dataStoreId)
 	{
 		$request	= $this->getRequest();
+
+		/**
+		 * TODO: EXPLAIN MORE
+		 * no need of these parameters.
+		 */
+		$request->request->remove("X-Requested-With");
+		$request->request->remove("X-HTTP-Accept");
+
 		$dataSource	= new DataSource();
 		$form		= $this->createForm(new DataSourceType(), $dataSource);
 
@@ -86,10 +114,10 @@ class DataSourceController extends FOSRestController implements ClassResourceInt
 
 		if($form->isValid())
 		{
-			$em = $this->getDoctrine()->getEntityManager();
+			$em = $this->getDoctrine()->getManager();
 
 			//fill in the data source object fields
-			$dataSource->setFileName($this->generateUniqueFileName() . ".csv");
+			$dataSource->setFileName($this->generateUniqueFileName() . ".d3a");
 			$dataSource->upload();
 
 			$em->persist($dataSource);
@@ -131,7 +159,7 @@ class DataSourceController extends FOSRestController implements ClassResourceInt
 
 		if($form->isValid())
 		{
-			$em = $this->getDoctrine()->getEntityManager();
+			$em = $this->getDoctrine()->getManager();
 			$em->persist($dataSource);
 			$em->flush();
 
@@ -151,7 +179,7 @@ class DataSourceController extends FOSRestController implements ClassResourceInt
 	{
 		$dataSource	= $this->getDataSource($id);
 
-		$em = $this->getDoctrine()->getEntityManager();
+		$em = $this->getDoctrine()->getManager();
 		$em->remove($dataSource);
 		$em->flush();
 

@@ -1,0 +1,32 @@
+<ul id="ul-add-entity">
+	<li id="li-title">
+		Add Visualization
+	</li>
+	<li id="li-name">
+		<input type="text" id="input-visualization-name" name="name" required="required" maxlength="255" placeholder="Visualization name"/>
+	</li>
+	<li id="li-entity-type-id">
+		<select id="select-visualization-type" name="visualizationTypeId">
+			<option value="0" selected>Select a visualization type</option>
+			<option value="1">Vertical Bars</option>
+			<option value="2">Horizontal Bars</option>
+			<option value="3">Pie Chart</option>
+			<option value="4">Line Chart</option>
+		</select>
+	</li>
+	<li id="li-description">
+		<textarea id="textarea-visualization-description" name="description" required="required" placeholder="Description of the visualization"></textarea>
+	</li>
+	<li id="li-collection">
+
+	</li>
+<!--
+	<li id="li-datasource">
+
+	</li>
+-->
+	<li id="li-buttons">
+		<button id="button-cancel" class="d3-button bg-skyblue">Cancel</button>
+		<button id="button-save" class="d3-button bg-yellow-green">Save</button>
+	</li>
+</ul>

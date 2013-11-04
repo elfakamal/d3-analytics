@@ -1,6 +1,7 @@
-D3\AnalyticsBundle\Entity\Collection:
+D3\AnalyticsBundle\Entity\D3Collection:
   type: entity
   table: collection
+  repositoryClass: D3\AnalyticsBundle\Entity\Repository\D3CollectionRepository
   fields:
     id:
       type: integer
@@ -12,9 +13,16 @@ D3\AnalyticsBundle\Entity\Collection:
       length: 255
     description:
       type: text
+    collectionTypeId:
+      type: integer
     creationDate:
       type: datetime
     updateDate:
       type: datetime
+
+  manyToMany:
+    visualizations:
+      targetEntity: Visualization
+      mappedBy: collections
 
   lifecycleCallbacks: {  }

@@ -15,7 +15,7 @@ D3\AnalyticsBundle\Entity\DataSource:
       length: 255
     fileName:
       type: string
-      length: '32'
+      length: 255
 
   manyToMany:
 
@@ -32,5 +32,8 @@ D3\AnalyticsBundle\Entity\DataSource:
             referencedColumnName: id
             onDelete: CASCADE
 
+    visualizations:
+      targetEntity: Visualization
+      mappedBy: dataSources
 
   lifecycleCallbacks: {  }

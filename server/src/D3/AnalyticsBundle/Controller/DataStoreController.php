@@ -2,223 +2,153 @@
 
 namespace D3\AnalyticsBundle\Controller;
 
-use Symfony\Component\HttpFoundation\Request;
 use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Routing\ClassResourceInterface;
+use FOS\RestBundle\Controller\Annotations as Rest;
+use FOS\RestBundle\Util\Codes;
 
 use D3\AnalyticsBundle\Entity\DataStore;
 use D3\AnalyticsBundle\Form\DataStoreType;
 
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+
 /**
  * DataStore controller.
- * 
+ * @Rest\RouteResource("Datastore")
  */
-class DataStoreController extends FOSRestController //implements ClassResourceInterface
+class DataStoreController extends FOSRestController implements ClassResourceInterface
 {
 
-    /**
-     * Lists all DataStore entities.
-     *
-     */
-    public function indexAction()
-    {
-        $em = $this->getDoctrine()->getManager();
 
-        $entities = $em->getRepository('D3AnalyticsBundle:DataStore')->findAll();
+	/**
+	 *
+	 * @return Array
+	 *
+	 * @Rest\View(statusCode="200")
+	 *
+	 */
+	public function cgetAction()
+	{
+		$em			= $this->getDoctrine()->getManager();
+        $dataStores	= $em->getRepository('D3AnalyticsBundle:DataStore')->findAll();
 
-        return $this->render('D3AnalyticsBundle:DataStore:index.html.twig', array(
-            'entities' => $entities,
-        ));
-    }
-    /**
-     * Creates a new DataStore entity.
-     *
-     */
-    public function createAction(Request $request)
-    {
-        $entity = new DataStore();
-        $form = $this->createCreateForm($entity);
-        $form->handleRequest($request);
+		return $dataStores;
+	}
 
-        if ($form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($entity);
-            $em->flush();
+	/**
+	 *
+	 * @param integer $id
+	 * @return DataStore
+	 */
+	protected function getDataStore( $id )
+	{
+		$em				= $this->getDoctrine()->getManager();
+        $dataStore	= $em->getRepository('D3AnalyticsBundle:DataStore')->findOneById($id);
 
-            return $this->redirect($this->generateUrl('datastore_show', array('id' => $entity->getId())));
-        }
+		if( !$dataStore || empty($dataStore) )
+		{
+			throw new NotFoundHttpException("Sorry, there is no such dataStore");
+		}
 
-        return $this->render('D3AnalyticsBundle:DataStore:new.html.twig', array(
-            'entity' => $entity,
-            'form'   => $form->createView(),
-        ));
-    }
+		return $dataStore;
+	}
 
-    /**
-    * Creates a form to create a DataStore entity.
-    *
-    * @param DataStore $entity The entity
-    *
-    * @return \Symfony\Component\Form\Form The form
-    */
-    private function createCreateForm(DataStore $entity)
-    {
-        $form = $this->createForm(new DataStoreType(), $entity, array(
-            'action' => $this->generateUrl('datastore_create'),
-            'method' => 'POST',
-        ));
 
-        $form->add('submit', 'submit', array('label' => 'Create'));
+	/**
+	 *
+	 * @return Array
+	 *
+	 * @Rest\View(statusCode="200")
+	 */
+	public function getAction($id)
+	{
+		if( empty($id) || !is_numeric($id) )
+		{
+			throw new NotFoundHttpException("Sorry, there is no such dataStore");
+		}
 
-        return $form;
-    }
+		$dataStore = $this->getDataStore($id);
 
-    /**
-     * Displays a form to create a new DataStore entity.
-     *
-     */
-    public function newAction()
-    {
-        $entity = new DataStore();
-        $form   = $this->createCreateForm($entity);
+		return $dataStore;
+	}
 
-        return $this->render('D3AnalyticsBundle:DataStore:new.html.twig', array(
-            'entity' => $entity,
-            'form'   => $form->createView(),
-        ));
-    }
+	/**
+	 *
+	 * @Rest\View(statusCode="201")
+	 */
+	public function postAction()
+	{
+		$request	= $this->getRequest();
+		$dataStore	= new DataStore();
+		$form		= $this->createForm(new DataStoreType(), $dataStore);
 
-    /**
-     * Finds and displays a DataStore entity.
-     *
-     */
-    public function showAction($id)
-    {
-        $em = $this->getDoctrine()->getManager();
+		$form->bind($request);
 
-        $entity = $em->getRepository('D3AnalyticsBundle:DataStore')->find($id);
+		if($form->isValid())
+		{
+			$em = $this->getDoctrine()->getManager();
+			$em->persist($dataStore);
+			$em->flush();
 
-        if (!$entity) {
-            throw $this->createNotFoundException('Unable to find DataStore entity.');
-        }
+			return $dataStore;
+		}
 
-        $deleteForm = $this->createDeleteForm($id);
+		return array('form' => $form);
+	}
 
-        return $this->render('D3AnalyticsBundle:DataStore:show.html.twig', array(
-            'entity'      => $entity,
-            'delete_form' => $deleteForm->createView(),        ));
-    }
 
-    /**
-     * Displays a form to edit an existing DataStore entity.
-     *
-     */
-    public function editAction($id)
-    {
-        $em = $this->getDoctrine()->getManager();
+	/**
+	 *
+	 * updates a DataStore
+	 *
+	 * @param integer $id DataStore database identifier
+	 *
+	 * @Rest\View(statusCode="200")
+	 */
+	public function putAction( $id )
+	{
+		$request	= $this->getRequest();
+		$dataStore	= $this->getDataStore($id);
+		$form		= $this->createForm(new DataStoreType(), $dataStore);
 
-        $entity = $em->getRepository('D3AnalyticsBundle:DataStore')->find($id);
+		$form->bind($request);
 
-        if (!$entity) {
-            throw $this->createNotFoundException('Unable to find DataStore entity.');
-        }
+		if($form->isValid())
+		{
+			$em = $this->getDoctrine()->getManager();
+			$em->persist($dataStore);
+			$em->flush();
 
-        $editForm = $this->createEditForm($entity);
-        $deleteForm = $this->createDeleteForm($id);
+			return $dataStore;
+		}
 
-        return $this->render('D3AnalyticsBundle:DataStore:edit.html.twig', array(
-            'entity'      => $entity,
-            'edit_form'   => $editForm->createView(),
-            'delete_form' => $deleteForm->createView(),
-        ));
-    }
+		return array('form' => $form);
+	}
 
-    /**
-    * Creates a form to edit a DataStore entity.
-    *
-    * @param DataStore $entity The entity
-    *
-    * @return \Symfony\Component\Form\Form The form
-    */
-    private function createEditForm(DataStore $entity)
-    {
-        $form = $this->createForm(new DataStoreType(), $entity, array(
-            'action' => $this->generateUrl('datastore_update', array('id' => $entity->getId())),
-            'method' => 'PUT',
-        ));
+	/**
+	 *
+	 * @param integer $id
+	 *
+	 * @Rest\View(statusCode="204")
+	 */
+	public function deleteAction( $id )
+	{
+		$dataStore = $this->getDataStore($id);
 
-        $form->add('submit', 'submit', array('label' => 'Update'));
+		if( $dataStore->getDataStoreTypeId() == DataStore::REGULAR_DATA_STORE )
+		{
+			$em = $this->getDoctrine()->getManager();
+			$em->remove($dataStore);
+			$em->flush();
+		}
+		else
+		{
+			throw new AccessDeniedHttpException("you can't delete this data store", null, 403);
+		}
 
-        return $form;
-    }
-    /**
-     * Edits an existing DataStore entity.
-     *
-     */
-    public function updateAction(Request $request, $id)
-    {
-        $em = $this->getDoctrine()->getManager();
+		return $this->view(null, Codes::HTTP_NO_CONTENT);
+	}
 
-        $entity = $em->getRepository('D3AnalyticsBundle:DataStore')->find($id);
 
-        if (!$entity) {
-            throw $this->createNotFoundException('Unable to find DataStore entity.');
-        }
-
-        $deleteForm = $this->createDeleteForm($id);
-        $editForm = $this->createEditForm($entity);
-        $editForm->handleRequest($request);
-
-        if ($editForm->isValid()) {
-            $em->flush();
-
-            return $this->redirect($this->generateUrl('datastore_edit', array('id' => $id)));
-        }
-
-        return $this->render('D3AnalyticsBundle:DataStore:edit.html.twig', array(
-            'entity'      => $entity,
-            'edit_form'   => $editForm->createView(),
-            'delete_form' => $deleteForm->createView(),
-        ));
-    }
-    /**
-     * Deletes a DataStore entity.
-     *
-     */
-    public function deleteAction(Request $request, $id)
-    {
-        $form = $this->createDeleteForm($id);
-        $form->handleRequest($request);
-
-        if ($form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $entity = $em->getRepository('D3AnalyticsBundle:DataStore')->find($id);
-
-            if (!$entity) {
-                throw $this->createNotFoundException('Unable to find DataStore entity.');
-            }
-
-            $em->remove($entity);
-            $em->flush();
-        }
-
-        return $this->redirect($this->generateUrl('datastore'));
-    }
-
-    /**
-     * Creates a form to delete a DataStore entity by id.
-     *
-     * @param mixed $id The entity id
-     *
-     * @return \Symfony\Component\Form\Form The form
-     */
-    private function createDeleteForm($id)
-    {
-        return $this->createFormBuilder()
-            ->setAction($this->generateUrl('datastore_delete', array('id' => $id)))
-            ->setMethod('DELETE')
-            ->add('submit', 'submit', array('label' => 'Delete'))
-            ->getForm()
-        ;
-    }
 }

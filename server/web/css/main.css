@@ -1,0 +1,173 @@
+/*
+    Document   : main
+    Created on : Oct 14, 2013, 4:14:38 PM
+    Author     : kamal
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+
+html, body
+{
+	margin: 0px;
+	font-family: "Titillium Web", sans-serif;
+}
+
+ul
+{
+	list-style-type: none;
+	margin: 0px;
+	padding: 0px;
+}
+
+
+
+.component-title
+{
+	color: darkgray;
+	font-size: 14px;
+	font-weight: 700;
+	text-indent: 10px;
+	text-transform: uppercase;
+	height: 20px;
+}
+
+
+ul.system-items li,
+ul.regular-items li
+{
+	/*text-indent: 20px;*/
+	/*background-color: lightblue;*/
+	margin-top: 1px;
+	height: 20px;
+	font-size: 14px;
+	line-height: 20px;
+}
+
+.item_name
+{
+	display: block;
+	float: left;
+	width: 80%;
+	/*background-color: #72CAEF;*/
+}
+
+.item_number
+{
+	display: block;
+	float: left;
+	width: 20%;
+	/*background-color: tomato;*/
+	text-align: center;
+	text-indent: 0px;
+	font-size: 12px;
+}
+
+
+
+
+ul.system-items li a
+{
+	font-weight: 700;
+}
+
+ul.regular-items li a
+{
+	font-weight: 600;
+}
+
+
+
+
+button.button-add-item
+{
+	margin: 0px;
+	border: 0px solid #eeeeee;
+	height: 30px;
+	line-height: 14px;
+	font-family: "Titillium Web", sans-serif;
+	font-size: 14px;
+	border-radius: 2px;
+	-moz-border-radius: 2px;
+	-webkit-border-radius: 2px;
+	background-color: #eee;
+	width: 80%;
+	cursor: pointer;
+	font-weight: 700;
+	color: #777;
+}
+
+
+
+.bg-yellow-green
+{
+	background-color: yellowgreen;
+}
+
+.bg-skyblue
+{
+	background-color: skyblue;
+}
+
+.color-skyblue
+{
+	color: skyblue;
+}
+
+
+.fs10
+{
+	font-size: 10px;
+}
+
+
+
+button.d3-button
+{
+	border: 0px;
+	/*border-bottom: 1px solid #eeeeee !important;*/
+
+	height: 50px;
+	width: 45%;
+
+	font-family: "Titillium Web", sans-serif;
+	font-weight: 700;
+	font-size: 22px;
+	line-height: 22px;
+
+	color: white;
+	cursor: pointer;
+
+	padding: 5px;
+}
+
+button.d3-button.save
+{
+	background-color: yellowgreen;
+}
+
+button.d3-button.cancel
+{
+	background-color: skyblue;
+}
+
+
+.center-container
+{
+	position: relative;
+}
+
+.absolute-center
+{
+	overflow: auto;
+	margin: auto;
+	position: absolute;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	right: 0;
+}
+
+
+
+

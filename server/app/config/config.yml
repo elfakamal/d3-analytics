@@ -1,6 +1,7 @@
 imports:
   - { resource: parameters.yml }
   - { resource: security.yml }
+  - { resource: "@D3AnalyticsBundle/Resources/config/services.yml" }
 
 framework:
   #esi:       ~
@@ -79,9 +80,10 @@ sensio_framework_extra:
 fos_rest:
 
   param_fetcher_listener: true
+  allowed_methods_listener: true
   body_listener:
     decoders:
-      json: fos_rest.decoders.json
+      json: fos_rest.decoder.json
 
   format_listener: true
 
@@ -101,11 +103,15 @@ fos_rest:
 
 
 
-
 jms_serializer:
   metadata:
     directories:
       D3Analytics:
         namespace_prefix: D3\AnalyticsBundle
         path: "@D3AnalyticsBundle/Resources/config/serializer/d3"
+
+
+
+doctrine_migrations:
+  dir_name: src/D3/AnalyticsBundle/DoctrineMigrations
 

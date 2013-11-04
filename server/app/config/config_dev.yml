@@ -29,3 +29,42 @@ assetic:
 
 #swiftmailer:
 #    delivery_address: me@example.com
+
+
+
+
+#fos_rest:
+#
+#  param_fetcher_listener: true
+#  allowed_methods_listener: true
+#  body_listener:
+#    decoders:
+#      json: fos_rest.decoders.json
+#
+#  format_listener: true
+#
+#  view:
+#    view_response_listener: 'force'
+#
+#    formats:
+#      json : true
+#
+#    failed_validation: HTTP_BAD_REQUEST
+#
+#    default_engine: php
+#
+#  routing_loader:
+#    include_format: false
+#    default_format: json
+#
+#
+#
+#jms_serializer:
+#  metadata:
+#    directories:
+#      D3Analytics:
+#        namespace_prefix: D3\AnalyticsBundle
+#        path: "@D3AnalyticsBundle/Resources/config/serializer/d3"
+
+
+

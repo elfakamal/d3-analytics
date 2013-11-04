@@ -1,0 +1,32 @@
+<ul id="ul-add-entity">
+	<li id="li-title">
+		Add Visualization
+	</li>
+	<li id="li-name">
+		<input type="text" id="name" name="name" required="required" maxlength="255" placeholder="Visualization name"/>
+	</li>
+	<li id="li-description">
+		<textarea id="description" name="description" required="required" placeholder="Description of the visualization"></textarea>
+	</li>
+	<li id="li-entity-type-id">
+		<select id="select-visualization-type" name="visualizationTypeId">
+			<option value="0" selected>Select a visualization type</option>
+			<option value="1">Vertical Bars</option>
+			<option value="2">Horizontal Bars</option>
+			<option value="3">Pie Chart</option>
+			<option value="4">Line Chart</option>
+		</select>
+	</li>
+	<li id="li-datasource">
+		<select id="select-datasource" name="datasource">
+			<option value="0" selected>Select a data source</option>
+			<option value="1">Facebook Users</option>
+			<option value="2">Facebook likes</option>
+			<option value="3">twitter mentions</option>
+		</select>
+	</li>
+	<li id="li-buttons">
+		<button id="button-cancel">Cancel</button>
+		<button id="button-save">Save</button>
+	</li>
+</ul>

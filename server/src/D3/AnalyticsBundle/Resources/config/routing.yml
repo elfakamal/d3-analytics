@@ -1,60 +1,23 @@
-
-
 ################################################################################
 # HOME
 
 D3AnalyticsBundle_index:
-    pattern: /
-    defaults: { _controller: D3AnalyticsBundle:Front:index }
-    requirements:
-        _method: GET
+  pattern: /
+  defaults: { _controller: D3AnalyticsBundle:Front:index }
+  requirements:
+    _method: GET
+
 
 D3AnalyticsBundle_about:
-    pattern: /about
-    defaults: { _controller: D3AnalyticsBundle:Front:about }
-    requirements:
-        _method: GET
+  pattern: /about
+  defaults: { _controller: D3AnalyticsBundle:Front:about }
+  requirements:
+    _method: GET
 
 
 D3AnalyticsBundle_contact:
-    pattern: /contact
-    defaults: { _controller: D3AnalyticsBundle:Front:contact }
-    requirements:
-        _method: GET|POST
+  pattern: /contact
+  defaults: { _controller: D3AnalyticsBundle:Front:contact }
+  requirements:
+    _method: GET|POST
 
-
-
-
-################################################################################
-# DATA STORE
-
-datastore:
-    pattern:  /datastore
-    defaults: { _controller: "D3AnalyticsBundle:DataStore:index" }
-
-datastore_show:
-    pattern:  /datastore/{id}/show
-    defaults: { _controller: "D3AnalyticsBundle:DataStore:show" }
-
-datastore_new:
-    pattern:  /datastore/new
-    defaults: { _controller: "D3AnalyticsBundle:DataStore:new" }
-
-datastore_create:
-    pattern:  /datastore/create
-    defaults: { _controller: "D3AnalyticsBundle:DataStore:create" }
-    requirements: { _method: post }
-
-datastore_edit:
-    pattern:  /datastore/{id}/edit
-    defaults: { _controller: "D3AnalyticsBundle:DataStore:edit" }
-
-datastore_update:
-    pattern:  /datastore/{id}/update
-    defaults: { _controller: "D3AnalyticsBundle:DataStore:update" }
-    requirements: { _method: post|put }
-
-datastore_delete:
-    pattern:  /datastore/{id}/delete
-    defaults: { _controller: "D3AnalyticsBundle:DataStore:delete" }
-    requirements: { _method: post|delete }

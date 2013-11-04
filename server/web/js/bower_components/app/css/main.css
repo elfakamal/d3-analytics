@@ -1,0 +1,45 @@
+/*
+    Document   : main
+    Created on : Oct 14, 2013, 4:14:38 PM
+    Author     : kamal
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+
+html, body
+{
+	margin: 0px;
+	font-family: "Titillium Web", sans-serif;
+}
+
+ul
+{
+	list-style-type: none;
+	margin: 0px;
+	padding: 0px;
+}
+
+
+
+
+aside#aside-side-pane
+{
+	width: 200px;
+	/*height: 300px;*/
+	background-color: #FAFAFA;
+}
+
+
+
+
+.component-title
+{
+	color: darkgray;
+	font-size: 14px;
+	font-weight: 700;
+	text-indent: 10px;
+	text-transform: uppercase;
+	height: 20px;
+}
+

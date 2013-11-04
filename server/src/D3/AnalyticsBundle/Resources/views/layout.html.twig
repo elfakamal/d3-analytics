@@ -1,0 +1,36 @@
+{% extends '::base.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+		<link href="{{ asset('css/aside.css') }}" type="text/css" rel="stylesheet" />
+		<link href="{{ asset('css/collection.css') }}" type="text/css" rel="stylesheet" />
+		<link href="{{ asset('css/datastore.css') }}" type="text/css" rel="stylesheet" />
+		<link href="{{ asset('css/entity-form.css') }}" type="text/css" rel="stylesheet" />
+		<link href="{{ asset('css/fonts.css') }}" type="text/css" rel="stylesheet" />
+		<link href="{{ asset('css/footer.css') }}" type="text/css" rel="stylesheet" />
+		<link href="{{ asset('css/main.css') }}" type="text/css" rel="stylesheet" />
+		<link href="{{ asset('css/menu.css') }}" type="text/css" rel="stylesheet" />
+		<link href="{{ asset('css/search.css') }}" type="text/css" rel="stylesheet" />
+		<link href="{{ asset('css/workspace.css') }}" type="text/css" rel="stylesheet" />
+{% endblock %}
+
+{% block javascripts %}
+	<script data-main="js/app/app" src="{{ asset('js/app/bower_components/requirejs/require.js') }}"></script>
+{% endblock %}
+
+
+{% block body %}
+
+	<header id="section-menu-component"></header>
+
+	<aside id="aside-side-pane">
+		<section id="section-search-component"></section>
+		<section id="section-collection-component"></section>
+		<section id="li-data-source-component"></section>
+	</aside>
+
+	<section id="section-workspace-component"></section>
+
+	<footer id="footer-component"></footer>
+
+{% endblock %}

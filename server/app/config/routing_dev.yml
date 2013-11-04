@@ -20,6 +20,7 @@ d3_analytics:
 
 
 d3_analytics_api:
+  type: rest
   resource: "@D3AnalyticsBundle/Resources/config/routing_api.yml"
   prefix: /api
 

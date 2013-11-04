@@ -1,0 +1,12 @@
+
+d3_analytics:
+  resource: "@D3AnalyticsBundle/Resources/config/routing.yml"
+  prefix: /
+
+
+d3_analytics_api:
+  type: rest
+  resource: "@D3AnalyticsBundle/Resources/config/routing_api.yml"
+  prefix: /api
+
+

@@ -22,17 +22,6 @@ ul
 
 
 
-
-aside#aside-side-pane
-{
-	width: 200px;
-	/*height: 300px;*/
-	background-color: #FAFAFA;
-}
-
-
-
-
 .component-title
 {
 	color: darkgray;
@@ -43,3 +32,67 @@ aside#aside-side-pane
 	height: 20px;
 }
 
+
+ul.system-items li,
+ul.regular-items li
+{
+	/*text-indent: 20px;*/
+	/*background-color: lightblue;*/
+	margin-top: 1px;
+	height: 20px;
+	font-size: 14px;
+	line-height: 20px;
+}
+
+.item_name
+{
+	display: block;
+	float: left;
+	width: 80%;
+	/*background-color: #72CAEF;*/
+}
+
+.item_number
+{
+	display: block;
+	float: left;
+	width: 20%;
+	/*background-color: tomato;*/
+	text-align: center;
+	text-indent: 0px;
+	font-size: 12px;
+}
+
+
+
+
+ul.system-items li a
+{
+	font-weight: 700;
+}
+
+ul.regular-items li a
+{
+	font-weight: 600;
+}
+
+
+
+
+button.button-add-item
+{
+	margin: 0px;
+	border: 0px solid #eeeeee;
+	height: 30px;
+	line-height: 14px;
+	font-family: "Titillium Web", sans-serif;
+	font-size: 14px;
+	border-radius: 2px;
+	-moz-border-radius: 2px;
+	-webkit-border-radius: 2px;
+	background-color: #eee;
+	width: 80%;
+	cursor: pointer;
+	font-weight: 700;
+	color: #777;
+}
