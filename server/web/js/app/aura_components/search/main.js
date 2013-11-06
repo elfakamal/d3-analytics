@@ -7,19 +7,9 @@ define(['text!./templates/base.html'], function (tpl)
 		type: 'Backbone',
 
 		events: {
-			"click #coco": "canYouStopMe",
-			"click #switchToMenu": "onSwitchToMenuClick"
+			
 		},
 
-		canYouStopMe: function()
-		{
-			this.sandbox.stop();
-		},
-
-		onSwitchToMenuClick: function()
-		{
-			this.sandbox.switchToState("add-visualization");
-		},
 
 		initialize: function()
 		{

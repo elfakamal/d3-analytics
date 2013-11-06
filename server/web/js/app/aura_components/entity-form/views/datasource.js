@@ -12,7 +12,7 @@ function($, baseTemplate, DatasourceModel)
 			"click #button-save": "onButtonSaveClick",
 			"click #button-cancel": function()
 			{
-				this.options.sandbox.stop();
+				this.options.sandbox.switchToState("home");
 			}
 		},
 
@@ -101,7 +101,7 @@ function($, baseTemplate, DatasourceModel)
 				data: values_with_csrf,
 				success: function()
 				{
-					self.options.sandbox.stop();
+					self.options.sandbox.switchToState("home");
 				},
 				error: function()
 				{

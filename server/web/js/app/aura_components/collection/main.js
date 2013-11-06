@@ -24,7 +24,7 @@ function (tpl, D3Collections, D3CollectionView)
 
 		onButtonAddListClick: function()
 		{
-			this.sandbox.switchToState("add-visualization");
+			this.sandbox.switchToState("add-collection");
 		},
 
 		initialize: function()

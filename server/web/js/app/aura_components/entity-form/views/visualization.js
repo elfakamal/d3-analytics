@@ -22,12 +22,13 @@ function(VisualizationModel, baseTemplate, partialSelectD3Collections/*, partial
 			"click #button-save": "onButtonSaveClick",
 			"click #button-cancel": function()
 			{
-				this.options.sandbox.stop();
+				this.options.sandbox.switchToState("home");
 			}
 		},
 
 		initialize: function ()
 		{
+			this.render();
 			this.prepareChannels();
 		},
 
@@ -124,7 +125,7 @@ function(VisualizationModel, baseTemplate, partialSelectD3Collections/*, partial
 //			var dataSourceId = this.$("#select-datasource").val();
 //			this.model.attachDataSource(dataSourceId, this.onAttachDataSourceSuccess, this.onAttachDataSourceError);
 
-			this.options.sandbox.stop();
+			this.options.sandbox.switchToState("home");
 		},
 
 //		onAttachDataSourceSuccess: function()

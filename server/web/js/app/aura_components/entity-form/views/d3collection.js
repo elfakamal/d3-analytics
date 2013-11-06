@@ -53,13 +53,17 @@ function(D3CollectionModel, baseTemplate)
 					{
 						//alert('success');
 						self.options.sandbox.emit("collections.refresh");
-						self.options.sandbox.stop();
+						self.options.sandbox.switchToState("home");
 					},
 					error: function(model, response)
 					{
 						alert("error");
 					}
 				});
+			}
+			else
+			{
+				console.error("the form is not valid");
 			}
 		}
 

@@ -10,7 +10,7 @@ function(DatastoreModel, baseTemplate)
 			"click #button-save": "onButtonSaveClick",
 			"click #button-cancel": function()
 			{
-				this.options.sandbox.stop();
+				this.options.sandbox.switchToState("home");
 			}
 		},
 
@@ -52,7 +52,7 @@ function(DatastoreModel, baseTemplate)
 					success: function(model, response)
 					{
 						alert('success');
-						self.options.sandbox.stop();
+						self.options.sandbox.switchToState("home");
 					},
 					error: function(model, response)
 					{

@@ -1,136 +1,123 @@
-define({
+define(['../scripts/state-manager', '../scripts/naive-component'],
+function(StateManager, NaiveComponent)
+{
 
-	require: {
-		paths:  {
-			jquery_iframe_transport: 'bower_components/jquery-iframe-transport/jquery.iframe-transport'
-		}
-	},
+	return {
 
-
-	initialize: function (app)
-	{
-		var states = {
-			"home": {
-				components: [
-					{name: "menu",			options:{el:"#section-menu-component"}},
-					{name: "search",		options:{el:"#section-search-component"}},
-					{name: "collection",	options:{el:"#section-collection-component"}},
-					{name: "data-store",	options:{el:"#li-data-source-component"}},
-					{name: "workspace",		options:{el:"#section-workspace-component"}},
-					{name: "footer",		options:{el:"#footer-component"}},
-				],
-				preStart: {},
-				postStart: {}
-			},
-
-			"add-visualization": {
-				components: [
-					{name: "menu",			options:{el:"#section-menu-component"}},
-					{name: "search",		options:{el:"#section-search-component"}},
-					{name: "collection",	options:{el:"#section-collection-component"}},
-					{name: "data-store",	options:{el:"#li-data-source-component"}},
-					{name: "workspace",		options:{el:"#section-workspace-component"}},
-					{name: "entity-form",	options:{el:"#section-forms-component", entity:"collection"}},
-					{name: "footer",		options:{el:"#footer-component"}},
-				],
-				preStart: {},
-				postStart: {}
+		require: {
+			paths:  {
+				jquery_iframe_transport: 'bower_components/jquery-iframe-transport/jquery.iframe-transport'
 			}
-		};
+		},
 
-		app.sandbox.findComponentsByState = function(stateNameList, stateName)
+		initialize: function (app)
 		{
-			var components = [];
+			var stateManager = new StateManager();
+			var allComponents = {
+				"menu"					: new NaiveComponent("menu",		{el:"#nav-menu-component",tagName:"nav",parent:"#header",index:0}),
+				"search"				: new NaiveComponent("search",		{el:"#section-search-component",tagName:"section",parent:"#aside-side-pane",index:0}),
+				"collection"			: new NaiveComponent("collection",	{el:"#section-collection-component",tagName:"section",parent:"#aside-side-pane",index:1}),
+				"datastore"				: new NaiveComponent("data-store",	{el:"#section-data-store-component",tagName:"section",parent:"#aside-side-pane",index:2}),
+				"workspace"				: new NaiveComponent("workspace",	{el:"#section-workspace-component",tagName:"section",parent:"#section-content",index:0}),
+				"collection-form"		: new NaiveComponent("entity-form",	{el:"#section-forms-component",entity:"collection",tagName:"section",className:"center-container",parent:"#section-workspace-component",index:0}),
+				"datastore-form"		: new NaiveComponent("entity-form",	{el:"#section-forms-component",entity:"datastore",tagName:"section",className:"center-container",parent:"#section-workspace-component",index:0}),
+				"visualization-form"	: new NaiveComponent("entity-form",	{el:"#section-forms-component",entity:"visualization",tagName:"section",className:"center-container",parent:"#section-workspace-component",index:0}),
+				"datasource-form"		: new NaiveComponent("entity-form",	{el:"#section-forms-component",entity:"datasource",tagName:"section",className:"center-container",parent:"#section-workspace-component",index:0}),
+				"footer"				: new NaiveComponent("footer",		{el:"#div-footer-component",tagName:"div",className:"center-container",parent:"#footer",index:0})
+			};
 
-			if( stateNameList && stateNameList.length > 0 && stateName )
+			stateManager.addState("home", [
+				allComponents["menu"],
+				allComponents["search"],
+				allComponents["collection"],
+				allComponents["datastore"],
+				allComponents["workspace"],
+				allComponents["footer"],
+			]);
+
+			stateManager.addState("add-collection", [
+				allComponents["menu"],
+				allComponents["search"],
+				allComponents["collection"],
+				allComponents["datastore"],
+				allComponents["workspace"],
+				allComponents["collection-form"],
+				allComponents["footer"],
+			]);
+
+			stateManager.addState("add-datastore", [
+				allComponents["menu"],
+				allComponents["search"],
+				allComponents["collection"],
+				allComponents["datastore"],
+				allComponents["workspace"],
+				allComponents["datasource-form"],
+				allComponents["footer"],
+			]);
+
+			stateManager.addState("add-visualization", [
+				allComponents["menu"],
+				allComponents["search"],
+				allComponents["collection"],
+				allComponents["datastore"],
+				allComponents["workspace"],
+				allComponents["visualization-form"],
+				allComponents["footer"],
+			]);
+
+			var currentState = "";
+
+			/**
+			 * Stop the un-wanted components and start the new ones.
+			 */
+			app.sandbox.switchToState = function(stateName, options)
 			{
-				var state = states[stateName];
-
-				components = _.filter(state.components, function(component)
+				if( !stateManager.hasState(stateName) )
 				{
-					var toReturn = false;
-
-					if( stateNameList.indexOf(component.name) >= 0 )
-					{
-						toReturn = true;
-					}
-
-					return toReturn;
-				});
-			}
-
-			return components;
-		};
-
-		var currentState = "";
-
-		/**
-		 * Stop the un-wanted components and start the new ones.
-		 */
-		app.sandbox.switchToState = function(stateName, options)
-		{
-			if( !states.hasOwnProperty(stateName) )
-			{
-				throw new Error("There is no such state : " + stateName);
-			}
-
-			var nextComponents = states[stateName].components;
-
-			var toStopNames = [];
-			var toStartNames = [];
-
-			//extract the names.
-			if(nextComponents && nextComponents.length > 0)
-			{
-				var nextNames = _.pluck(nextComponents, "name");
-				toStartNames = _.difference(nextNames, currentNames);
-			}
-
-			var componentsToStart = nextComponents;
-			var componentsToStop = [];
-
-			//the first run won't get in here.
-			if( currentState !== "" && states.hasOwnProperty(currentState) )
-			{
-				var currentComponents = states[currentState].components;
-
-				//extract the names.
-				if(currentComponents && currentComponents.length > 0)
-				{
-					var currentNames = _.pluck(currentComponents, "name");
+					console.warn("The requested state doesn't exist, state : " + stateName);
+					return;
 				}
 
-				//get the difference between current component's names
-				//and wanted ones.
-				toStopNames = _.difference(currentNames, nextNames);
-				toStartNames = _.difference(nextNames, currentNames);
+				var switched				= false;
 
-				componentsToStart = app.sandbox.findComponentsByState(toStartNames, stateName);
-				componentsToStop = app.sandbox.findComponentsByState(toStopNames, currentState);
-			}
+				var componentNamesToStart	= stateManager.compare(stateName, currentState);
+				var componentNamesToStop	= stateManager.compare(currentState, stateName);
+				var componentsToStart		= stateManager.findComponentsByState(componentNamesToStart, stateName, true);
+				var componentsToStop		= stateManager.findComponentsByState(componentNamesToStop, currentState, true);
 
-			if( componentsToStop && componentsToStop.length > 0 )
-			{
-				_.each(componentsToStop, function(component)
+				stateManager.createElements(stateName, componentNamesToStart);
+
+				if( componentsToStop && componentsToStop.length > 0 )
 				{
-					app.core.appSandbox.stop(component.options.el);
-				});
-			}
+					_.each(componentsToStop, function(component)
+					{
+						app.core.appSandbox.stop(component.options.el);
+					});
 
-			if( componentsToStart && componentsToStart.length > 0 )
-			{
-				app.core.appSandbox.start(componentsToStart);
-			}
+					switched = true;
+				}
 
-			currentState = stateName;
-		};
+				if( componentsToStart && componentsToStart.length > 0 )
+				{
+					app.core.appSandbox.start(componentsToStart);
+					switched = true;
+				}
 
-	},
+				currentState = stateName;
 
-	afterAppStart: function(app)
-	{
-		console.log("D3 Analytics App is now started !");
-		app.core.appSandbox.switchToState("home", {});
+				if( switched )
+				{
+					console.log("state switched to : " + stateName);
+				}
+			};
+
+		},
+
+		afterAppStart: function(app)
+		{
+			//console.log("D3 Analytics App is now started !");
+			app.core.appSandbox.switchToState("home", {});
+		}
+
 	}
-
 });
