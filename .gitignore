@@ -1,6 +1,6 @@
 /server/console
-/client/nbproject/
-/client/node_modules/
-/client/app/bower_components/
+/client_deprecated/nbproject/
+/client_deprecated/node_modules/
+/client_deprecated/app/bower_components/
 /server/nbproject/
 /server/vendor/
