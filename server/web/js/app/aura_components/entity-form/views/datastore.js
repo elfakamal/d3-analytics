@@ -16,7 +16,7 @@ function(DatastoreModel, baseTemplate)
 
 		initialize: function ()
 		{
-
+			this.render();
 		},
 
 		render: function()

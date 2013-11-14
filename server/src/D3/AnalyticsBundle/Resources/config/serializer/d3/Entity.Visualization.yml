@@ -20,7 +20,7 @@ D3\AnalyticsBundle\Entity\Visualization:
       collections:
         expose: false
       dataSources:
-        expose: false
+        expose: true
 
 
 

@@ -180,6 +180,8 @@ class VisualizationController extends FOSRestController implements ClassResource
 	 */
 	public function attachDatasourceAction($libraryId, $visualizationId, $dataSourceId)
 	{
+//		return array();
+
 		if( $dataSourceId > 0 )
 		{
 			$em = $this->getDoctrine()->getManager();

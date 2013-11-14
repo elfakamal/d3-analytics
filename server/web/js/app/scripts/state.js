@@ -16,7 +16,7 @@ define(['underscore', 'jquery', './naive-component'], function(_, $, NaiveCompon
 		this.options = _.defaults(options || {}, {});
 
 		self.name = name;
-		self.components = {};
+		self.components = [];
 
 		if( components && components.length > 0 )
 		{
@@ -29,8 +29,7 @@ define(['underscore', 'jquery', './naive-component'], function(_, $, NaiveCompon
 	/**
 	 *
 	 */
-	State.prototype.allComponents = {};
-
+	State.prototype.allComponents = [];
 
 	/**
 	 * Variadic function to add one or more components.
@@ -55,8 +54,8 @@ define(['underscore', 'jquery', './naive-component'], function(_, $, NaiveCompon
 
 			if( component.name !== "" )
 			{
-				self.components[component.name] = component;
-				self.allComponents[component.name] = component;
+				self.components.push(component);
+				self.allComponents.push(component);
 			}
 		});
 	};
@@ -70,9 +69,35 @@ define(['underscore', 'jquery', './naive-component'], function(_, $, NaiveCompon
 
 		if( names && names.length > 0 )
 		{
-			components = _.filter(this.components, function(component, name, dictionary)
+			components = _.filter(this.components, function(component)
 			{
-				return names.indexOf(name) >= 0
+				return names.indexOf(component.name) >= 0
+			});
+		}
+
+		if( typeof returnAuraObjects !== 'undefined' && returnAuraObjects === true )
+		{
+			components = _.map(components, function(component)
+			{
+				return component.toAuraObject();
+			});
+		}
+
+		return components;
+	};
+
+	/**
+	 * @return Array
+	 */
+	State.prototype.getComponentsByCUIDs = function(CUIDs, returnAuraObjects)
+	{
+		var components = [];
+
+		if( CUIDs && CUIDs.length > 0 )
+		{
+			components = _.filter(this.components, function(component)
+			{
+				return CUIDs.indexOf(component.CUID) >= 0
 			});
 		}
 
@@ -94,16 +119,16 @@ define(['underscore', 'jquery', './naive-component'], function(_, $, NaiveCompon
 	 */
 	State.prototype.compare = function(state)
 	{
-		var thisStateComponentNames	= _.keys(this.components);
-		var resultComponentNames	= thisStateComponentNames;
+		var thisStateComponentCUIDs	= _.pluck(this.components, "CUID");
+		var resultComponentCUIDs	= thisStateComponentCUIDs;
 
 		if( typeof state !== 'undefined' )
 		{
-			var otherStateComponentNames = _.keys(state.components);
-			resultComponentNames = _.difference(thisStateComponentNames, otherStateComponentNames);
+			var otherStateComponentNames = _.pluck(state.components, "CUID");
+			resultComponentCUIDs = _.difference(thisStateComponentCUIDs, otherStateComponentNames);
 		}
 
-		return resultComponentNames;
+		return resultComponentCUIDs;
 	};
 
 

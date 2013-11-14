@@ -1,0 +1,12 @@
+<!--<label for="select-datasource"></label>-->
+<select id="select-datasource">
+	<option value="0" selected>Select a data source</option>
+	<% dataSourceList.each(function(ds) { %>
+	<option value="<%= ds.get('id') %>"><%= ds.get('name') %></option>
+	<% }) %>
+</select>
+
+<div id="div-select-datasource-buttons">
+	<button id="button-datasource-cancel" class="d3-button bg-skyblue">Cancel</button>
+	<button id="button-datasource-ok" class="d3-button bg-skyblue"><%= buttonLegend %></button>
+</div>

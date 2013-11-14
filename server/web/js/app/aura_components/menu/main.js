@@ -37,14 +37,14 @@ define(['text!./templates/base.html'], function(tpl)
 
 		},
 
-		onAddDataSourceClick: function()
-		{
-			alert('cool');
-		},
-
 		onAddVisualizationClick: function()
 		{
+			this.sandbox.switchToState("add-visualization");
+		},
 
+		onAddDataSourceClick: function()
+		{
+			this.sandbox.switchToState("add-datasource");
 		}
 
 	}

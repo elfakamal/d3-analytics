@@ -1,23 +1,40 @@
-define(["jquery", "text!../templates/base-datasource.html", "../models/datasource"],
-function($, baseTemplate, DatasourceModel)
+define([
+	"jquery",
+	"text!../templates/base-datasource.html",
+	"ModelDatasource"
+],
+function($, baseTemplate, ModelDatasource)
 {
+
 	var template = _.template(baseTemplate);
 
 	return Backbone.View.extend(
 	{
 		_token: null,
+		_isTitled: true,
+
+		setIsTitled: function(isTitled)
+		{
+			this._isTitled = isTitled;
+		},
 
 		events: {
-			"change #file-datasource": "onFileInputChange",
-			"click #button-save": "onButtonSaveClick",
-			"click #button-cancel": function()
+			"change #file-datasource"	: "onFileInputChange",
+			"click #button-save"		: "onButtonSaveClick",
+			"click #button-cancel"	: function(event)
 			{
+				if( event )
+				{
+					event.preventDefault();
+				}
+
 				this.options.sandbox.switchToState("home");
 			}
 		},
 
 		initialize: function ()
 		{
+			this.render();
 			var self = this;
 
 			$.ajax({
@@ -30,7 +47,7 @@ function($, baseTemplate, DatasourceModel)
 				},
 				success: function(data, textStatus, XMLHttpRequest)
 				{
-					console.log("the form : " + data);
+					//console.log("the form : " + data);
 					self._token = data;
 				},
 				error: function(jqXHR, textStatus, errorThrown)
@@ -42,7 +59,7 @@ function($, baseTemplate, DatasourceModel)
 
 		render: function()
 		{
-			this.$el.html(template());
+			this.$el.html(template({isTitled: this._isTitled}));
 			return this;
 		},
 
@@ -92,14 +109,14 @@ function($, baseTemplate, DatasourceModel)
 			values_with_csrf = _.extend({}, values);
 			values_with_csrf[csrf_param] = csrf_token;
 
-			this.model = new DatasourceModel();
+			this.model = new ModelDatasource();
 
 			this.model.save(values,
 			{
-				iframe: true,
-				files: this.$('form :file'),
-				data: values_with_csrf,
-				success: function()
+				iframe		: true,
+				files		: this.$('form :file'),
+				data		: values_with_csrf,
+				success	: function()
 				{
 					self.options.sandbox.switchToState("home");
 				},

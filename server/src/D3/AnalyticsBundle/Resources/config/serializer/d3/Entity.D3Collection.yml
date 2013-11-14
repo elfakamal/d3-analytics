@@ -1,0 +1,19 @@
+D3\AnalyticsBundle\Entity\D3Collection:
+    exclusion_policy: ALL
+    properties :
+      id:
+        expose : true
+      name:
+        expose : true
+      description:
+        expose : true
+      collectionTypeId:
+        expose : true
+      creationDate:
+        expose : true
+      updateDate:
+        expose : true
+      visualizations:
+        expose : false
+
+

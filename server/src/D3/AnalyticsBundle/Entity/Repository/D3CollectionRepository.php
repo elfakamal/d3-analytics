@@ -43,6 +43,22 @@ class D3CollectionRepository extends EntityRepository
 
 		return $collection;
 	}
+
+	public function getVisualizationCountMapping()
+	{
+		$conn = $this->getEntityManager()->getConnection();
+
+		$sql = "SELECT collection_id, count(visualization_id) as visualizationCount
+				FROM visualization_collection_assoc vca
+				GROUP BY collection_id";
+
+		$stmt = $conn->prepare($sql);
+		$stmt->execute();
+		$result = $stmt->fetchAll();
+
+		return $result;
+	}
+
 }
 
 ?>

@@ -37,17 +37,23 @@
 
 #ul-add-entity.datastore
 {
-
+	background: #F5F5F5;
+	height: 320px;
 }
 
 #ul-add-entity.visualization
 {
-
+	background: #F5F5F5;
+	height: 410px;
 }
 
-#ul-add-entity.datasource
+/*#ul-add-entity.datasource*/
+#form-add-entity.datasource
 {
-
+	background: #F5F5F5;
+	height: 320px;
+	width: 500px;
+	overflow: hidden;
 }
 
 #ul-add-entity li
@@ -90,7 +96,7 @@
 
 #ul-add-entity select
 {
-	width: 92% !important;
+	width: 90% !important;
 	padding: 0px !important;
 }
 
@@ -102,12 +108,12 @@
 }
 
 
-#section-entity-form-component #li-datasource-upload
+#section-forms-component #li-datasource-upload
 {
 	height: 120px;
 }
 
-#section-entity-form-component #div-file-upload-mask
+#section-forms-component #div-file-upload-mask
 {
 	border: 2px dashed #eee;
 	height: 110px;
@@ -125,7 +131,7 @@
 	cursor: pointer;
 }
 
-#section-entity-form-component input[type="file"]
+#section-forms-component input[type="file"]
 {
 	border: 2px dashed #eee;
 	height: 100px;

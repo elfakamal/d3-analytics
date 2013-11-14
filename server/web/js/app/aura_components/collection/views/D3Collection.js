@@ -12,11 +12,6 @@ define(['backbone', "text!../templates/D3Collection.html"], function(Backbone, c
 
 		tagName: "li",
 
-		onClick:function()
-		{
-			alert('ok');
-		},
-
 		className: function()
 		{
 			var className = "";
@@ -35,8 +30,19 @@ define(['backbone', "text!../templates/D3Collection.html"], function(Backbone, c
 
 		initialize: function()
 		{
-
+			this.model.bind('change', this.onModelChange, this);
 			this.render();
+		},
+
+		onModelChange: function()
+		{
+			this.$("#span-name").text(this.model.get('name'));
+			this.$("#span-visualization-count").text(this.model.get('visualizationCount'));
+		},
+
+		onClick:function()
+		{
+			this.options.sandbox.emit("collections.selected", this.model);
 		},
 
 		render: function ()

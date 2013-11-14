@@ -18,6 +18,7 @@ footer div
 	float: left;
 	width: 100%;
 	text-align: center;
+	display: inline-block;
 }
 
 footer p

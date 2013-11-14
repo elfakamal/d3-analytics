@@ -77,14 +77,21 @@
 						if( typeof value === 'string' )
 						{
 							extendedProperties.push(value);
+//							this.events[key] = this.component[value];
 						}
-					});
+					}, this);
 				}
 
 				if (!View)
 				{
-					var ext = _.pick(this, extendedProperties);
-					Views[options.ref] = View = Backbone.View.extend(ext);
+					var wantedPropertiesThis = _.pick(this, extendedProperties);
+//					var nonNativeThis = _.omit(this, nativeProperties);
+
+					//I am using _.defaults instead of _.extend in order
+					//to avoid modifying native properties & functions.
+//					var self = _.defaults(wantedPropertiesThis, nonNativeThis);
+
+					Views[options.ref] = View = Backbone.View.extend(wantedPropertiesThis);
 				}
 
 				this.view = new View({el: this.$el});
@@ -92,9 +99,11 @@
 				this.view.component = this;
 			});
 
-
 			app.components.before('remove', function()
 			{
+				var event = "component.stop." + this.options.name;
+				this.sandbox.emit(event);
+
 				this.view && this.view.stopListening();
 			});
 

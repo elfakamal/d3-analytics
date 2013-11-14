@@ -29,7 +29,6 @@ class D3CollectionController extends FOSRestController implements ClassResourceI
 	/**
 	 *
 	 * @return Array
-	 *
 	 * @Rest\View(statusCode="200")
 	 *
 	 */
@@ -42,13 +41,30 @@ class D3CollectionController extends FOSRestController implements ClassResourceI
 	}
 
 	/**
+	 * @return Array
+	 * @Rest\View(statusCode="200")
+	 */
+	public function cgetVisualizationCountsAction()
+	{
+		//TODO:
+		//implement the query to extract the count mapping
+		//[collectionId] => VisualizationCount
+
+		$em			= $this->getDoctrine()->getManager();
+        $mapping	= $em->getRepository('D3AnalyticsBundle:D3Collection')
+				->getVisualizationCountMapping();
+
+		return $mapping;
+	}
+
+	/**
 	 *
 	 * @param integer $id
 	 * @return D3Collection
 	 */
 	protected function getD3Collection( $id )
 	{
-		$em				= $this->getDoctrine()->getManager();
+		$em			= $this->getDoctrine()->getManager();
         $collection	= $em->getRepository('D3AnalyticsBundle:D3Collection')->findOneById($id);
 
 		if( !$collection || empty($collection) )
@@ -63,7 +79,6 @@ class D3CollectionController extends FOSRestController implements ClassResourceI
 	/**
 	 *
 	 * @return Array
-	 *
 	 * @Rest\View(statusCode="200")
 	 */
 	public function getAction($id)
@@ -85,7 +100,7 @@ class D3CollectionController extends FOSRestController implements ClassResourceI
 	public function postAction()
 	{
 		$request	= $this->getRequest();
-		$types = $request->getAcceptableContentTypes();
+		//$types		= $request->getAcceptableContentTypes();
 
 		$collection	= new D3Collection();
 		$form		= $this->createForm(new D3CollectionType(), $collection);
@@ -108,9 +123,7 @@ class D3CollectionController extends FOSRestController implements ClassResourceI
 	/**
 	 *
 	 * updates a D3Collection
-	 *
 	 * @param integer $id D3Collection database identifier
-	 *
 	 * @Rest\View(statusCode="200")
 	 */
 	public function putAction( $id )
@@ -136,7 +149,6 @@ class D3CollectionController extends FOSRestController implements ClassResourceI
 	/**
 	 *
 	 * @param integer $id
-	 *
 	 * @Rest\View(statusCode="204")
 	 */
 	public function deleteAction( $id )

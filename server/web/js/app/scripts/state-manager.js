@@ -62,7 +62,7 @@ function(_, $, State, NaiveComponent)
 	 * @return Array
 	 */
 	StateManager.prototype.findComponentsByState =
-		function(componentNames, stateName, returnAuraObjects)
+		function(componentCUIDs, stateName, returnAuraObjects)
 	{
 		var components = [];
 
@@ -72,7 +72,7 @@ function(_, $, State, NaiveComponent)
 
 			if( state )
 			{
-				components = state.getComponentsByNames(componentNames, returnAuraObjects);
+				components = state.getComponentsByCUIDs(componentCUIDs, returnAuraObjects);
 			}
 		}
 
@@ -119,15 +119,15 @@ function(_, $, State, NaiveComponent)
 	/**
 	 *
 	 */
-	StateManager.prototype.createElements = function(stateName, componentNames)
+	StateManager.prototype.createElements = function(stateName, componentCUIDs)
 	{
-		if( stateName && componentNames && componentNames.length > 0 )
+		if( stateName && componentCUIDs && componentCUIDs.length > 0 )
 		{
 			if( this.states.hasOwnProperty(stateName) )
 			{
 				var self		= this;
 				var state		= this.states[stateName];
-				var components	= state.getComponentsByNames(componentNames, false);
+				var components	= state.getComponentsByCUIDs(componentCUIDs, false);
 
 				components = _.sortBy(components, "getIndex");
 
@@ -170,7 +170,7 @@ function(_, $, State, NaiveComponent)
 			throw new Error("some of the paramaters you specified are not valid");
 		}
 
-		if( index === 0 )
+		if( index === 0 || $(parent).children().length === 0 )
 		{
 			$(parent).prepend(element);
 			return;

@@ -46,47 +46,6 @@ define(['backbone'], function(Backbone)
 			}
 
 			return url;
-		},
-
-		attachDataSource: function(dataSourceId, onSuccess, onError)
-		{
-			var self = this;
-			this._attaching = true;
-			this._dataSourceId = dataSourceId;
-
-			this.save(null, {
-				patch: true,
-				success: function(model, response)
-				{
-					onSuccess(model, response);
-					self._attaching = false;
-					self._dataSourceId = false;
-				},
-				error: function(model, response)
-				{
-					onError(model, response);
-					self._attaching = false;
-					self._dataSourceId = false;
-				}
-			});
-		},
-
-		save: function(key, value, options)
-		{
-			options = options || {};
-			options.success	= this.saveSuccess;
-			options.error	= this.saveError;
-			return Backbone.Model.prototype.save.call(this, key, value, options);
-		},
-
-		saveSuccess: function(model, response)
-		{
-			alert('save success');
-		},
-
-		saveError: function(model, response)
-		{
-			alert('save error');
 		}
 
 	});

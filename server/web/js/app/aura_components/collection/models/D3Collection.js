@@ -8,17 +8,8 @@ define(['backbone'], function(Backbone)
 		{
 			name: '',
 			description: "",
-			collection_type_id: 0
-		},
-
-		parse: function(response)
-		{
-			if( response.hasOwnProperty("visualizations") )
-			{
-				response.visualizationCount = response.visualizations.length;
-			}
-
-			return response;
+			collection_type_id: 0,
+			visualizationCount: 0
 		}
 
 	});

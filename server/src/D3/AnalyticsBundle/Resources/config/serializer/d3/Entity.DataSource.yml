@@ -7,6 +7,8 @@ D3\AnalyticsBundle\Entity\DataSource:
         expose : true
       fileName :
         expose : true
+      fileExtension:
+        expose: true
       dataStores:
         expose: false
 

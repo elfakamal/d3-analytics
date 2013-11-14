@@ -34,23 +34,31 @@ define(['backbone'], function(Backbone)
 		{
 			var url = 'collections/' + this._collectionId + '/visualizations';
 
-			if( this.get('collectionId') === null || this.get('collectionId') === 0 )
+			if( typeof this._collectionId === 'undefined' ||
+				this._collectionId === 0 ||
+				this._attaching == true )
 			{
 				//grab the library id
+				url = 'collections/' + this._libraryId + '/visualizations';
 			}
 
-			if( this._attaching == true )
+			if( typeof this.get('id') !== 'undefined' )
 			{
-				if( this.get('dataSourceId') !== null && this.get('dataSourceId') !== 0 )
+				url += '/' + this.get('id');
+
+				if( this._attaching == true )
 				{
-					url += "/" + this.get('id') + "/datasources/" + this._dataSourceId + "/attach";
+					if( this.get('dataSourceId') !== null && this.get('dataSourceId') !== 0 )
+					{
+						url += "/datasources/" + this._dataSourceId + "/attach";
+					}
 				}
 			}
 
 			return url;
 		},
 
-		attachDataSource: function(dataSourceId, onSuccess, onError)
+		attachDataSource: function(dataSourceId, onSuccess, onError, context)
 		{
 			var self = this;
 			this._attaching = true;
@@ -60,13 +68,13 @@ define(['backbone'], function(Backbone)
 				patch: true,
 				success: function(model, response)
 				{
-					onSuccess(model, response);
+					onSuccess.apply(context, [model, response]);
 					self._attaching = false;
 					self._dataSourceId = false;
 				},
 				error: function(model, response)
 				{
-					onError(model, response);
+					onError.apply(context, [model, response]);
 					self._attaching = false;
 					self._dataSourceId = false;
 				}

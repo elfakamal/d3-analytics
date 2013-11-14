@@ -1,0 +1,102 @@
+/*
+    Document   : visualization
+    Created on : Nov 9, 2013, 1:49:07 PM
+    Author     : kamal
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+
+.gridster ul li .side
+{
+	position: absolute;
+	background-color: rgba(255, 255, 255, 0.5);
+}
+
+.gridster ul li .leftSide,
+.gridster ul li .rightSide
+{
+	width: 40px;
+	height: 100%;
+}
+
+.gridster ul li .topSide,
+.gridster ul li .bottomSide
+{
+	width: 100%;
+	height: 40px;
+
+}
+
+.gridster ul li .topSide
+{
+	z-index: 1;
+	top: 0px;
+	left: 0px;
+}
+
+.gridster ul li .bottomSide
+{
+	bottom: 0px;
+	left: 0px;
+}
+
+.gridster ul li .leftSide
+{
+	left: 0px;
+	top: 0px;
+}
+
+.gridster ul li .rightSide
+{
+	top: 0px;
+	right: 0px;
+}
+
+#div-viz-content
+{
+/*	padding-top: 40px;
+	padding-bottom: 40px;
+
+	padding-left: 10px;
+	padding-right: 10px;*/
+
+	width: 100%;
+	height: 100%;
+
+	position: absolute;
+	bottom: 0px;
+	/*background-color: coral;*/
+}
+
+#span-visualization-name
+{
+	font-size: 14px;
+	font-weight: 600;
+	line-height: 40px;
+	padding-left: 10px;
+	height: inherit;
+	overflow: hidden;
+	cursor: all-scroll;
+}
+
+#span-visualization-description
+{
+	font-size: 10px;
+}
+
+#div-menu-grabber
+{
+	width: 40px;
+	height: 40px;
+	line-height: 40px;
+	/*background-color: aquamarine;*/
+	text-align: center;
+	position: absolute;
+	right: 0px;
+	top: 0px;
+	cursor: pointer;
+}
+
+
+

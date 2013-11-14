@@ -4,7 +4,7 @@ define(['underscore', 'jquery'], function(_, $)
 	/**
 	 *
 	 */
-	function NaiveComponent(name, options)
+	function NaiveComponent(name, options, uniqueKeys)
 	{
 		var self = this;
 
@@ -14,6 +14,7 @@ define(['underscore', 'jquery'], function(_, $)
 		}
 
 		self.name = name;
+		self.CUID = name;
 
 		this.options = _.defaults(options || {},
 		{
@@ -24,6 +25,25 @@ define(['underscore', 'jquery'], function(_, $)
 			index		: 0,
 			component	: self.name
 		});
+
+		if( uniqueKeys && uniqueKeys.length > 0 )
+		{
+			var values = [];
+
+			_.each(uniqueKeys, function(key)
+			{
+				if( this.hasOwnProperty(key) )
+				{
+					values.push(this[key]);
+				}
+				else( this.options.hasOwnProperty(key) )
+				{
+					values.push(this.options[key]);
+				}
+			}, self);
+
+			self.CUID += "." + values.join(".");
+		}
 
 		this.options.className += this.options.className === "" ? "" : " ";
 		this.options.className += "component";
@@ -66,6 +86,8 @@ define(['underscore', 'jquery'], function(_, $)
 	{
 		return this.options.index;
 	};
+
+
 
 	/**
 	 *

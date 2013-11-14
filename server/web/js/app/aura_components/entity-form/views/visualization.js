@@ -1,11 +1,11 @@
 define([
-	"../models/visualization",
+	"ModelVisualization",
 	"text!../templates/base-visualization.html",
 	"text!../templates/partial-select-d3collections.html"
 //	,
 //	"text!../templates/partial-select-datasources.html"
 ],
-function(VisualizationModel, baseTemplate, partialSelectD3Collections/*, partialSelectDatasources*/)
+function(ModelVisualization, baseTemplate, partialSelectD3Collections/*, partialSelectDatasources*/)
 {
 	var template							= _.template(baseTemplate);
 	var parsedPartialSelectD3Collections	= _.template(partialSelectD3Collections);
@@ -45,12 +45,14 @@ function(VisualizationModel, baseTemplate, partialSelectD3Collections/*, partial
 
 		onGetLibraryCollectionResponse: function(libraryCollection)
 		{
-			this._library = libraryCollection;
+			this.options.sandbox.off("collections.library.get.response", this.onGetLibraryCollectionResponse);
+			this._libraryCollection = libraryCollection;
 			console.log('got library collection ' + libraryCollection.get('id'));
 		},
 
 		onGetRegularCollectionResponse: function(regularCollections)
 		{
+			this.options.sandbox.off("collections.regular.get.response", this.onGetRegularCollectionResponse);
 			this._regularCollections = regularCollections;
 			console.log('got regularCollections');
 			this.$("#li-collection").html(parsedPartialSelectD3Collections({d3collections: regularCollections}));
@@ -58,6 +60,7 @@ function(VisualizationModel, baseTemplate, partialSelectD3Collections/*, partial
 
 		onGetSystemCollectionResponse: function(systemCollections)
 		{
+			this.options.sandbox.off("collections.system.get.response", this.onGetSystemCollectionResponse);
 			this._systemCollections = systemCollections;
 			console.log('got systemCollections');
 		},
@@ -88,11 +91,11 @@ function(VisualizationModel, baseTemplate, partialSelectD3Collections/*, partial
 			{
 				if( this._libraryCollection == null )
 				{
-					throw new Error("");
+					throw new Error("library needed");
 				}
 
-				this.model = new VisualizationModel();
-				this.model.setLibraryId(this._libraryId);
+				this.model = new ModelVisualization();
+				this.model.setLibraryId(this._libraryCollection.get("id"));
 				this.model.setCollectionId(this.$("#select-collection").val());
 				this.model.set({
 					name:					this.$("#input-visualization-name").val(),
@@ -122,21 +125,8 @@ function(VisualizationModel, baseTemplate, partialSelectD3Collections/*, partial
 			//get the hell out of the DOM, and stop the component.
 			this.options.sandbox.emit("collections.refresh");
 
-//			var dataSourceId = this.$("#select-datasource").val();
-//			this.model.attachDataSource(dataSourceId, this.onAttachDataSourceSuccess, this.onAttachDataSourceError);
-
 			this.options.sandbox.switchToState("home");
 		},
-
-//		onAttachDataSourceSuccess: function()
-//		{
-//
-//		},
-//
-//		onAttachDataSourceError: function()
-//		{
-//			//display the error message.
-//		},
 
 		onModelSaveError: function(model, response)
 		{

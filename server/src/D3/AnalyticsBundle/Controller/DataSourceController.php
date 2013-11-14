@@ -32,7 +32,7 @@ class DataSourceController extends FOSRestController implements ClassResourceInt
         $em			= $this->getDoctrine()->getManager();
         $entities	= $em->getRepository('D3AnalyticsBundle:DataSource')->findAll();
 
-        return array('entities' => $entities);
+        return $entities;
     }
 
 	/**

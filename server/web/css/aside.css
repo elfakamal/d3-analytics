@@ -13,6 +13,7 @@ aside#aside-side-pane
 	/*min-width: 200px;*/
 	background-color: #FAFAFA;
 	float: left;
+	display: inline-block;
 }
 
 

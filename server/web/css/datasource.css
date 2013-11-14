@@ -1,0 +1,63 @@
+/*
+    Document   : datasource
+    Created on : Oct 27, 2013, 2:55:11 AM
+    Author     : kamal
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+#div-select-datasource-component
+{
+	width: 300px;
+	height: 100px;
+}
+
+#select-datasource
+{
+	border: 0px;
+
+	height: 40px;
+	width: 100%;
+
+	font-family: "Titillium Web", sans-serif;
+	font-weight: 400;
+	font-size: 18px;
+	color: darkgray;
+
+	background-color: #fdfdfd;
+
+	padding: 5px;
+}
+
+#div-select-datasource-buttons
+{
+	height: 40px;
+	width: 100%;
+
+	position: absolute;
+	bottom: 0px;
+	/*background-color: aquamarine;*/
+}
+
+#button-datasource-ok
+{
+	float: right;
+}
+
+#button-datasource-ok,
+#button-datasource-cancel
+{
+	border: 0px;
+
+	height: 40px;
+	width: 49%;
+
+	font-family: "Titillium Web", sans-serif;
+	font-weight: 600;
+	font-size: 18px;
+	line-height: 20px;
+
+	color: white;
+	cursor: pointer;
+	padding: 0px;
+}

@@ -16,6 +16,9 @@ D3\AnalyticsBundle\Entity\DataSource:
     fileName:
       type: string
       length: 255
+    fileExtension:
+      type: string
+      length: 32
 
   manyToMany:
 

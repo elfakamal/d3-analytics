@@ -1,0 +1,29 @@
+/*
+    Document   : visualization.d3
+    Created on : Nov 13, 2013, 2:58:04 AM
+    Author     : kamal
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+
+
+
+.skill-1 .background
+{
+	fill: rgba(217, 77, 77, .25);
+}
+.skill-1 .foreground
+{
+	fill: rgb(217, 77, 77);
+}
+
+
+.skill-graphic /*text*/
+{
+	font-family: "Titillium Web", sans-serif;
+	font-size: 20px;
+	font-weight: 700;
+}
+
+
