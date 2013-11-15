@@ -15,6 +15,8 @@ function (ModelVisualization, rawBaseTemplate, DropDown, ViewBarChartViz, ViewPi
 
 		type: 'Backbone',
 
+		viz: null,
+
 		events:
 		{
 			'click #button-attach-datasource': function()
@@ -24,7 +26,16 @@ function (ModelVisualization, rawBaseTemplate, DropDown, ViewBarChartViz, ViewPi
 			'click #button-edit': function()
 			{
 				this.component.onEditDatasourceClick();
+			},
+			'click #button-update-viz-size': function()
+			{
+				this.component.onUpdateClick();
 			}
+		},
+
+		onUpdateClick: function()
+		{
+			this.viz.lol();
 		},
 
 		resizeMe: function(x, y)
@@ -105,7 +116,9 @@ function (ModelVisualization, rawBaseTemplate, DropDown, ViewBarChartViz, ViewPi
 		{
 			if( this.model.get('data_sources').length > 0 )
 			{
-				var d3viz = new ViewPieChartViz({
+				this.resizeMe(4, 3);
+
+				this.viz = new ViewBarChartViz({
 					el		: this.$el,
 					sandbox	: this.sandbox,
 					model	: this.model
