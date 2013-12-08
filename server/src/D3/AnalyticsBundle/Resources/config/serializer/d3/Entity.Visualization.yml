@@ -13,6 +13,8 @@ D3\AnalyticsBundle\Entity\Visualization:
         expose : true
       isActive :
         expose : true
+      chartData:
+        expose: true
       creationDate:
         expose: true
       updateDate:

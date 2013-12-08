@@ -6,10 +6,8 @@ use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Util\Codes;
-
 use D3\AnalyticsBundle\Entity\DataStore;
 use D3\AnalyticsBundle\Form\DataStoreType;
-
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
@@ -20,7 +18,6 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 class DataStoreController extends FOSRestController implements ClassResourceInterface
 {
 
-
 	/**
 	 *
 	 * @return Array
@@ -30,8 +27,8 @@ class DataStoreController extends FOSRestController implements ClassResourceInte
 	 */
 	public function cgetAction()
 	{
-		$em			= $this->getDoctrine()->getManager();
-        $dataStores	= $em->getRepository('D3AnalyticsBundle:DataStore')->findAll();
+		$em = $this->getDoctrine()->getManager();
+		$dataStores = $em->getRepository('D3AnalyticsBundle:DataStore')->findAll();
 
 		return $dataStores;
 	}
@@ -43,8 +40,8 @@ class DataStoreController extends FOSRestController implements ClassResourceInte
 	 */
 	protected function getDataStore( $id )
 	{
-		$em				= $this->getDoctrine()->getManager();
-        $dataStore	= $em->getRepository('D3AnalyticsBundle:DataStore')->findOneById($id);
+		$em = $this->getDoctrine()->getManager();
+		$dataStore = $em->getRepository('D3AnalyticsBundle:DataStore')->findOneById($id);
 
 		if( !$dataStore || empty($dataStore) )
 		{
@@ -54,14 +51,13 @@ class DataStoreController extends FOSRestController implements ClassResourceInte
 		return $dataStore;
 	}
 
-
 	/**
 	 *
 	 * @return Array
 	 *
 	 * @Rest\View(statusCode="200")
 	 */
-	public function getAction($id)
+	public function getAction( $id )
 	{
 		if( empty($id) || !is_numeric($id) )
 		{
@@ -79,13 +75,13 @@ class DataStoreController extends FOSRestController implements ClassResourceInte
 	 */
 	public function postAction()
 	{
-		$request	= $this->getRequest();
-		$dataStore	= new DataStore();
-		$form		= $this->createForm(new DataStoreType(), $dataStore);
+		$request = $this->getRequest();
+		$dataStore = new DataStore();
+		$form = $this->createForm(new DataStoreType(), $dataStore);
 
 		$form->bind($request);
 
-		if($form->isValid())
+		if( $form->isValid() )
 		{
 			$em = $this->getDoctrine()->getManager();
 			$em->persist($dataStore);
@@ -97,7 +93,6 @@ class DataStoreController extends FOSRestController implements ClassResourceInte
 		return array('form' => $form);
 	}
 
-
 	/**
 	 *
 	 * updates a DataStore
@@ -108,13 +103,13 @@ class DataStoreController extends FOSRestController implements ClassResourceInte
 	 */
 	public function putAction( $id )
 	{
-		$request	= $this->getRequest();
-		$dataStore	= $this->getDataStore($id);
-		$form		= $this->createForm(new DataStoreType(), $dataStore);
+		$request = $this->getRequest();
+		$dataStore = $this->getDataStore($id);
+		$form = $this->createForm(new DataStoreType(), $dataStore);
 
 		$form->bind($request);
 
-		if($form->isValid())
+		if( $form->isValid() )
 		{
 			$em = $this->getDoctrine()->getManager();
 			$em->persist($dataStore);
@@ -149,6 +144,5 @@ class DataStoreController extends FOSRestController implements ClassResourceInte
 
 		return $this->view(null, Codes::HTTP_NO_CONTENT);
 	}
-
 
 }

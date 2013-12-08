@@ -5,7 +5,7 @@ function (tpl, D3Collections, D3CollectionView)
 
 	return {
 
-	    type: 'Backbone',
+		type: 'Backbone',
 
 		/**
 		 *

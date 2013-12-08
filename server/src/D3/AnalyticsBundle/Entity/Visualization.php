@@ -4,7 +4,6 @@ namespace D3\AnalyticsBundle\Entity;
 
 use D3\AnalyticsBundle\Entity\D3Collection;
 use D3\AnalyticsBundle\Entity\DataSource;
-
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
@@ -12,8 +11,9 @@ use Doctrine\Common\Collections\ArrayCollection;
  */
 class Visualization
 {
-	const VIZ_VERTICAL_BARS			= 1;
-	const VIZ_HORIZONTAL_BARS		= 2;
+
+	const VIZ_VERTICAL_BARS = 1;
+	const VIZ_HORIZONTAL_BARS = 2;
 
 	/**
 	 * @var integer
@@ -56,6 +56,13 @@ class Visualization
 	 * @var \DateTime
 	 */
 	protected $updateDate;
+
+	/**
+	 * Serialized chart properties.
+	 * 
+	 * @var string
+	 */
+	protected $chartData;
 
 
 	/**
@@ -246,7 +253,7 @@ class Visualization
 	 * @param $collections Array
 	 * @return Visualization
 	 */
-	public function setCollections($collectons)
+	public function setCollections( $collectons )
 	{
 		$this->collections = $collectons;
 
@@ -296,50 +303,73 @@ class Visualization
 		return $this->dataSources;
 	}
 
+	/**
+	 * Set isStarred
+	 *
+	 * @param boolean $isStarred
+	 * @return Visualization
+	 */
+	public function setIsStarred( $isStarred )
+	{
+		$this->isStarred = $isStarred;
+
+		return $this;
+	}
+
+	/**
+	 * Get isStarred
+	 *
+	 * @return boolean
+	 */
+	public function getIsStarred()
+	{
+		return $this->isStarred;
+	}
+
+	/**
+	 * Set isActive
+	 *
+	 * @param boolean $isActive
+	 * @return Visualization
+	 */
+	public function setIsActive( $isActive )
+	{
+		$this->isActive = $isActive;
+
+		return $this;
+	}
+
+	/**
+	 * Get isActive
+	 *
+	 * @return boolean
+	 */
+	public function getIsActive()
+	{
+		return $this->isActive;
+	}
+
 
     /**
-     * Set isStarred
+     * Set chartData
      *
-     * @param boolean $isStarred
+     * @param string $chartData
      * @return Visualization
      */
-    public function setIsStarred($isStarred)
+    public function setChartData($chartData)
     {
-        $this->isStarred = $isStarred;
-
+        $this->chartData = $chartData;
+    
         return $this;
     }
 
     /**
-     * Get isStarred
+     * Get chartData
      *
-     * @return boolean
+     * @return string 
      */
-    public function getIsStarred()
+    public function getChartData()
     {
-        return $this->isStarred;
-    }
-
-    /**
-     * Set isActive
-     *
-     * @param boolean $isActive
-     * @return Visualization
-     */
-    public function setIsActive($isActive)
-    {
-        $this->isActive = $isActive;
-
-        return $this;
-    }
-
-    /**
-     * Get isActive
-     *
-     * @return boolean
-     */
-    public function getIsActive()
-    {
-        return $this->isActive;
+        return $this->chartData;
     }
 }

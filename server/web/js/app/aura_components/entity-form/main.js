@@ -8,49 +8,61 @@ function(D3CollectionView, VisualizationView, DatastoreView, DatasourceView)
 	 */
 	return {
 
-	    type: 'Backbone',
+		type: 'Backbone',
 
 		initialize: function ()
 		{
 			this.initView();
 		},
 
+		hasOption: function(option)
+		{
+			if( typeof option === "undefined" )
+			{
+				return false;
+			}
+
+			return _.has(this.options, option);
+		},
+
 		initView: function()
 		{
-			if( this.options.hasOwnProperty("entity") )
+			var titleEnabled		= this.hasOption("titleEnabled") ? this.options.titleEnabled : true,
+					buttonsEnabled	= this.hasOption("buttonsEnabled") ? this.options.buttonsEnabled : true,
+					model						= this.hasOption("model") ? this.options.model : null,
+					contained				= this.hasOption("contained") ? this.options.contained : false;
+
+			var commonOptions = {
+				el							: this.$el,
+				model						: model,
+				sandbox					: this.sandbox,
+				contained				: contained,
+				titleEnabled		: titleEnabled,
+				buttonsEnabled	: buttonsEnabled
+			};
+
+			if( this.hasOption("entity") )
 			{
 				switch (true)
 				{
 					case this.options.entity === "collection" :
 					{
-						this.formView = new D3CollectionView({
-							el: this.$el,
-							sandbox: this.sandbox
-						});
+						this.formView = new D3CollectionView(commonOptions);
 						break;
 					}
 					case this.options.entity === "visualization" :
 					{
-						this.formView = new VisualizationView({
-							el: this.$el,
-							sandbox: this.sandbox
-						});
+						this.formView = new VisualizationView(commonOptions);
 						break;
 					}
 					case this.options.entity === "datastore" :
 					{
-						this.formView = new DatastoreView({
-							el: this.$el,
-							sandbox: this.sandbox
-						});
+						this.formView = new DatastoreView(commonOptions);
 						break;
 					}
 					case this.options.entity === "datasource" :
 					{
-						this.formView = new DatasourceView({
-							el: this.$el,
-							sandbox: this.sandbox
-						});
+						this.formView = new DatasourceView(commonOptions);
 						break;
 					}
 				}

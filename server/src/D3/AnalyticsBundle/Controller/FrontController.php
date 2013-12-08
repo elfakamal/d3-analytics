@@ -9,7 +9,6 @@ namespace D3\AnalyticsBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
-
 use D3\AnalyticsBundle\Entity\Visualization;
 use D3\AnalyticsBundle\Form\VisualizationType;
 
@@ -31,7 +30,7 @@ class FrontController extends Controller
 		return $this->render("D3AnalyticsBundle:Front:about.html.twig");
 	}
 
-	public function contactAction( Request $request)
+	public function contactAction( Request $request )
 	{
 		$entity = new Visualization();
 		$form = $this->createForm(new VisualizationType(), $entity);
@@ -40,7 +39,7 @@ class FrontController extends Controller
 		{
 			$form->bind($request);
 
-			if ($form->isValid())
+			if( $form->isValid() )
 			{
 				$em = $this->getDoctrine()->getManager();
 //				$em->persist($entity);
@@ -50,6 +49,7 @@ class FrontController extends Controller
 
 		return $this->render("D3AnalyticsBundle:Front:contact.html.twig", array('form' => $form->createView()));
 	}
+
 }
 
 ?>

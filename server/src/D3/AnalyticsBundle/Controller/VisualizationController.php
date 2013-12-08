@@ -7,15 +7,11 @@ use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Util\Codes;
 use FOS\RestBundle\Controller\Annotations\Route;
-
 use D3\AnalyticsBundle\Entity\Visualization;
 use D3\AnalyticsBundle\Form\VisualizationType;
-
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
-
 use JMS\Serializer\Exception\UnsupportedFormatException;
-
 use Doctrine\ORM\EntityManager;
 
 /**
@@ -32,9 +28,9 @@ class VisualizationController extends FOSRestController implements ClassResource
 	 * @param $entity
 	 * @param \Doctrine\ORM\EntityManager $entityManager
 	 */
-	private function saveEntity($entity, EntityManager $entityManager=null)
+	private function saveEntity( $entity, EntityManager $entityManager = null )
 	{
-		if(null === $entityManager)
+		if( null === $entityManager )
 		{
 			$entityManager = $this->getDoctrine()->getManager();
 		}
@@ -51,12 +47,12 @@ class VisualizationController extends FOSRestController implements ClassResource
 	 *
 	 * @Rest\View(statusCode="200")
 	 */
-	public function cgetAction($collectionId)
+	public function cgetAction( $collectionId )
 	{
 		$em = $this->getDoctrine()->getManager();
 
 		$visualizations = $em->getRepository('D3AnalyticsBundle:Visualization')
-				->getVisualizations($collectionId);
+						->getVisualizations($collectionId);
 
 		return $visualizations;
 	}
@@ -72,7 +68,7 @@ class VisualizationController extends FOSRestController implements ClassResource
 	{
 		$em = $this->getDoctrine()->getManager();
 		$visualization = $em->getRepository('D3AnalyticsBundle:Visualization')
-				->getVisualization($collectionId, $visualizationId);
+						->getVisualization($collectionId, $visualizationId);
 
 		if( !$visualization || empty($visualization) )
 		{
@@ -127,9 +123,9 @@ class VisualizationController extends FOSRestController implements ClassResource
 			if( $library->getId() != $collectionId )
 			{
 				$collection = $em->getRepository('D3AnalyticsBundle:D3Collection')
-						->findOneById($collectionId);
+								->findOneById($collectionId);
 
-				//TEST: THE COLLECTION AVAILABILITY.
+				//TODO:TEST: THE COLLECTION AVAILABILITY.
 
 				$visualization->addCollection($collection);
 			}
@@ -153,14 +149,28 @@ class VisualizationController extends FOSRestController implements ClassResource
 	 */
 	public function putAction( $libraryId, $visualizationId )
 	{
-		$request		= $this->getRequest();
-		$visualization	= $this->getVisualization($libraryId, $visualizationId);
-		$form			= $this->createForm(new VisualizationType(), $visualization);
+		//getting rid of the "this form should not contain extra fields" error.
+		$unwantedParams = array("id", "creation_date", "update_date", "data_sources");
+		$request = $this->getRequest();
+
+		$allRequestParams = $request->request->all();
+
+		foreach($allRequestParams as $key => $value)
+		{
+			if( in_array($key, $unwantedParams) )
+			{
+				$request->request->remove($key);
+			}
+		}
+
+		$visualization = $this->getVisualization($libraryId, $visualizationId);
+		$form = $this->createForm(new VisualizationType(), $visualization);
 
 		$form->bind($request);
 
 		if( $form->isValid() )
 		{
+			$visualization->setAsUpdated();
 			$this->saveEntity($visualization);
 			return $visualization;
 		}
@@ -178,7 +188,7 @@ class VisualizationController extends FOSRestController implements ClassResource
 	 * @Route(requirements={"libraryId" = "\d+", "visualizationId" = "\d+", "dataSourceId" = "\d+"})
 	 * @Rest\View(statusCode="200")
 	 */
-	public function attachDatasourceAction($libraryId, $visualizationId, $dataSourceId)
+	public function attachDatasourceAction( $libraryId, $visualizationId, $dataSourceId )
 	{
 //		return array();
 
@@ -188,7 +198,7 @@ class VisualizationController extends FOSRestController implements ClassResource
 
 			//TEST//DONE: IF IS THERE ALREADY SUCH AN ASSOCIATION.
 			$hasDataSource = $em->getRepository("D3AnalyticsBundle:Visualization")
-					->hasDataSource($visualizationId, $dataSourceId);
+							->hasDataSource($visualizationId, $dataSourceId);
 
 			if( $hasDataSource === true )
 			{
@@ -206,7 +216,7 @@ class VisualizationController extends FOSRestController implements ClassResource
 			$visualization = $this->getVisualization($libraryId, $visualizationId);
 
 			$dataSource = $em->getRepository("D3AnalyticsBundle:DataSource")
-					->findOneById($dataSourceId);
+							->findOneById($dataSourceId);
 
 			if( !$dataSource || empty($dataSource) === true )
 			{

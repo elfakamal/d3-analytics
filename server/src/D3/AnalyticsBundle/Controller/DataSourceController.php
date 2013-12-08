@@ -3,14 +3,11 @@
 namespace D3\AnalyticsBundle\Controller;
 
 use FOS\RestBundle\Controller\FOSRestController;
-
 use D3\AnalyticsBundle\Entity\DataSource;
 use D3\AnalyticsBundle\Form\DataSourceType;
-
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Util\Codes;
-
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
@@ -21,19 +18,19 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 class DataSourceController extends FOSRestController implements ClassResourceInterface
 {
 
-    /**
-     * Lists all DataSource entities.
+	/**
+	 * Lists all DataSource entities.
 	 *
-     * @param integer $dataStoreId
+	 * @param integer $dataStoreId
 	 * @Rest\View()
-     */
-    public function cgetAction($dataStoreId)
-    {
-        $em			= $this->getDoctrine()->getManager();
-        $entities	= $em->getRepository('D3AnalyticsBundle:DataSource')->findAll();
+	 */
+	public function cgetAction( $dataStoreId )
+	{
+		$em = $this->getDoctrine()->getManager();
+		$entities = $em->getRepository('D3AnalyticsBundle:DataSource')->findAll();
 
-        return $entities;
-    }
+		return $entities;
+	}
 
 	/**
 	 *
@@ -41,8 +38,8 @@ class DataSourceController extends FOSRestController implements ClassResourceInt
 	 */
 	protected function getDataSource( $dataStoreId, $dataSourceId )
 	{
-		$em			= $this->getDoctrine()->getManager();
-        $dataSource	= $em->getRepository('D3AnalyticsBundle:DataSource')->findOneById($dataStoreId);
+		$em = $this->getDoctrine()->getManager();
+		$dataSource = $em->getRepository('D3AnalyticsBundle:DataSource')->findOneById($dataStoreId);
 
 		if( !$dataSource || empty($dataSource) )
 		{
@@ -59,7 +56,7 @@ class DataSourceController extends FOSRestController implements ClassResourceInt
 	 * @return Array
 	 * @Rest\View(statusCode="200")
 	 */
-	public function getAction($dataStoreId, $dataSourceId)
+	public function getAction( $dataStoreId, $dataSourceId )
 	{
 		if( empty($dataSourceId) || !is_numeric($dataSourceId) )
 		{
@@ -79,12 +76,12 @@ class DataSourceController extends FOSRestController implements ClassResourceInt
 	 */
 	public function getFormAction()
 	{
-		$dataSource	= new DataSource();
-		$form		= $this->createForm(new DataSourceType(), $dataSource);
+		$dataSource = new DataSource();
+		$form = $this->createForm(new DataSourceType(), $dataSource);
 
-		$token		= $form->createView()->children['_token'];
-		$CSRF_name	= $token->vars['name'];
-		$CSRF_value	= $token->vars['value'];
+		$token = $form->createView()->children['_token'];
+		$CSRF_name = $token->vars['name'];
+		$CSRF_value = $token->vars['value'];
 
 		return array('token_name' => $CSRF_name, 'token_value' => $CSRF_value);
 	}
@@ -96,9 +93,9 @@ class DataSourceController extends FOSRestController implements ClassResourceInt
 	 *
 	 * @Rest\View(statusCode="201")
 	 */
-	public function postAction($dataStoreId)
+	public function postAction( $dataStoreId )
 	{
-		$request	= $this->getRequest();
+		$request = $this->getRequest();
 
 		/**
 		 * TODO: EXPLAIN MORE
@@ -107,12 +104,12 @@ class DataSourceController extends FOSRestController implements ClassResourceInt
 		$request->request->remove("X-Requested-With");
 		$request->request->remove("X-HTTP-Accept");
 
-		$dataSource	= new DataSource();
-		$form		= $this->createForm(new DataSourceType(), $dataSource);
+		$dataSource = new DataSource();
+		$form = $this->createForm(new DataSourceType(), $dataSource);
 
 		$form->bind($request);
 
-		if($form->isValid())
+		if( $form->isValid() )
 		{
 			$em = $this->getDoctrine()->getManager();
 
@@ -129,7 +126,6 @@ class DataSourceController extends FOSRestController implements ClassResourceInt
 		return array('form' => $form);
 	}
 
-
 	/**
 	 * Generate unique file name.
 	 *
@@ -139,7 +135,6 @@ class DataSourceController extends FOSRestController implements ClassResourceInt
 	{
 		return md5(base64_encode(pack('N6', mt_rand(), mt_rand(), mt_rand(), mt_rand(), mt_rand(), uniqid())));
 	}
-
 
 	/**
 	 *
@@ -151,13 +146,13 @@ class DataSourceController extends FOSRestController implements ClassResourceInt
 	 */
 	public function putAction( $id )
 	{
-		$request	= $this->getRequest();
-		$dataSource	= $this->getDataSource($id);
-		$form		= $this->createForm(new DataSourceType(), $dataSource);
+		$request = $this->getRequest();
+		$dataSource = $this->getDataSource($id);
+		$form = $this->createForm(new DataSourceType(), $dataSource);
 
 		$form->bind($request);
 
-		if($form->isValid())
+		if( $form->isValid() )
 		{
 			$em = $this->getDoctrine()->getManager();
 			$em->persist($dataSource);
@@ -177,7 +172,7 @@ class DataSourceController extends FOSRestController implements ClassResourceInt
 	 */
 	public function deleteAction( $id )
 	{
-		$dataSource	= $this->getDataSource($id);
+		$dataSource = $this->getDataSource($id);
 
 		$em = $this->getDoctrine()->getManager();
 		$em->remove($dataSource);

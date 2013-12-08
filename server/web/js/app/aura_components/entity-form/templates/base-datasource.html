@@ -1,27 +1,25 @@
-<div id="div-forms-modal" class="overlay center-container">
-	<form id="form-add-entity" enctype="multipart/form-data" class="datasource absolute-center">
-		<ul id="ul-add-entity">
+<form id="form-add-entity" enctype="multipart/form-data" class="datasource absolute-center">
+	<ul id="ul-add-entity">
 
-			<% if( !_.isUndefined(isTitled) && isTitled === true ) { %>
-			<li id="li-title">
-				Add Data Source
-			</li>
-			<% } %>
+		<% if( !_.isUndefined(isTitled) && isTitled === true ) { %>
+		<li id="li-title">
+			Add Data Source
+		</li>
+		<% } %>
 
-			<li id="li-name">
-				<input type="text" id="name" name="name" required="required" maxlength="255" placeholder="Data source name"/>
-			</li>
-			<li id="li-datasource-upload">
-				<div id="div-file-upload-mask">
-					Choose a file or drop it here
-				</div>
-				<input type="file" id="file-datasource" name="file" />
-			</li>
+		<li id="li-name">
+			<input type="text" id="name" name="name" required="required" maxlength="255" placeholder="Data source name"/>
+		</li>
+		<li id="li-datasource-upload">
+			<div id="div-file-upload-mask">
+				Choose a file or drop it here
+			</div>
+			<input type="file" id="file-datasource" name="file" />
+		</li>
 
-			<li id="li-buttons">
-				<button id="button-cancel" class="d3-button bg-skyblue">Cancel</button>
-				<button id="button-save" class="d3-button bg-yellow-green">Save</button>
-			</li>
-		</ul>
-	</form>
-</div>
+		<li id="li-buttons">
+			<button id="button-cancel" class="d3-button bg-skyblue">Cancel</button>
+			<button id="button-save" class="d3-button bg-yellow-green">Save</button>
+		</li>
+	</ul>
+</form>

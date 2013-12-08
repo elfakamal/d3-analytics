@@ -1,0 +1,73 @@
+/*
+    Document   : chart-editor
+    Created on : Nov 18, 2013, 12:15:14 AM
+    Author     : kamal
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+#ul-chart-editor input#input-chart-width,
+#ul-chart-editor input#input-chart-height
+{
+	margin-bottom: 10px;
+}
+
+#li-chart-type label
+{
+	margin-left: 5px;
+}
+
+#select-chart-size
+{
+	border: 0px;
+
+	height: 40px;
+	width: 50%;
+
+	font-family: "Titillium Web", sans-serif;
+	font-weight: 400;
+	font-size: 18px;
+	color: #555;
+
+	background-color: #fdfdfd;
+
+	padding: 5px;
+}
+
+#div-chart-colors article
+{
+	float: left;
+	margin: 5px;
+	min-width: 150px;
+	max-width: 200px;
+}
+
+.span-field
+{
+	border: 2px solid transparent;
+	float: left;
+	margin-right: 5px;
+	margin-bottom: 0px;
+}
+
+.my-colorpicker-control
+{
+	width: 24px;
+	height: 24px;
+	border: 1px solid #ccc;
+	display: inline-block;
+	border-radius: 3px;
+
+	cursor: pointer;
+}
+
+#div-chart-colors
+{
+	padding-top: 5px;
+}
+
+
+
+
+
+

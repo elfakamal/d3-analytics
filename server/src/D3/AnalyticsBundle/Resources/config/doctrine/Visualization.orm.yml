@@ -22,6 +22,8 @@ D3\AnalyticsBundle\Entity\Visualization:
     isActive:
       type: boolean
       default: 1
+    chartData:
+      type: text
     creationDate:
       type: datetime
     updateDate:

@@ -1,18 +1,46 @@
-define(['backbone'], function(Backbone)
+define(['backbone', 'd3'], function(Backbone, d3)
 {
 	"use strict";
 
 	return Backbone.Model.extend(
 	{
+
+		/**
+		 * example:
+		 *
+		 *{
+		 *	id: 28
+		 *	name: "my data"
+		 *	file_name: "7b4b97e9913eb5f7c86c8a664c77a67d.d3a"
+		 *	file_extension: "tsv"
+		 *}
+		 *
+		 */
 		defaults:
 		{
 			name: ""
 		},
 
 		_libraryId: 0,
+
+		/**
+		 * TODO: implement a way to set this property.
+		 */
 		_dataStoreId: 3, //temporary
 
 		_attaching: false,
+
+		allowedFileTypes : [
+			"text",
+			"json",
+			"html",
+			"xml",
+			"csv",
+			"tsv"
+		],
+
+		datasourceContent: null,
+		datasourceColumns: null,
 
 		setLibraryId: function(libraryId)
 		{
@@ -46,8 +74,90 @@ define(['backbone'], function(Backbone)
 			}
 
 			return url;
-		}
+		},
 
+		isFileTypeAllowed : function(fileType)
+		{
+			if( typeof fileType === 'undefined' )
+			{
+				return false;
+			}
+
+			return this.allowedFileTypes.indexOf(fileType) >= 0;
+		},
+
+		load: function(callback, accessor, context)
+		{
+			if( !this.isFileTypeAllowed(this.get("file_extension")) )
+			{
+				throw new Error("D3 Analytics: File not supported");
+				return;
+			}
+
+			var path = "uploads/datasources/" + this.get("file_name");
+			var d3loader = d3[this.get("file_extension")];
+
+			var deferred = d3loader.apply(d3, [path]);
+
+			if(accessor)
+			{
+				if(context)
+				{
+					deferred.row(context[accessor]);
+				}
+				else
+				{
+					deferred.row(accessor);
+				}
+			}
+
+			deferred.get(this.onD3LoaderComplete(callback, context));
+		},
+
+		onD3LoaderComplete: function(callback, context)
+		{
+			var self = this;
+
+			return function(error, data)
+			{
+				if(error)
+				{
+					throw new Error(error);
+				}
+
+				self.datasourceContent = data;
+				self.updateColumns();
+
+				var cntxt = context ? context : null;
+
+				if(callback)
+				{
+					callback.call(cntxt, data);
+				}
+			};
+		},
+
+		updateColumns: function()
+		{
+			if( this.datasourceContent &&
+					_.isArray(this.datasourceContent) &&
+					this.datasourceContent.length > 0 )
+			{
+				var columns = _.keys(this.datasourceContent[0]);
+				var keys = _.range(columns.length);
+				this.datasourceColumns = _.object(keys, columns);
+			}
+		},
+
+		getContent: function()
+		{
+			return this.datasourceContent;
+		},
+
+		getColumns: function()
+		{
+			return this.datasourceColumns;
+		}
 	});
 
 });

@@ -22,7 +22,7 @@
 			{
 				var base = _.isFunction(model['url']) ? model['url']() : model['url'];
 
-				if (base == "")
+				if (base === "")
 				{
 					base = _.isFunction(model['urlRoot']) ? model['urlRoot']() : model['urlRoot'];
 				}
@@ -43,7 +43,6 @@
 			};
 
 			app.core.mvc = Backbone;
-//			app.core.Components["Backbone"] = Backbone.View;
 
 			//for later
 			app.components.addType("Backbone", function()
@@ -77,7 +76,7 @@
 						if( typeof value === 'string' )
 						{
 							extendedProperties.push(value);
-//							this.events[key] = this.component[value];
+							//this.events[key] = this.component[value];
 						}
 					}, this);
 				}
@@ -85,11 +84,11 @@
 				if (!View)
 				{
 					var wantedPropertiesThis = _.pick(this, extendedProperties);
-//					var nonNativeThis = _.omit(this, nativeProperties);
+					//var nonNativeThis = _.omit(this, nativeProperties);
 
 					//I am using _.defaults instead of _.extend in order
 					//to avoid modifying native properties & functions.
-//					var self = _.defaults(wantedPropertiesThis, nonNativeThis);
+					//var self = _.defaults(wantedPropertiesThis, nonNativeThis);
 
 					Views[options.ref] = View = Backbone.View.extend(wantedPropertiesThis);
 				}

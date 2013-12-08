@@ -15,16 +15,29 @@ function(VisualizationCollection, rawBaseTemplate, rawVisualizationTemplate, gri
 
 		type: "Backbone",
 		childrenVisualizations: [],
-		grid: null,
+		_collectionId: 0,
 		_library: null,
+		grid: null,
 
+		/**
+		 * initializes the most important objects in the component.
+		 *
+		 * @returns {undefined}
+		 */
 		initialize: function()
 		{
 			this.initCollection();
 			this.initListeners();
 			this.lazyInitLibrary();
+
+			this.registerCollectProvider("collection.id", this.getAwesomeData);
 		},
 
+		/**
+		 * initializes the collection and listens on it's events.
+		 *
+		 * @returns {undefined}
+		 */
 		initCollection: function()
 		{
 			this.collection = new VisualizationCollection();
@@ -34,6 +47,27 @@ function(VisualizationCollection, rawBaseTemplate, rawVisualizationTemplate, gri
 			this.collection.bind('reset', this.render, this);
 		},
 
+		getAwesomeData: function(data)
+		{
+			return this._collectionId;
+		},
+
+		/**
+		 *
+		 * @returns {undefined}
+		 */
+		initListeners: function()
+		{
+			this.sandbox.on('collections.selected', this.onCollectionSelected, this);
+			this.sandbox.on("visualizations.resize", this.onVisualizationResize, this);
+			this.sandbox.on("visualizations.model.get", this.onVisualizationModelRequest, this);
+		},
+
+		/**
+		 * a collect process that brings the library collection id when it is ready.
+		 *
+		 * @returns {undefined}
+		 */
 		lazyInitLibrary: function()
 		{
 			this.sandbox.on("collections.library.get.response", this.onGetLibraryCollectionResponse, this);
@@ -43,24 +77,36 @@ function(VisualizationCollection, rawBaseTemplate, rawVisualizationTemplate, gri
 			//this.sandbox.emit("collections.library.get");
 		},
 
+		/**
+		 *
+		 * @param {type} libraryCollection
+		 * @returns {undefined}
+		 */
 		onGetLibraryCollectionResponse: function(libraryCollection)
 		{
 			this.sandbox.off("collections.library.get.response", this.onGetLibraryCollectionResponse);
 			this._library = libraryCollection;
 		},
 
-		initListeners: function()
-		{
-			this.sandbox.on('collections.selected', this.onCollectionSelected, this);
-			this.sandbox.on("visualizations.resize", this.onVisualizationResize, this);
-			this.sandbox.on("visualizations.model.get", this.onVisualizationModelRequest, this);
-		},
-
+		/**
+		 *
+		 * @param {type} d3collectionModel
+		 * @returns {undefined}
+		 */
 		onCollectionSelected: function(d3collectionModel)
 		{
-			this.collection.setCollectionId(d3collectionModel.get('id'));
+			if(this._collectionId !== d3collectionModel.get('id'))
+			{
+				this.collection.setCollectionId(d3collectionModel.get('id'));
+				this._collectionId = d3collectionModel.get('id');
+			}
 		},
 
+		/**
+		 *
+		 * @param {type} resizeData
+		 * @returns {undefined}
+		 */
 		onVisualizationResize: function(resizeData)
 		{
 			if( typeof resizeData !== "undefined" )
@@ -69,20 +115,27 @@ function(VisualizationCollection, rawBaseTemplate, rawVisualizationTemplate, gri
 					resizeData.el,
 					resizeData.sizeX,
 					resizeData.sizeY,
-					resizeData.reposition);
+					resizeData.reposition,
+					resizeData.callback);
 			}
 		},
 
+		/**
+		 *
+		 * @param {type} visualizationId
+		 * @returns {undefined}
+		 */
 		onVisualizationModelRequest: function(visualizationId)
 		{
 			var result = this.collection.filter(function(modelVisualization)
 			{
-				return modelVisualization.get('id') == visualizationId;
+				return modelVisualization.get('id') === visualizationId;
 			});
 
 			if( result.length !== 1 )
 			{
 				this.sandbox.emit('visualizations.model.get.response', {error: "there is no such visualization"});
+				return;
 			}
 
 			var modelVisualization = result[0];
@@ -91,6 +144,10 @@ function(VisualizationCollection, rawBaseTemplate, rawVisualizationTemplate, gri
 			this.sandbox.emit('visualizations.model.get.response', {model: modelVisualization});
 		},
 
+		/**
+		 *
+		 * @returns {undefined}
+		 */
 		initGrid: function()
 		{
 			this.grid = $(".gridster > ul").gridster({
@@ -102,6 +159,10 @@ function(VisualizationCollection, rawBaseTemplate, rawVisualizationTemplate, gri
 			}).data("gridster");
 		},
 
+		/**
+		 *
+		 * @returns {undefined}
+		 */
 		stopChildren: function()
 		{
 			_.each(this.childrenVisualizations, function(selector)
@@ -113,26 +174,37 @@ function(VisualizationCollection, rawBaseTemplate, rawVisualizationTemplate, gri
 			}, this);
 		},
 
+		/**
+		 *
+		 * @param {type} modelVisualization
+		 * @returns {undefined}
+		 */
 		renderOne: function(modelVisualization)
 		{
 			var data = {
-				id				: modelVisualization.get('id'),
+				id							: modelVisualization.get('id'),
 				d3collectionId	: this.collection.getCollectionId()
 			};
 
+			var chartData = JSON.parse(modelVisualization.get("chart_data"));
+			var vizSizeIndex = chartData.size;
+			var vizSize = this.sandbox.visualizationSizes[vizSizeIndex];
+
 			var newVisualizationHTML = visualizationTemplate(_.extend(data, modelVisualization.toJSON()));
-			var gridsterWidget = this.grid.add_widget(newVisualizationHTML);
+			var gridsterWidget = this.grid.add_widget.apply(this.grid, [newVisualizationHTML].concat(vizSize));
 			var newVisualizationElementID = $(gridsterWidget).attr("id");
 			this.childrenVisualizations.push("#" + newVisualizationElementID);
 		},
 
+		/**
+		 *
+		 * @returns {undefined}
+		 */
 		render: function()
 		{
 			this.stopChildren();
 			this.html(baseTemplate());
 			this.initGrid();
-
-//			this.renderOne(this.collection.at(0));
 
 			this.collection.each(function(modelVisualization)
 			{

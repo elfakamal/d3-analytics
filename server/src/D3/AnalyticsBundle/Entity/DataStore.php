@@ -7,23 +7,24 @@ namespace D3\AnalyticsBundle\Entity;
  */
 class DataStore
 {
-	const SYSTEM_DATA_STORE		= 1;
-	const REGULAR_DATA_STORE	= 2;
 
-    /**
-     * @var integer
-     */
-    protected $id;
+	const SYSTEM_DATA_STORE = 1;
+	const REGULAR_DATA_STORE = 2;
 
-    /**
-     * @var string
-     */
-    protected $name;
+	/**
+	 * @var integer
+	 */
+	protected $id;
 
-    /**
-     * @var string
-     */
-    protected $description;
+	/**
+	 * @var string
+	 */
+	protected $name;
+
+	/**
+	 * @var string
+	 */
+	protected $description;
 
 	/**
 	 *
@@ -31,22 +32,21 @@ class DataStore
 	 */
 	protected $dataStoreTypeId;
 
-    /**
-     * @var \DateTime
-     */
-    protected $creationDate;
+	/**
+	 * @var \DateTime
+	 */
+	protected $creationDate;
 
-    /**
-     * @var \DateTime
-     */
-    protected $updateDate;
+	/**
+	 * @var \DateTime
+	 */
+	protected $updateDate;
 
 	/**
 	 *
 	 * @var ArrayCollection
 	 */
 	protected $dataSources;
-
 
 	public function __construct()
 	{
@@ -56,129 +56,162 @@ class DataStore
 		$this->setDataStoreTypeId(self::REGULAR_DATA_STORE);
 	}
 
+	/**
+	 * Get id
+	 *
+	 * @return integer
+	 */
+	public function getId()
+	{
+		return $this->id;
+	}
+
+	/**
+	 * Set name
+	 *
+	 * @param string $name
+	 * @return DataStore
+	 */
+	public function setName( $name )
+	{
+		$this->name = $name;
+
+		return $this;
+	}
+
+	/**
+	 * Get name
+	 *
+	 * @return string
+	 */
+	public function getName()
+	{
+		return $this->name;
+	}
+
+	/**
+	 * Set description
+	 *
+	 * @param string $description
+	 * @return DataStore
+	 */
+	public function setDescription( $description )
+	{
+		$this->description = $description;
+
+		return $this;
+	}
+
+	/**
+	 * Get description
+	 *
+	 * @return string
+	 */
+	public function getDescription()
+	{
+		return $this->description;
+	}
+
+	/**
+	 * Set creationDate
+	 *
+	 * @param \DateTime $creationDate
+	 * @return DataStore
+	 */
+	public function setCreationDate( $creationDate )
+	{
+		$this->creationDate = $creationDate;
+
+		return $this;
+	}
+
+	/**
+	 * Get creationDate
+	 *
+	 * @return \DateTime
+	 */
+	public function getCreationDate()
+	{
+		return $this->creationDate;
+	}
+
+	/**
+	 * Set updateDate
+	 *
+	 * @param \DateTime $updateDate
+	 * @return DataStore
+	 */
+	public function setUpdateDate( $updateDate )
+	{
+		$this->updateDate = $updateDate;
+
+		return $this;
+	}
+
+	/**
+	 * Get updateDate
+	 *
+	 * @return \DateTime
+	 */
+	public function getUpdateDate()
+	{
+		return $this->updateDate;
+	}
+
+	/**
+	 * Set dataStoreTypeId
+	 *
+	 * @param integer $dataStoreTypeId
+	 * @return DataStore
+	 */
+	public function setDataStoreTypeId( $dataStoreTypeId )
+	{
+		$this->dataStoreTypeId = $dataStoreTypeId;
+
+		return $this;
+	}
+
+	/**
+	 * Get dataStoreTypeId
+	 *
+	 * @return integer
+	 */
+	public function getDataStoreTypeId()
+	{
+		return $this->dataStoreTypeId;
+	}
+
 
     /**
-     * Get id
+     * Add dataSources
      *
-     * @return integer
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * Set name
-     *
-     * @param string $name
+     * @param \D3\AnalyticsBundle\Entity\DataSource $dataSources
      * @return DataStore
      */
-    public function setName($name)
+    public function addDataSource(\D3\AnalyticsBundle\Entity\DataSource $dataSources)
     {
-        $this->name = $name;
-
+        $this->dataSources[] = $dataSources;
+    
         return $this;
     }
 
     /**
-     * Get name
+     * Remove dataSources
      *
-     * @return string
+     * @param \D3\AnalyticsBundle\Entity\DataSource $dataSources
      */
-    public function getName()
+    public function removeDataSource(\D3\AnalyticsBundle\Entity\DataSource $dataSources)
     {
-        return $this->name;
+        $this->dataSources->removeElement($dataSources);
     }
 
     /**
-     * Set description
+     * Get dataSources
      *
-     * @param string $description
-     * @return DataStore
+     * @return \Doctrine\Common\Collections\Collection 
      */
-    public function setDescription($description)
+    public function getDataSources()
     {
-        $this->description = $description;
-
-        return $this;
-    }
-
-    /**
-     * Get description
-     *
-     * @return string
-     */
-    public function getDescription()
-    {
-        return $this->description;
-    }
-
-    /**
-     * Set creationDate
-     *
-     * @param \DateTime $creationDate
-     * @return DataStore
-     */
-    public function setCreationDate($creationDate)
-    {
-        $this->creationDate = $creationDate;
-
-        return $this;
-    }
-
-    /**
-     * Get creationDate
-     *
-     * @return \DateTime
-     */
-    public function getCreationDate()
-    {
-        return $this->creationDate;
-    }
-
-    /**
-     * Set updateDate
-     *
-     * @param \DateTime $updateDate
-     * @return DataStore
-     */
-    public function setUpdateDate($updateDate)
-    {
-        $this->updateDate = $updateDate;
-
-        return $this;
-    }
-
-    /**
-     * Get updateDate
-     *
-     * @return \DateTime
-     */
-    public function getUpdateDate()
-    {
-        return $this->updateDate;
-    }
-
-    /**
-     * Set dataStoreTypeId
-     *
-     * @param integer $dataStoreTypeId
-     * @return DataStore
-     */
-    public function setDataStoreTypeId($dataStoreTypeId)
-    {
-        $this->dataStoreTypeId = $dataStoreTypeId;
-
-        return $this;
-    }
-
-    /**
-     * Get dataStoreTypeId
-     *
-     * @return integer
-     */
-    public function getDataStoreTypeId()
-    {
-        return $this->dataStoreTypeId;
+        return $this->dataSources;
     }
 }

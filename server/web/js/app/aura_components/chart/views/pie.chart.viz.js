@@ -1,5 +1,5 @@
-define(["./chart.viz", "d3", "text!../templates/viz.html"],
-function(ViewChart, d3, baseTemplate)
+define(["./chart.viz", "d3"],
+function(ViewChart, d3)
 {
 
 	return ViewChart.extend(

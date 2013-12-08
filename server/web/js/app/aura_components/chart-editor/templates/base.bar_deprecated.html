@@ -1,0 +1,55 @@
+<ul id="ul-chart-editor" class="form-horizontal <% if(!contained){ %>absolute-center<% } else { print('contained'); } %>">
+
+	<% if( titleEnabled ) { %>
+	<li id="li-title">
+		<span>Chart</span>
+	</li>
+	<% } %>
+
+	<li>
+		<div class="col-sm-offset-2 col-sm-10">
+			<div>
+				<label id="label-checkbox-grouped">
+					<input id="input-checkbox-grouped" type="checkbox"/> Grouped
+				</label>
+			</div>
+			<div>
+				<label id="label-checkbox-negative">
+					<input id="input-checkbox-negative" type="checkbox"/> Contains negative values
+				</label>
+			</div>
+		</div>
+	</li>
+
+	<li>
+		<label for="input-chart-width" class="col-sm-2 control-label">Width</label>
+		<div class="col-sm-10">
+			<input type="number" class="form-control" id="input-chart-width" placeholder="Width"/>
+		</div>
+	</li>
+	<li>
+		<label for="input-chart-height" class="col-sm-2 control-label">Height</label>
+		<div class="col-sm-10">
+			<input type="number" class="form-control" id="input-chart-height" placeholder="Height"/>
+		</div>
+	</li>
+
+	<li id="li-chart-colors">
+		<label class="col-sm-2 control-label">Colors</label>
+		<div id="div-chart-colors" class="col-sm-10">
+			<% _.each(columns, function(value, key, column) { %>
+			<article>
+				<label class="span-field"><%= value %></label>
+				<span id="span-colorpicker-<%= key %>" class="my-colorpicker-control" data-color-format="hex"></span>
+			</article>
+			<% }); %>
+		</div>
+	</li>
+
+	<% if( buttonsEnabled ) { %>
+	<li>
+		<button id="button-cancel" class="d3-button bg-skyblue">Cancel</button>
+		<button id="button-save" class="d3-button bg-yellow-green">Save</button>
+	</li>
+	<% } %>
+</ul>

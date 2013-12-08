@@ -27,7 +27,10 @@
 }
 
 
-
+.axis
+{
+	font-size: 10px;
+}
 
 .axis path,
 .axis line

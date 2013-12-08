@@ -6,6 +6,9 @@ define(['backbone', "text!../templates/D3Collection.html"], function(Backbone, c
 
 	return Backbone.View.extend(
 	{
+		//got a jquery bug: event.returnValue is deprecated. Please use the standard event.preventDefault() instead
+		//bug ticket: http://bugs.jquery.com/ticket/14320
+
 		events: {
 			'click': "onClick"
 		},
@@ -47,7 +50,17 @@ define(['backbone', "text!../templates/D3Collection.html"], function(Backbone, c
 
 		render: function ()
 		{
-			this.$el.html(template(this.model.toJSON()));
+			var additionalOptions = {};
+
+			if( this.model.get('collection_type_id') == 1 )
+			{
+				if( this.model.get('name') == "Library" ) additionalOptions.icon = "glyphicon-th";
+				if( this.model.get('name') == "Starred" ) additionalOptions.icon = "glyphicon-star";
+				if( this.model.get('name') == "Deleted" ) additionalOptions.icon = "glyphicon-trash";
+			}
+			else  additionalOptions.icon = "glyphicon-th-large";
+
+			this.$el.html(template(_.extend(additionalOptions, this.model.toJSON())));
 			return this;
 		}
 

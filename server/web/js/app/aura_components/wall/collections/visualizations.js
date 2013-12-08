@@ -23,8 +23,11 @@ define(["ModelVisualization"], function(ModelVisualization)
 
 		setCollectionId: function(collectionId)
 		{
-			this._collectionId = collectionId;
-			this.fetch();
+			if(this._collectionId !== collectionId)
+			{
+				this._collectionId = collectionId;
+				this.fetch();
+			}
 		},
 
 		getCollectionId: function(collectionId)

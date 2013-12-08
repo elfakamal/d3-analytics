@@ -17,10 +17,10 @@ function(StateManager, NaiveComponent)
 				"datastore"				: new NaiveComponent("data-store",	{el:"#section-data-store-component",tagName:"section",parent:"#aside-side-pane",index:2}),
 //				"workspace"				: new NaiveComponent("workspace",	{el:"#section-workspace-component",tagName:"section",parent:"#section-content",index:0}),
 				"wall"					: new NaiveComponent("wall",		{el:"#section-wall-component",tagName:"section",parent:"#section-content",index:0}),
-				"collection-form"		: new NaiveComponent("entity-form",	{el:"#section-forms-component",entity:"collection",tagName:"section",className:"center-container",parent:"body",index:0}, ["entity"]),
-				"datastore-form"		: new NaiveComponent("entity-form",	{el:"#section-forms-component",entity:"datastore",tagName:"section",className:"center-container",parent:"body",index:0}, ["entity"]),
-				"visualization-form"	: new NaiveComponent("entity-form",	{el:"#section-forms-component",entity:"visualization",tagName:"section",className:"center-container",parent:"body",index:0}, ["entity"]),
-				"datasource-form"		: new NaiveComponent("entity-form",	{el:"#section-forms-component",entity:"datasource",tagName:"section",className:"center-container",parent:"body",index:0}, ["entity"]),
+				"collection-form"		: new NaiveComponent("entity-form",	{el:"#section-forms-component",entity:"collection",tagName:"section",className:"center-container overlay",parent:"body",index:0}, ["entity"]),
+				"datastore-form"		: new NaiveComponent("entity-form",	{el:"#section-forms-component",entity:"datastore",tagName:"section",className:"center-container overlay",parent:"body",index:0}, ["entity"]),
+				"visualization-form"	: new NaiveComponent("entity-form",	{el:"#section-forms-component",entity:"visualization",tagName:"section",className:"center-container overlay",parent:"body",index:0}, ["entity"]),
+				"datasource-form"		: new NaiveComponent("entity-form",	{el:"#section-forms-component",entity:"datasource",tagName:"section",className:"center-container overlay",parent:"body",index:0}, ["entity"]),
 				"footer"				: new NaiveComponent("footer",		{el:"#div-footer-component",tagName:"div",className:"center-container",parent:"#footer",index:0})
 			};
 

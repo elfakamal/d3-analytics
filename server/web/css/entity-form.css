@@ -32,33 +32,33 @@
 #ul-add-entity.d3collection
 {
 	background: #F5F5F5;
-	height: 320px;
+	height: 290px;
 }
 
 #ul-add-entity.datastore
 {
 	background: #F5F5F5;
-	height: 320px;
+	height: 290px;
 }
 
 #ul-add-entity.visualization
 {
 	background: #F5F5F5;
-	height: 410px;
+	height: 380px;
 }
 
 /*#ul-add-entity.datasource*/
 #form-add-entity.datasource
 {
 	background: #F5F5F5;
-	height: 320px;
+	height: 310px;
 	width: 500px;
 	overflow: hidden;
 }
 
 #ul-add-entity li
 {
-	margin-top: 5px;
+	margin-bottom: 5px;
 	text-align: center;
 }
 
@@ -82,7 +82,7 @@
 	font-family: "Titillium Web", sans-serif;
 	font-weight: 400;
 	font-size: 18px;
-	color: darkgray;
+	color: #555;
 
 	background-color: #fdfdfd;
 

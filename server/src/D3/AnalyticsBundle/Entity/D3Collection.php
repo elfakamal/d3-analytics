@@ -10,12 +10,11 @@ use Doctrine\Common\Collections\ArrayCollection;
 class D3Collection
 {
 
-	const SYSTEM_COLLECTION		= 1;
-	const REGULAR_COLLECTION	= 2;
-
-	const LIBRARY_COLLECTION	= "Library";
-	const STARRED_COLLECTION	= "Starred";
-	const DELETED_COLLECTION	= "Deleted";
+	const SYSTEM_COLLECTION = 1;
+	const REGULAR_COLLECTION = 2;
+	const LIBRARY_COLLECTION = "Library";
+	const STARRED_COLLECTION = "Starred";
+	const DELETED_COLLECTION = "Deleted";
 
 	/**
 	 * Constructor
@@ -188,37 +187,36 @@ class D3Collection
 		return $this->collectionTypeId;
 	}
 
+	/**
+	 * Add visualizations
+	 *
+	 * @param \D3\AnalyticsBundle\Entity\Visualization $visualizations
+	 * @return D3Collection
+	 */
+	public function addVisualization( \D3\AnalyticsBundle\Entity\Visualization $visualizations )
+	{
+		$this->visualizations[] = $visualizations;
+		return $this;
+	}
 
-    /**
-     * Add visualizations
-     *
-     * @param \D3\AnalyticsBundle\Entity\Visualization $visualizations
-     * @return D3Collection
-     */
-    public function addVisualization(\D3\AnalyticsBundle\Entity\Visualization $visualizations)
-    {
-        $this->visualizations[] = $visualizations;
+	/**
+	 * Remove visualizations
+	 *
+	 * @param \D3\AnalyticsBundle\Entity\Visualization $visualizations
+	 */
+	public function removeVisualization( \D3\AnalyticsBundle\Entity\Visualization $visualizations )
+	{
+		$this->visualizations->removeElement($visualizations);
+	}
 
-        return $this;
-    }
+	/**
+	 * Get visualizations
+	 *
+	 * @return \Doctrine\Common\Collections\ArrayCollection
+	 */
+	public function getVisualizations()
+	{
+		return $this->visualizations;
+	}
 
-    /**
-     * Remove visualizations
-     *
-     * @param \D3\AnalyticsBundle\Entity\Visualization $visualizations
-     */
-    public function removeVisualization(\D3\AnalyticsBundle\Entity\Visualization $visualizations)
-    {
-        $this->visualizations->removeElement($visualizations);
-    }
-
-    /**
-     * Get visualizations
-     *
-     * @return \Doctrine\Common\Collections\ArrayCollection
-     */
-    public function getVisualizations()
-    {
-        return $this->visualizations;
-    }
 }

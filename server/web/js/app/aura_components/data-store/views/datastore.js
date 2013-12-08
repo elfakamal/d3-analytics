@@ -35,7 +35,11 @@ define(['backbone', "text!../templates/datastore.html"], function(Backbone, data
 
 		render: function ()
 		{
-			this.$el.html(template(this.model.toJSON()));
+			var additionalOptions = {};
+			if( this.model.get("data_store_type_id") == 1 ) additionalOptions.icon = "glyphicon-th";
+			else  additionalOptions.icon = "glyphicon-th-list";
+
+			this.$el.html(template(_.extend(additionalOptions, this.model.toJSON())));
 			return this;
 		}
 
