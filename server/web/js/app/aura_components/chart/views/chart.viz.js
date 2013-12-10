@@ -5,6 +5,7 @@ define([], function()
 	{
 
 		data					: null,
+		chartData			: null,
 		svg						: null,
 
 		getChartIcon: function()

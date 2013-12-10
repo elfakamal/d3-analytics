@@ -8,6 +8,7 @@ define(function ()
 
 		require: {
 			paths:  {
+				constants								: 'scripts/constants',
 				jquery_iframe_transport	: 'bower_components/jquery-iframe-transport/jquery.iframe-transport',
 				gridster								: 'bower_components/gridster.js/dist/jquery.gridster.min',
 				d3											: 'bower_components/d3/d3',
@@ -29,6 +30,12 @@ define(function ()
 		 */
 		initialize: function (app)
 		{
+			_.mixin({
+				capitalize: function(string) {
+					return string.charAt(0).toUpperCase() + string.substring(1).toLowerCase();
+				}
+			});
+
 			app.logger.log('Initializing extension: d3-analytics');
 
 			var headerHeight = 60;
@@ -36,6 +43,8 @@ define(function ()
 			var documentHeight = $(document).height();
 
 			$("#middle-container").css("height", documentHeight - headerHeight - footerHeight);
+
+
 
 			/**
 			 *
@@ -61,87 +70,23 @@ define(function ()
 			/**
 			 *
 			 */
+			app.sandbox.visualizationTypeNames = {
+				1: "Vertical Bar",
+				2: "Horizontal Bar",
+				3: "Pie",
+				4: "Donut",
+				5: "Line"
+			};
+
+			/**
+			 *
+			 */
 			app.sandbox.chartIcons = {
 				"bar.vertical" : '&#128202',
 				"bar.horizontal" : '&#128202',
 				"pie" : '&#9716',
 				"donut" : '&#128191',
 				"line": '&#128200'
-			};
-
-
-			/**
-			 *
-			 */
-			app.components.before('initialize', function(options)
-			{
-				this.collectProviders = {};
-
-				this.registerCollectProvider = function(event, provider)
-				{
-					if(typeof event === 'undefined' || event.indexOf(' ') >= 0)
-						throw new Error("event must be a valid string, like a dictionary key");
-
-					if(typeof provider !== 'function')
-						throw new Error("provider needs to be a function");
-
-					this.collectProviders[event] = provider;
-				};
-
-				this.unregisterCollectProvider = function(event)
-				{
-					if(typeof event === 'undefined' || event.indexOf(' ') >= 0)
-						throw new Error("event must be a valid string, like a dictionary key");
-
-					if(!_.has(this.collectProviders, event))
-						throw new Error("there is no such event in the providers list");
-
-					delete this.collectProviders[event];
-				};
-
-				this.onCollectRequest = function(collectMetadata)
-				{
-					this.sandbox.spread(collectMetadata, this);
-				};
-
-				this.sandbox.on("collect." + this.options.name, this.onCollectRequest, this);
-			});
-
-			app.sandbox.collect = function(event, callback, component, data, context)
-			{
-				var baseEvent = "spread";
-				var spreadEvent = "";
-				var collectEvent = "";
-
-				spreadEvent += baseEvent + ".";
-				spreadEvent += component;
-
-				var onSpread = function(data)
-				{
-					context.sandbox.off(spreadEvent, onSpread);
-					callback.apply(context, [data]);
-				};
-
-				context.sandbox.on(spreadEvent, onSpread, context);
-
-				collectEvent += "collect.";
-				collectEvent += component;
-
-				var collectMetadata = {event: event, sentData: data};
-				context.sandbox.emit(collectEvent, collectMetadata);
-			};
-
-			app.sandbox.spread = function(metadata, context)
-			{
-				if(!_.has(metadata, "event") || !_.has(metadata, "sentData"))
-					throw new Error("spread's metadata is missing");
-
-				if(!_.has(context.collectProviders, metadata.event))
-					throw new Error("there is no such event in the providers list");
-
-				var provider = context.collectProviders[metadata.event];
-				var result = provider.apply(context, [metadata.sentData]);
-				context.sandbox.emit("spread." + context.options.name, result);
 			};
 		}
 	};

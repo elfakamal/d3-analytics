@@ -3,6 +3,10 @@ define(['underscore', 'jquery'], function(_, $)
 
 	/**
 	 *
+	 * @param {string} name
+	 * @param {Object} options
+	 * @param {Array} uniqueKeys
+	 * @returns {NaiveComponent}
 	 */
 	function NaiveComponent(name, options, uniqueKeys)
 	{

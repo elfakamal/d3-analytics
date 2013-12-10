@@ -2,9 +2,10 @@ define([
 	"./collections/visualizations",
 	"text!./templates/base.html",
 	"text!./templates/visualization.html",
-	"gridster"
+	"gridster",
+	"constants"
 ],
-function(VisualizationCollection, rawBaseTemplate, rawVisualizationTemplate, gridster)
+function(VisualizationCollection, rawBaseTemplate, rawVisualizationTemplate, gridster, constants)
 {
 	"use strict";
 
@@ -151,8 +152,8 @@ function(VisualizationCollection, rawBaseTemplate, rawVisualizationTemplate, gri
 		initGrid: function()
 		{
 			this.grid = $(".gridster > ul").gridster({
-				widget_margins: [10, 10],
-				widget_base_dimensions: [180, 180],
+				widget_margins: [constants.DEFAULT_HORIZONTAL_MARGIN, constants.DEFAULT_VERTICAL_MARGIN],
+				widget_base_dimensions: [constants.DEFAULT_THUMB_WIDTH, constants.DEFAULT_THUMB_HEIGHT],
 				draggable:{
 					handle: 'div#div-handle #span-visualization-name'
 				}
@@ -182,13 +183,19 @@ function(VisualizationCollection, rawBaseTemplate, rawVisualizationTemplate, gri
 		renderOne: function(modelVisualization)
 		{
 			var data = {
-				id							: modelVisualization.get('id'),
-				d3collectionId	: this.collection.getCollectionId()
+				id: modelVisualization.get('id'),
+				d3collectionId: this.collection.getCollectionId()
 			};
 
-			var chartData = JSON.parse(modelVisualization.get("chart_data"));
-			var vizSizeIndex = chartData.size;
-			var vizSize = this.sandbox.visualizationSizes[vizSizeIndex];
+			var rawChartData, chartData, vizSizeIndex, vizSize = [1, 1];
+			rawChartData = modelVisualization.get("chart_data");
+
+			if(rawChartData !== "")
+			{
+				chartData = JSON.parse(rawChartData);
+				vizSizeIndex = chartData.size;
+				vizSize = this.sandbox.visualizationSizes[vizSizeIndex];
+			}
 
 			var newVisualizationHTML = visualizationTemplate(_.extend(data, modelVisualization.toJSON()));
 			var gridsterWidget = this.grid.add_widget.apply(this.grid, [newVisualizationHTML].concat(vizSize));

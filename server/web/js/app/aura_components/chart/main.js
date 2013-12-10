@@ -40,24 +40,38 @@ define(['underscore'], function (_)
 			this.sandbox.on("chart.hide", this.hide, this);
 		},
 
-		show: function()
+		show: function(data)
 		{
-			this.view.show();
+			if(!_.has(data, "modelId"))
+				throw new Error("missing model id in the event");
+
+			if(this.model.get('id') === data.modelId)
+				this.view.show();
 		},
 
-		hide: function()
+		hide: function(data)
 		{
-			this.view.hide();
+			if(!_.has(data, "modelId"))
+				throw new Error("missing model id in the event");
+
+			if(this.model.get('id') === data.modelId)
+				this.view.hide();
 		},
 
 		/**
 		 *
 		 * @returns {undefined}
 		 */
-		onChartRefreshRequested : function()
+		onChartRefreshRequested : function(data)
 		{
-			this.view.show();
-			this.view.update();
+			if(!_.has(data, "modelId"))
+				throw new Error("missing model id in the event");
+
+			if(this.model.get('id') === data.modelId)
+			{
+				this.view.show();
+				this.view.drawChart();
+			}
 		},
 
 		/**

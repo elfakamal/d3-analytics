@@ -37,19 +37,17 @@ function(ModelVisualization, baseTemplate, partialSelectD3Collections)
 		initialize: function ()
 		{
 			if( !this.model )
-			{
 				this.model = new ModelVisualization();
-			}
 
 			this.render();
-			this.prepareChannels();
+			this.initListeners();
 		},
 
 		/**
 		 *
 		 * @returns {undefined}
 		 */
-		prepareChannels: function()
+		initListeners: function()
 		{
 			this.options.sandbox.on("collections.library.get.response", this.onGetLibraryCollectionResponse, this);
 			this.options.sandbox.emit('collections.library.get');
@@ -128,13 +126,8 @@ function(ModelVisualization, baseTemplate, partialSelectD3Collections)
 		 */
 		isValid: function()
 		{
-			if( this.$("#input-visualization-name").val() !== "" &&
-				this.$("#textarea-visualization-description").val() !== "" )
-			{
-				return true;
-			}
-
-			return false;
+			return ( this.$("#input-visualization-name").val() !== "" &&
+				this.$("#textarea-visualization-description").val() !== "" );
 		},
 
 		onButtonSaveClick: function()
@@ -165,9 +158,7 @@ function(ModelVisualization, baseTemplate, partialSelectD3Collections)
 			if( this.isValid() )
 			{
 				if( this._libraryCollection === null || typeof this._libraryCollection === "undefined" )
-				{
 					throw new Error("library needed");
-				}
 
 				if( !_.has(this.options, "contained") || this.options.contained === false )
 				{
@@ -179,7 +170,7 @@ function(ModelVisualization, baseTemplate, partialSelectD3Collections)
 					name										: this.$("#input-visualization-name").val(),
 					description							: this.$("#textarea-visualization-description").val(),
 					visualization_type_id		: this.$("#select-visualization-type").val()
-				});
+				}, {silent: true});
 
 				this._wasNew = this.model.isNew();
 
@@ -204,10 +195,11 @@ function(ModelVisualization, baseTemplate, partialSelectD3Collections)
 		onModelSaveSuccess: function(model, response)
 		{
 			console.log('model visualization save success');
-			this.options.sandbox.emit("entity-form.visualization.save.success");
+			this.options.sandbox.emit("entity-form.visualization.save.success", this.model.get('id'));
 
 			if( this._wasNew )
 				this.options.sandbox.emit("collections.refresh");
+
 			this._wasNew = false;
 
 			//this must to be the last line because it may stop this component.

@@ -30,7 +30,7 @@ define(['./collections/datasources', "text!./templates/base.html"], function (Da
 		{
 			var result = this.collection.filter(function(datasource)
 			{
-				return datasource.get("id") == datasourceId;
+				return datasource.get("id") === datasourceId;
 			});
 
 			if( result && result.length === 1 )

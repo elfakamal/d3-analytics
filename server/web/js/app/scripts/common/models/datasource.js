@@ -65,7 +65,7 @@ define(['backbone', 'd3'], function(Backbone, d3)
 				//grab the library id
 			}
 
-			if( this._attaching == true )
+			if( this._attaching === true )
 			{
 				if( this.get('dataSourceId') !== null && this.get('dataSourceId') !== 0 )
 				{
@@ -76,6 +76,11 @@ define(['backbone', 'd3'], function(Backbone, d3)
 			return url;
 		},
 
+		/**
+		 *
+		 * @param {string} fileType
+		 * @returns {Boolean}
+		 */
 		isFileTypeAllowed : function(fileType)
 		{
 			if( typeof fileType === 'undefined' )
@@ -86,7 +91,13 @@ define(['backbone', 'd3'], function(Backbone, d3)
 			return this.allowedFileTypes.indexOf(fileType) >= 0;
 		},
 
-		load: function(callback, accessor, context)
+		/**
+		 *
+		 * @param {function} callback
+		 * @param {Object} context
+		 * @returns {undefined}
+		 */
+		load: function(callback, context)
 		{
 			if( !this.isFileTypeAllowed(this.get("file_extension")) )
 			{
@@ -99,21 +110,15 @@ define(['backbone', 'd3'], function(Backbone, d3)
 
 			var deferred = d3loader.apply(d3, [path]);
 
-			if(accessor)
-			{
-				if(context)
-				{
-					deferred.row(context[accessor]);
-				}
-				else
-				{
-					deferred.row(accessor);
-				}
-			}
-
 			deferred.get(this.onD3LoaderComplete(callback, context));
 		},
 
+		/**
+		 *
+		 * @param {function} callback
+		 * @param {Object} context
+		 * @returns {unresolved}
+		 */
 		onD3LoaderComplete: function(callback, context)
 		{
 			var self = this;
@@ -137,6 +142,10 @@ define(['backbone', 'd3'], function(Backbone, d3)
 			};
 		},
 
+		/**
+		 *
+		 * @returns {undefined}
+		 */
 		updateColumns: function()
 		{
 			if( this.datasourceContent &&
@@ -149,11 +158,19 @@ define(['backbone', 'd3'], function(Backbone, d3)
 			}
 		},
 
+		/**
+		 *
+		 * @returns {Object}
+		 */
 		getContent: function()
 		{
 			return this.datasourceContent;
 		},
 
+		/**
+		 *
+		 * @returns {Object}
+		 */
 		getColumns: function()
 		{
 			return this.datasourceColumns;

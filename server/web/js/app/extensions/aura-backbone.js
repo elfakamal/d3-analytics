@@ -100,8 +100,12 @@
 
 			app.components.before('remove', function()
 			{
+				var stopData;
+				if(_.has(this.options, "stopData"))
+					stopData = this.options.stopData;
+
 				var event = "component.stop." + this.options.name;
-				this.sandbox.emit(event);
+				this.sandbox.emit(event, stopData);
 
 				this.view && this.view.stopListening();
 			});

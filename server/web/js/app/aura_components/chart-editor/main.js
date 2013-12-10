@@ -41,7 +41,8 @@ function(d3, rawBaseTemplate, colorpicker) {
 		 */
 		initListeners: function()
 		{
-			this.sandbox.on("chart-editor.get.data", this.onGetDataRequest, this);
+			this.registerCollectProvider("chart.data", this.getData);
+
 			this.sandbox.on("chart-editor.set.data", this.onSetDataRequest, this);
 		},
 
@@ -52,18 +53,6 @@ function(d3, rawBaseTemplate, colorpicker) {
 		onSetDataRequest: function(data)
 		{
 			this.chartData = data;
-		},
-
-		/**
-		 * A response for the collect process.
-		 *
-		 * This function extracts chart data from the form and returns
-		 * it to the caller.
-		 */
-		onGetDataRequest: function()
-		{
-			this.extractData();
-			this.sandbox.emit("chart-editor.get.data.response", this.getData());
 		},
 
 		/**
@@ -104,53 +93,56 @@ function(d3, rawBaseTemplate, colorpicker) {
 		render: function()
 		{
 			var self = this;
-			var colorsDico = {};
 			var columns = this.model.getDatasource().getColumns();
+			var colorsDico = this.getColorDictionary();
 			this.commonOptions.columns = columns;
-
-			//filling in the dico, example of result: {0 : "#FF5000", 1 : "#50FF00"}
-			_.each(columns, function(value, key, columns) {
-				_.each(this.getData().colors, function(pair) {
-					if(pair[0] === value) colorsDico[key] = pair[1];
-				}, this);
-			}, this);
+			this.commonOptions.colors = colorsDico;
 
 			this.$el.html(template(_.extend(
-				JSON.parse(this.model.get("chart_data")),
-				this.commonOptions,
-				{colors: colorsDico}
+				JSON.parse(this.model.get('chart_data')),
+				this.commonOptions
 			)));
 
-			$('.my-colorpicker-control').each(function()
+			this.$find('.my-colorpicker-control').each(function()
 			{
+				var key = $(this).attr("id").substring($(this).attr("id").lastIndexOf('-') + 1, $(this).attr("id").length);
+				self.colorpickers[$(this).attr("id")] = colorsDico[key];
+
 				$(this).colorpicker({format: 'hex'}).on("changeColor", function(event)
 				{
 					$(this).css("background-color", event.color.toHex());
-
-					// /!\ Watch out this line, sometimes the colors are "null" /!\
 					self.colorpickers[$(this).attr("id")] = event.color.toHex();
 				});
 			});
 		},
 
 		/**
+		 * filling in the dico, example of result: {0 : "#FF5000", 1 : "#50FF00"}
 		 *
 		 * @returns {undefined}
 		 */
-		updateData: function()
+		getColorDictionary: function()
 		{
-			this.chartData.grouped = this.$find('#label-checkbox-grouped [type="checkbox"]:checked').length > 0;
-			this.chartData.negative = this.$find('#label-checkbox-negative [type="checkbox"]:checked').length > 0;
-			this.chartData.size = this.$find("#select-chart-size").val();
-			this.chartData.colors = [];
-
 			var columns = this.model.getDatasource().getColumns();
+			var colorsDico = {};
 
-			_.each(columns, function(value, key, columns)
-			{
-				var pair = [value, this.colorpickers["span-colorpicker-" + key]];
-				this.chartData.colors.push(pair);
+			_.each(columns, function(value, key, list) {
+				_.each(this.chartData.colors, function(pair) {
+					if(pair[0] === value) colorsDico[key] = pair[1];
+				}, this);
 			}, this);
+
+			return colorsDico;
+		},
+
+		/**
+		 * TODO: set the fields to the chartData values.
+		 *
+		 * @returns {undefined}
+		 */
+		updateData: function(chartData)
+		{
+
 		},
 
 		/**
@@ -165,12 +157,20 @@ function(d3, rawBaseTemplate, colorpicker) {
 
 			var columns = this.model.getDatasource().getColumns();
 
-			_.each(columns, function(value, key, columns)
+			_.each(columns, function(value, key, list)
 			{
-				// /!\ Watch out this line, sometimes the colors are "null" /!\ 
 				var pair = [value, this.colorpickers["span-colorpicker-" + key]];
 				this.chartData.colors.push(pair);
 			}, this);
+		},
+
+		/**
+		 *
+		 * @returns {undefined}
+		 */
+		sanitizeData: function()
+		{
+			this.chartData = _.pick(this.chartData, ["grouped", "negative", "size", "colors"]);
 		},
 
 		/**
@@ -179,6 +179,8 @@ function(d3, rawBaseTemplate, colorpicker) {
 		 */
 		getData: function()
 		{
+			this.extractData();
+			this.sanitizeData();
 			return this.chartData;
 		}
 

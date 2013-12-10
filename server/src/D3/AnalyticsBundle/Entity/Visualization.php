@@ -5,6 +5,7 @@ namespace D3\AnalyticsBundle\Entity;
 use D3\AnalyticsBundle\Entity\D3Collection;
 use D3\AnalyticsBundle\Entity\DataSource;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Visualization
@@ -27,8 +28,9 @@ class Visualization
 
 	/**
 	 * @var string
+	 * @ORM\Column(type="text")
 	 */
-	protected $description;
+	protected $description = "";
 
 	/**
 	 * @var integer
@@ -38,14 +40,16 @@ class Visualization
 	/**
 	 *
 	 * @var boolean
+	 * @ORM\Column(type="boolean")
 	 */
-	protected $isStarred;
+	protected $isStarred = false;
 
 	/**
 	 *
 	 * @var boolean
+	 * @ORM\Column(type="boolean")
 	 */
-	protected $isActive;
+	protected $isActive = true;
 
 	/**
 	 * @var \DateTime
@@ -59,10 +63,11 @@ class Visualization
 
 	/**
 	 * Serialized chart properties.
-	 * 
+	 *
 	 * @var string
+	 * @ORM\Column(type="text")
 	 */
-	protected $chartData;
+	protected $chartData = "";
 
 
 	/**
@@ -82,8 +87,9 @@ class Visualization
 	{
 		$this->setVisualizationTypeId(self::VIZ_VERTICAL_BARS);
 
-		$this->setIsActive(true);
-		$this->setIsStarred(false);
+		$this->isActive = true;
+		$this->isStarred = false;
+		$this->chartData = "";
 
 		$this->setCreationDate(new \DateTime());
 		$this->setUpdateDate(new \DateTime());
@@ -311,7 +317,11 @@ class Visualization
 	 */
 	public function setIsStarred( $isStarred )
 	{
-		$this->isStarred = $isStarred;
+		if(!isset($isStarred)) {
+			$this->isStarred = false;
+		} else {
+			$this->isStarred = $isStarred;
+		}
 
 		return $this;
 	}
@@ -351,25 +361,30 @@ class Visualization
 
 
     /**
-     * Set chartData
-     *
-     * @param string $chartData
-     * @return Visualization
-     */
-    public function setChartData($chartData)
-    {
-        $this->chartData = $chartData;
-    
-        return $this;
-    }
+	 * Set chartData
+	 *
+	 * @param string $chartData
+	 * @return Visualization
+	 */
+	public function setChartData( $chartData )
+	{
+		if(!isset($chartData)) {
+			$this->chartData = "";
+		} else {
+			$this->chartData = $chartData;
+		}
 
-    /**
-     * Get chartData
-     *
-     * @return string 
-     */
-    public function getChartData()
-    {
-        return $this->chartData;
-    }
+		return $this;
+	}
+
+	/**
+	 * Get chartData
+	 *
+	 * @return string
+	 */
+	public function getChartData()
+	{
+		return $this->chartData;
+	}
+
 }

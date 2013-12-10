@@ -30,13 +30,17 @@ class VisualizationController extends FOSRestController implements ClassResource
 	 */
 	private function saveEntity( $entity, EntityManager $entityManager = null )
 	{
-		if( null === $entityManager )
-		{
+		if( null === $entityManager ) {
 			$entityManager = $this->getDoctrine()->getManager();
 		}
 
-		$entityManager->persist($entity);
-		$entityManager->flush();
+		try {
+			$entityManager->persist($entity);
+			$entityManager->flush();
+		}
+		catch(\Exception $exc) {
+			throw new HttpException(500, "Error occured while saving an entity");
+		}
 	}
 
 	/**
@@ -52,7 +56,7 @@ class VisualizationController extends FOSRestController implements ClassResource
 		$em = $this->getDoctrine()->getManager();
 
 		$visualizations = $em->getRepository('D3AnalyticsBundle:Visualization')
-						->getVisualizations($collectionId);
+			->getVisualizations($collectionId);
 
 		return $visualizations;
 	}
@@ -68,10 +72,9 @@ class VisualizationController extends FOSRestController implements ClassResource
 	{
 		$em = $this->getDoctrine()->getManager();
 		$visualization = $em->getRepository('D3AnalyticsBundle:Visualization')
-						->getVisualization($collectionId, $visualizationId);
+			->getVisualization($collectionId, $visualizationId);
 
-		if( !$visualization || empty($visualization) )
-		{
+		if( !$visualization || empty($visualization) ) {
 			throw new NotFoundHttpException("Sorry, there is no such visualization");
 		}
 
@@ -89,8 +92,7 @@ class VisualizationController extends FOSRestController implements ClassResource
 	 */
 	public function getAction( $collectionId, $visualizationId )
 	{
-		if( empty($visualizationId) || !is_numeric($visualizationId) )
-		{
+		if( empty($visualizationId) || !is_numeric($visualizationId) ) {
 			throw new NotFoundHttpException("Sorry, there is no such visualization");
 		}
 
@@ -114,19 +116,16 @@ class VisualizationController extends FOSRestController implements ClassResource
 
 		$form->bind($request);
 
-		if( $form->isValid() )
-		{
+		if( $form->isValid() ) {
 			$em = $this->getDoctrine()->getManager();
 			$library = $em->getRepository('D3AnalyticsBundle:D3Collection')->getLibrary();
 			$visualization->addCollection($library);
 
-			if( $library->getId() != $collectionId )
-			{
+			if( $library->getId() != $collectionId ) {
 				$collection = $em->getRepository('D3AnalyticsBundle:D3Collection')
-								->findOneById($collectionId);
+					->findOneById($collectionId);
 
 				//TODO:TEST: THE COLLECTION AVAILABILITY.
-
 				$visualization->addCollection($collection);
 			}
 
@@ -155,10 +154,8 @@ class VisualizationController extends FOSRestController implements ClassResource
 
 		$allRequestParams = $request->request->all();
 
-		foreach($allRequestParams as $key => $value)
-		{
-			if( in_array($key, $unwantedParams) )
-			{
+		foreach($allRequestParams as $key => $value) {
+			if( in_array($key, $unwantedParams) ) {
 				$request->request->remove($key);
 			}
 		}
@@ -168,8 +165,7 @@ class VisualizationController extends FOSRestController implements ClassResource
 
 		$form->bind($request);
 
-		if( $form->isValid() )
-		{
+		if( $form->isValid() ) {
 			$visualization->setAsUpdated();
 			$this->saveEntity($visualization);
 			return $visualization;
@@ -190,36 +186,29 @@ class VisualizationController extends FOSRestController implements ClassResource
 	 */
 	public function attachDatasourceAction( $libraryId, $visualizationId, $dataSourceId )
 	{
-//		return array();
-
-		if( $dataSourceId > 0 )
-		{
+		if( $dataSourceId > 0 ) {
 			$em = $this->getDoctrine()->getManager();
 
 			//TEST//DONE: IF IS THERE ALREADY SUCH AN ASSOCIATION.
 			$hasDataSource = $em->getRepository("D3AnalyticsBundle:Visualization")
 							->hasDataSource($visualizationId, $dataSourceId);
 
-			if( $hasDataSource === true )
-			{
+			if( $hasDataSource === true ) {
 				throw new HttpException(400, "This data source is already attached to this visualization");
 			}
 
 			//TEST//DONE: WHETHER IT IS REALLY THE LIBRARY OR ANOTHER COLLECTION
 			//(THROW AN EXCEPTION IF IT'S NOT THE LIBRARY).
 			$library = $em->getRepository('D3AnalyticsBundle:D3Collection')->getLibrary();
-			if( $libraryId != $library->getId() )
-			{
+
+			if( $libraryId != $library->getId() ) {
 				throw new HttpException(400, "the 'libraryId' you specified is not valid");
 			}
 
 			$visualization = $this->getVisualization($libraryId, $visualizationId);
+			$dataSource = $em->getRepository("D3AnalyticsBundle:DataSource")->findOneById($dataSourceId);
 
-			$dataSource = $em->getRepository("D3AnalyticsBundle:DataSource")
-							->findOneById($dataSourceId);
-
-			if( !$dataSource || empty($dataSource) === true )
-			{
+			if( !$dataSource || empty($dataSource) === true ) {
 				throw new NotFoundHttpException("Cannot find the data source you're specifying by the id '$dataSource'");
 			}
 

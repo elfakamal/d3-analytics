@@ -17,7 +17,7 @@ define(['text!./templates/base.html'], function(tpl)
 
 		onCollectClick: function()
 		{
-			this.sandbox.collect("collection.id", this.onCollectionIdCollected, "wall", null, this);
+			var collectionId = this.sandbox.collect("collection.id", this.onCollectionIdCollected, "wall", null, this);
 		},
 
 		onCollectionIdCollected: function(data)

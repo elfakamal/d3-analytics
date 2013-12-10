@@ -69,29 +69,41 @@ define([
 			 */
 			initViz: function()
 			{
-				if (typeof this.model === "undefined")
+				if(typeof this.model === "undefined")
 					throw new Error("model is missing");
 
-				if (this.model.get('data_sources').length > 0)
+				if(this.model.get('data_sources').length > 0 && !this.isChartComponentStarted)
 				{
-					if (!this.isChartComponentStarted)
-					{
-						//start the chart component.
-						var chartComponent = '<div id="div-chart-component" class="absolute-center"></div>';
-						this.$find('#div-viz-content').html(chartComponent);
+					//start the chart component.
+					var chartComponent = '<div id="div-chart-component" class="absolute-center"></div>';
+					this.$find('#div-viz-content').html(chartComponent);
 
-						this.sandbox.on("component.stop.chart", this.onChartComponentStop, this);
-						this.sandbox.start([{
-							name: "chart",
-							options: {
-								el: "#div-chart-component",
-								chartType: "bar",
-								model: this.model
-							}
-						}]);
+					this.sandbox.on("component.stop.chart", this.onChartComponentStop, this);
+					this.sandbox.start([{
+						name: "chart",
+						options: {
+							el: "#div-chart-component",
+							chartType: "bar",
+							model: this.model,
+							stopData: this.model.get('id')
+						}
+					}]);
 
-						this.isChartComponentStarted = true;
-					}
+					this.isChartComponentStarted = true;
+				}
+			},
+
+			/**
+			 *
+			 * @param {type} stopData
+			 * @returns {undefined}
+			 */
+			onChartComponentStop: function(stopData)
+			{
+				if(stopData === this.model.get('id'))
+				{
+					this.isChartComponentStarted = false;
+					this.sandbox.off("component.stop.chart", this.onChartComponentStop);
 				}
 			},
 
@@ -100,15 +112,11 @@ define([
 			 */
 			initModel: function()
 			{
-				if( typeof this.options.modelId === 'undefined' )
-				{
+				if(typeof this.options.modelId === 'undefined')
 					throw new Error("you must specify a model for this component");
-				}
 
-				if( typeof this.options.d3collectionId === 'undefined' )
-				{
+				if(typeof this.options.d3collectionId === 'undefined')
 					throw new Error("you must specify a collection for this component");
-				}
 
 				//emit an event to extract the model.
 				this.sandbox.on("visualizations.model.get.response", this.onGetModelVisualizationResponse, this);
@@ -125,9 +133,7 @@ define([
 				if( _.isObject(response) )
 				{
 					if( response.hasOwnProperty("error") )
-					{
 						throw new Error(response.error);
-					}
 
 					if( response.hasOwnProperty("model") )
 					{
@@ -159,12 +165,16 @@ define([
 			 */
 			restoreThumbSize: function()
 			{
-				if (typeof this.model === "undefined")
+				if(typeof this.model === "undefined")
 					throw new Error("model is missing");
 
-				var sizeIndex = JSON.parse(this.model.get('chart_data')).size;
+				var sizeIndex = 1;
+
+				if(this.model.getDatasource())
+					sizeIndex = JSON.parse(this.model.get('chart_data')).size;
+
 				this.resizeMe.apply(this, this.sandbox.visualizationSizes[sizeIndex]);
-				this.sandbox.emit("chart.refresh");
+				this.sandbox.emit("chart.refresh", {modelId: this.model.get('id')});
 			},
 
 			/**
@@ -186,7 +196,8 @@ define([
 				this.renderIcon();
 				this.showTitle();
 
-				//TODO: reset the flags
+				//reset the flags
+				//However (they're already turned to false by the stop events)
 			},
 
 			/**
@@ -195,9 +206,7 @@ define([
 			showTitle: function()
 			{
 				if( this.$find("#div-handle").hasClass("hidden") )
-				{
 					this.$find("#div-handle").removeClass("hidden");
-				}
 			},
 
 			/**
@@ -206,9 +215,7 @@ define([
 			hideTitle: function()
 			{
 				if( !this.$find("#div-handle").hasClass("hidden") )
-				{
 					this.$find("#div-handle").addClass("hidden");
-				}
 			},
 
 			/**
@@ -219,8 +226,7 @@ define([
 			{
 				if( this.isChartEditorComponentStarted )
 				{
-					this.sandbox.on("chart-editor.get.data.response", this.onGetChartDataResponse, this);
-					this.sandbox.emit("chart-editor.get.data");
+					this.sandbox.collect("chart.data", this.onGetChartDataResponse, "chart-editor", this.model.get('id'), this);
 				}
 				else
 				{
@@ -242,7 +248,7 @@ define([
 				if (this.isEntityFormComponentStarted && this.isChartEditorComponentStarted)
 				{
 					this.sandbox.off("chart-editor.get.data.response", this.onGetChartDataResponse);
-					this.model.set({chart_data: JSON.stringify(chartData)});
+					this.model.set({chart_data: JSON.stringify(chartData)}, {silent: true});
 					this.sandbox.emit("entity-form.visualization.save");
 				}
 			},
@@ -258,7 +264,7 @@ define([
 				_.each(componentList, function(componentName)
 				{
 					if(_.has(this.childrenComponents, componentName))
-						this.sandbox.stop(this.childrenComponents[componentName])
+						this.sandbox.stop(this.childrenComponents[componentName]);
 				}, this);
 			},
 
@@ -287,8 +293,9 @@ define([
 					this.sandbox.start([{
 						name: "data-source",
 						options: {
-							el: "#div-select-datasource-component",
-							buttonLegend:"Attach"
+							el: "#li-viz-" + this.model.get('id') + " #div-select-datasource-component",
+							buttonLegend:"Attach",
+							stopData: this.model.get('id')
 						}
 					}]);
 
@@ -300,20 +307,17 @@ define([
 			 * When the data source component is stopped, this resets it's related
 			 * state by disabling it's listener and flag.
 			 */
-			onDatasourceComponentStop: function()
+			onDatasourceComponentStop: function(stopData)
 			{
-				this.isDatasourceComponentStarted = false;
-				this.sandbox.off("datasource.chosen", this.onDatasourceChosen);
-				this.sandbox.off("component.stop.data-source", this.onDatasourceComponentStop);
+				if(stopData === this.model.get('id'))
+				{
+					this.isDatasourceComponentStarted = false;
+					this.sandbox.off("datasource.chosen", this.onDatasourceChosen);
+					this.sandbox.off("component.stop.data-source", this.onDatasourceComponentStop);
 
-				this.initViz();
-				this.resetThumb();
-			},
-
-			onChartComponentStop: function()
-			{
-				this.isChartComponentStarted = false;
-				this.sandbox.off("component.stop.chart", this.onChartComponentStop);
+					this.initViz();
+					this.resetThumb();
+				}
 			},
 
 			/**
@@ -330,14 +334,13 @@ define([
 
 					//before editing the chart, we are hiding the component because
 					//we need it afterwards.
-					this.sandbox.emit("chart.hide");
+					this.sandbox.emit("chart.hide", {modelId: this.model.get('id')});
 
 					this.resizeMe(3, 2);
 					this.hideTitle();
 
 					//using "append" instead of "html" because we need the chart component
-					//in this case we don't need to stop the chart, as the data won't
-					//change.
+					//in this case we don't need to stop the chart, as the data won't change.
 					this.$find("#div-viz-content").append(editTemplate());
 					this.$find('#ul-tabs a:first').tab('show');
 
@@ -347,12 +350,13 @@ define([
 					this.sandbox.start([{
 						name: "entity-form",
 						options: {
-							el							: "#section-visualization-form-component",
+							el							: "#li-viz-" + this.model.get('id') + " #section-visualization-form-component",
 							model						: this.model,
 							entity					: "visualization",
 							titleEnabled		: false,
 							buttonsEnabled	: false,
-							contained				: true
+							contained				: true,
+							stopData				: this.model.get('id')
 						}
 					}]);
 
@@ -364,21 +368,27 @@ define([
 			 * we must stop either the entity form component AND the chart editor
 			 * component.
 			 */
-			onVisualizationSaveSuccess: function()
+			onVisualizationSaveSuccess: function(modelId)
 			{
-				this.sandbox.off("entity-form.visualization.save.success", this.onVisualizationSaveSuccess);
-				this.resetThumb();
+				if(modelId === this.model.get('id'))
+				{
+					this.sandbox.off("entity-form.visualization.save.success", this.onVisualizationSaveSuccess);
+					this.resetThumb();
+				}
 			},
 
 			/**
 			 * When the entity form component is stopped, this resets it's related
 			 * state by disabling it's listener and flag.
 			 */
-			onEntityFormComponentStop: function()
+			onEntityFormComponentStop: function(stopData)
 			{
-				this.isEntityFormComponentStarted = false;
-				this.sandbox.off("component.stop.entity-form", this.onEntityFormComponentStop);
-				this.sandbox.off("entity-form.visualization.save.success", this.onVisualizationSaveSuccess);
+				if(stopData === this.model.get('id'))
+				{
+					this.isEntityFormComponentStarted = false;
+					this.sandbox.off("component.stop.entity-form", this.onEntityFormComponentStop);
+					this.sandbox.off("entity-form.visualization.save.success", this.onVisualizationSaveSuccess);
+				}
 			},
 
 			/**
@@ -386,8 +396,10 @@ define([
 			 */
 			onChartTabClick: function()
 			{
-				if (typeof this.model === "undefined")
+				if(typeof this.model === "undefined")
 					throw new Error("model is missing");
+
+				if(!this.model.getDatasource()) return;
 
 				if( !this.isChartEditorComponentStarted )
 				{
@@ -399,7 +411,8 @@ define([
 							model						: this.model,
 							titleEnabled		: false,
 							buttonsEnabled	: false,
-							contained				: true
+							contained				: true,
+							stopData				: this.model.get('id')
 						}
 					}]);
 
@@ -411,10 +424,13 @@ define([
 			 * When the chart editor component is stopped, this resets it's related
 			 * state by disabling it's listener and flag.
 			 */
-			onChartEditorComponentStop: function()
+			onChartEditorComponentStop: function(stopData)
 			{
-				this.isChartEditorComponentStarted = false;
-				this.sandbox.off("component.stop.chart-editor", this.onChartEditorComponentStop);
+				if(stopData === this.model.get('id'))
+				{
+					this.isChartEditorComponentStarted = false;
+					this.sandbox.off("component.stop.chart-editor", this.onChartEditorComponentStop);
+				}
 			},
 
 			/**
