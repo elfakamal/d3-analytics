@@ -30,19 +30,26 @@
 .axis
 {
 	font-size: 10px;
+	fill: #777;
+	font-weight: bold;
 }
 
 .axis path,
 .axis line
 {
 	fill: none;
-	stroke: #000;
+	stroke: #777;
 	shape-rendering: crispEdges;
 }
 
-.x.axis path
+/*.x.axis path
 {
 	display: none;
+}*/
+
+.bar
+{
+	cursor: pointer;
 }
 
 

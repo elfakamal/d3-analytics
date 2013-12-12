@@ -15,6 +15,7 @@ define(function ()
 				dropdown								: 'scripts/dropdown',
 				tab											: 'bower_components/twitter-bootstrap/js/tab',
 				colorpicker							: 'bower_components/mjaalnir-bootstrap-colorpicker/js/bootstrap-colorpicker',
+				color										: "scripts/color",
 
 				//common models
 				ModelVisualization			: 'scripts/common/models/visualization',

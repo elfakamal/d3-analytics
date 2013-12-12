@@ -83,7 +83,8 @@ define([
 						name: "chart",
 						options: {
 							el: "#div-chart-component",
-							chartType: "bar",
+//							chartType: "bar.horizontal",
+							chartType: "bar.vertical",
 							model: this.model,
 							stopData: this.model.get('id')
 						}
