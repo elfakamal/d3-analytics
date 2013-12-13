@@ -161,6 +161,10 @@ function(VisualizationCollection, rawBaseTemplate, rawVisualizationTemplate, gri
 		},
 
 		/**
+		 * deprecated
+		 *
+		 * This is useless because the this.html(baseTemplate()) implicitly stops
+		 * children components.
 		 *
 		 * @returns {undefined}
 		 */
@@ -200,7 +204,9 @@ function(VisualizationCollection, rawBaseTemplate, rawVisualizationTemplate, gri
 			var newVisualizationHTML = visualizationTemplate(_.extend(data, modelVisualization.toJSON()));
 			var gridsterWidget = this.grid.add_widget.apply(this.grid, [newVisualizationHTML].concat(vizSize));
 			var newVisualizationElementID = $(gridsterWidget).attr("id");
-			this.childrenVisualizations.push("#" + newVisualizationElementID);
+
+			if(this.childrenVisualizations.indexOf("#" + newVisualizationElementID) < 0)
+				this.childrenVisualizations.push("#" + newVisualizationElementID);
 		},
 
 		/**
@@ -209,7 +215,10 @@ function(VisualizationCollection, rawBaseTemplate, rawVisualizationTemplate, gri
 		 */
 		render: function()
 		{
-			this.stopChildren();
+			//this is useless because the this.html(baseTemplate()) implicitly stops
+			//children components.
+			//this.stopChildren();
+
 			this.html(baseTemplate());
 			this.initGrid();
 

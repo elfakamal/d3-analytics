@@ -10,10 +10,17 @@
 	<li id="li-entity-type-id">
 		<select id="select-visualization-type" name="visualizationTypeId" value="<%= visualization_type_id %>">
 			<option value="0" selected>Select a visualization type</option>
-			<option value="1">Vertical Bars</option>
-			<option value="2">Horizontal Bars</option>
-			<option value="3">Pie Chart</option>
-			<option value="4">Line Chart</option>
+			<% _.each(constants.VISUALIZATION_TYPE_GROUPS, function(group) { %>
+				<% if( group.children.length > 0 ) { %>
+				<optgroup label="<%= group.name %>" title="<%= group.name %>">
+					<% _.each(group.children, function(key) { %>
+					<option value="<%= key %>" title="<%= constants.VISUALIZATION_TYPE_NAMES[key] %>"><%= constants.VISUALIZATION_TYPE_NAMES[key] %></option>
+					<% }); %>
+				</optgroup>
+				<% } else { %>
+					<option value="<%= group.key %>" title="<%= group.name %>"><%= group.name %></option>
+				<% } %>
+			<% }); %>
 		</select>
 	</li>
 	<li id="li-description">

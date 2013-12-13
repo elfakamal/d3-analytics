@@ -52,6 +52,22 @@ function(ViewBarChart, d3, constants, Color)
 			this.yAxis = d3.svg.axis().scale(this.yScale).orient(orient);
 		},
 
+		/**
+		 * Abstract function
+		 */
+		drawXDomainLines: function()
+		{
+
+		},
+
+		/**
+		 * Abstract function
+		 */
+		drawYDomainLines: function()
+		{
+
+		},
+
 		updateScales: function()
 		{
 			var self = this, xDomain = [];

@@ -201,6 +201,7 @@ function(ViewChart, d3, constants, Color)
 			this.drawXDomainLines();
 			this.drawYDomainLines();
 			this.drawBars();
+			this.initBarsListeners();
 			this.update();
 		},
 
@@ -261,6 +262,9 @@ function(ViewChart, d3, constants, Color)
 			throw new Error("This is an abstract method, you must override it.");
 		},
 
+		/**
+		 * Abstract function
+		 */
 		drawYDomainLines: function()
 		{
 			throw new Error("This is an abstract method, you must override it.");
@@ -275,10 +279,15 @@ function(ViewChart, d3, constants, Color)
 				.data(this.data)
 				.enter()
 				.append("rect")
-					.attr("class", "bar")
-//					.on('click', this.onBarClick())
-					.on('mouseover', this.onBarMouseOver())
-					.on('mouseout', this.onBarMouseOut());
+					.attr("class", "bar");
+		},
+
+		initBarsListeners: function()
+		{
+			this.svg.selectAll(".bar")
+//				.on('click', this.onBarClick())
+				.on('mouseover', this.onBarMouseOver())
+				.on('mouseout', this.onBarMouseOut());
 		},
 
 		onBarClick: function()

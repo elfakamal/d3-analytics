@@ -1,9 +1,10 @@
 define([
 	"ModelVisualization",
 	"text!../templates/base-visualization.html",
-	"text!../templates/partial-select-d3collections.html"
+	"text!../templates/partial-select-d3collections.html",
+	"constants"
 ],
-function(ModelVisualization, baseTemplate, partialSelectD3Collections)
+function(ModelVisualization, baseTemplate, partialSelectD3Collections, constants)
 {
 	var template = _.template(baseTemplate);
 	var parsedPartialSelectD3Collections = _.template(partialSelectD3Collections);
@@ -113,7 +114,7 @@ function(ModelVisualization, baseTemplate, partialSelectD3Collections)
 			var options = _.pick(this.options, ["titleEnabled","buttonsEnabled", "contained"]);
 			var modelData = {};
 			if( this.model ) modelData = this.model.toJSON();
-			var data = _.extend(options, modelData);
+			var data = _.extend(options, modelData, {constants:constants});
 			this.$el.html(template(data));
 			this.$("#select-visualization-type")[0].selectedIndex = this.model.get('visualization_type_id');
 

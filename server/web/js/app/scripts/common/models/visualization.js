@@ -12,7 +12,7 @@ function(Backbone, ModelDatasource)
 			visualization_type_id: 0,
 			is_starred: false,
 			is_active: true,
-			chart_data: ""
+			chart_data: '{"grouped":false,"negative":false,"size":"1","colors":[]}'
 		},
 
 		_libraryId: 0,
@@ -21,6 +21,12 @@ function(Backbone, ModelDatasource)
 		_attaching: false,
 
 		datasource: null,
+
+		save: function()
+		{
+			console.log("THE MODEL VISUALIZATION IS BEING SAVED : " + JSON.stringify(this.attributes));
+			Backbone.Model.prototype.save.apply(this, arguments);
+		},
 
 
 		setLibraryId: function(libraryId)

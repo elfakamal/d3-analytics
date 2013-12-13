@@ -52,12 +52,28 @@ function(ViewBarChart, d3, constants, Color)
 			this.yAxis = d3.svg.axis().scale(this.yScale).orient("left");
 		},
 
+		/**
+		 * Abstract function
+		 */
+		drawXDomainLines: function()
+		{
+
+		},
+
+		/**
+		 * Abstract function
+		 */
+		drawYDomainLines: function()
+		{
+
+		},
+
 		updateScales: function()
 		{
-			var self = this, xDomain = [];
+			var self = this, yDomain = [];
 			self.xScale.domain(this.data.map(function(d) { return d[self.getXScaleColumn()]; }));
-			xDomain = d3.extent(this.data, function(d){return d[self.getYScaleColumn()];});
-			self.yScale.domain(xDomain).nice();
+			yDomain = d3.extent(this.data, function(d){return d[self.getYScaleColumn()];});
+			self.yScale.domain(yDomain).nice();
 		},
 
 		/**

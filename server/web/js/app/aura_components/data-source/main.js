@@ -23,7 +23,7 @@ define(['./collections/datasources', "text!./templates/base.html"], function (Da
 		onOKbuttonClick: function()
 		{
 			var datasourceId = this.$find("#select-datasource").val();
-			this.sendChosenDatasource(datasourceId);
+			this.sendChosenDatasource(+datasourceId);
 		},
 
 		sendChosenDatasource: function(datasourceId)

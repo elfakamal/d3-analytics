@@ -2,10 +2,11 @@ define([
 	"ModelVisualization",
 	"text!./templates/base.html",
 	"text!./templates/edit.html",
+	"constants",
 	"dropdown",
 	"tab"
 	],
-	function (ModelVisualization, rawBaseTemplate, rawEditTemplate, DropDown, tab)
+	function (ModelVisualization, rawBaseTemplate, rawEditTemplate, constants, DropDown, tab)
 	{
 		'use strict';
 
@@ -78,13 +79,15 @@ define([
 					var chartComponent = '<div id="div-chart-component" class="absolute-center"></div>';
 					this.$find('#div-viz-content').html(chartComponent);
 
+					var visualizationTypeId = this.model.get("visualization_type_id");
+					var visualizationType = constants.VISUALIZATION_TYPES[visualizationTypeId];
+
 					this.sandbox.on("component.stop.chart", this.onChartComponentStop, this);
 					this.sandbox.start([{
 						name: "chart",
 						options: {
-							el: "#div-chart-component",
-//							chartType: "bar.horizontal",
-							chartType: "bar.vertical",
+							el: "#li-viz-" + this.model.get('id') + " #div-chart-component",
+							chartType: visualizationType,
 							model: this.model,
 							stopData: this.model.get('id')
 						}

@@ -1,11 +1,11 @@
-define(['underscore'], function (_)
+define(['underscore', "constants"], function (_, constants)
 {
   'use strict';
 
   return {
 
 		type: "Backbone",
-
+		currentChartType: "",
 
 		/**
 		 *
@@ -13,9 +13,13 @@ define(['underscore'], function (_)
 		 */
     initialize: function ()
 		{
+			if( !_.has(this.options, "chartType") )
+				throw new Error("this chart needs a type");
+
 			this.initModel();
 			this.initListeners();
-			this.loadChartView();
+
+			this.loadChartView(this.options.chartType);
     },
 
 		/**
@@ -38,6 +42,19 @@ define(['underscore'], function (_)
 			this.sandbox.on("chart.refresh", this.onChartRefreshRequested, this);
 			this.sandbox.on("chart.show", this.show, this);
 			this.sandbox.on("chart.hide", this.hide, this);
+
+			this.model.on("change", this.onModelChange, this);
+		},
+
+		onModelChange: function()
+		{
+			var visualizationTypeId = this.model.get("visualization_type_id");
+			var visualizationType = constants.VISUALIZATION_TYPES[visualizationTypeId];
+
+			if(this.currentChartType !== visualizationType)
+			{
+				this.loadChartView(visualizationType);
+			}
 		},
 
 		show: function(data)
@@ -78,17 +95,16 @@ define(['underscore'], function (_)
 		 *
 		 * @returns {undefined}
 		 */
-		loadChartView: function()
+		loadChartView: function(chartType)
 		{
-			if( !_.has(this.options, "chartType") ) return;
-
 			var self = this;
 			var viewChartFile = "./aura_components/chart/views/";
-			viewChartFile += this.options.chartType + ".chart.viz";
+			viewChartFile += chartType + ".chart.viz";
 
 			require([viewChartFile], function(ViewChart)
 			{
 				self.initView(ViewChart);
+				self.currentChartType = chartType;
 			});
 		},
 
