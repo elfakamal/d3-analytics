@@ -8,6 +8,11 @@ define([], function()
 		chartData						: null,
 		svg									: null,
 
+		generateColors: function()
+		{
+			return [];
+		},
+
 		getChartIcon: function()
 		{
 			return '';

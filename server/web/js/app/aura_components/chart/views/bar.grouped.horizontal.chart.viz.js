@@ -1,18 +1,8 @@
-define(["./bar.vertical.chart.viz", "d3", "constants"],
-function(ViewBarVerticalChart, d3, constants)
+define(["./bar.horizontal.chart.viz", "d3", "constants", "color"],
+function(ViewBarHorizontalChart, d3, constants, Color)
 {
-	return ViewBarVerticalChart.extend(
+	return ViewBarHorizontalChart.extend(
 	{
-		groupValues: null,
-
-		/**
-		 * overriding the parent initialize function in order to assign some fields.
-		 */
-		initialize: function()
-		{
-			this.orientation = constants.TOP;
-			ViewBarVerticalChart.prototype.initialize.call(this);
-		},
 
 		/**
 		 *
@@ -20,7 +10,7 @@ function(ViewBarVerticalChart, d3, constants)
 		 */
 		initColorScale: function()
 		{
-			ViewBarVerticalChart.prototype.initColorScale.call(this);
+			ViewBarHorizontalChart.prototype.initColorScale.call(this);
 
 //			this.colorScale.range([
 //				"#98abc5",
@@ -67,8 +57,8 @@ function(ViewBarVerticalChart, d3, constants)
 		 */
 		initXAxis: function()
 		{
-			ViewBarVerticalChart.prototype.initXAxis.call(this);
-			this.xGroupScale = d3.scale.ordinal();
+			ViewBarHorizontalChart.prototype.initXAxis.call(this);
+			this.xAxis.tickFormat(d3.format(".2s"));
 		},
 
 		/**
@@ -77,8 +67,8 @@ function(ViewBarVerticalChart, d3, constants)
 		 */
 		initYAxis: function()
 		{
-			ViewBarVerticalChart.prototype.initYAxis.call(this);
-			this.yAxis.tickFormat(d3.format(".2s"));
+			ViewBarHorizontalChart.prototype.initYAxis.call(this);
+			this.yGroupScale = d3.scale.ordinal();
 		},
 
 		/**
@@ -103,19 +93,19 @@ function(ViewBarVerticalChart, d3, constants)
 		updateScales: function()
 		{
 			var self = this;
-			var yDomain;
+			var xDomain;
 
-			//global X scale
-			this.xScale.domain(this.data.map(function(d) { return d[self.getXScaleColumn()]; }));
+			//global Y scale
+			this.yScale.domain(this.data.map(function(d) { return d[self.getYScaleColumn()]; }));
 
-			//group internal X scale
-			this.xGroupScale.domain(this.groupValues).rangeRoundBands([0, this.xScale.rangeBand()]);
+			//group internal Y scale
+			this.yGroupScale.domain(this.groupValues).rangeRoundBands([0, this.yScale.rangeBand()]);
 
-			yDomain = [
+			xDomain = [
 				d3.min(this.data, function(d) { return d3.min(d.values, function(d) { return d.value; }); }),
 				d3.max(this.data, function(d) { return d3.max(d.values, function(d) { return d.value; }); })
 			];
-			this.yScale.domain(yDomain).nice();
+			this.xScale.domain(xDomain).nice();
 		},
 
 		/**
@@ -128,8 +118,7 @@ function(ViewBarVerticalChart, d3, constants)
 
 			var group = this.svg.selectAll(".group")
 				.attr("transform", function(d) {
-					var x = self.xScale;
-					return "translate(" + x(d[self.getXScaleColumn()]) + ",0)";
+					return "translate(0," + self.yScale(d[self.getYScaleColumn()]) + ")";
 				});
 
 			group.selectAll(".bar")
@@ -155,8 +144,7 @@ function(ViewBarVerticalChart, d3, constants)
 		{
 			var self = this;
 			return function(d) {
-				var x = self.xGroupScale;
-				return x(d.name);
+				return self.xScale(Math.min(0, d.value));
 			};
 		},
 
@@ -172,20 +160,22 @@ function(ViewBarVerticalChart, d3, constants)
 		{
 			var self = this;
 			return function(d) {
-				var y = self.yScale;
-				return y(Math.max(0, d.value));
+				return self.yGroupScale(d.name);
 			};
 		},
 
 		/**
 		 * the bars must have the width that correspond to the xScale, because this
-		 * chart is vertical.
+		 * chart is horizontal.
 		 *
 		 * @returns {function}
 		 */
 		getBarsWidth: function()
 		{
-			return this.xGroupScale.rangeBand();
+			var self = this;
+			return function(d) {
+				return Math.abs(self.xScale(d.value) - self.xScale(0));
+			};
 		},
 
 		/**
@@ -194,11 +184,13 @@ function(ViewBarVerticalChart, d3, constants)
 		 */
 		getBarsHeight: function()
 		{
-			var self = this;
-			return function(d) {
-				var y = self.yScale;
-				return Math.abs(y(d.value) - y(0));
-			};
+			return this.yGroupScale.rangeBand();
+
+//			var self = this;
+//			return function(d) {
+//				var y = self.yScale;
+//				return Math.abs(y(d.value) - y(0));
+//			};
 		}
 
 	});

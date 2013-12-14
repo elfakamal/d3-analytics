@@ -14,6 +14,7 @@ function(ViewChart, d3, constants, Color)
 
 		xScale				: null,
 		yScale				: null,
+		colorScale		: null,
 
 		xAxis					: null,
 		yAxis					: null,
@@ -96,6 +97,12 @@ function(ViewChart, d3, constants, Color)
 			return height - constants.THUMB_TITLE_HEIGHT;
 		},
 
+		/***************************************************************************
+		 *
+		 * INITIALIZERS
+		 *
+		 **************************************************************************/
+
 		/**
 		 *
 		 * @returns {undefined}
@@ -127,8 +134,39 @@ function(ViewChart, d3, constants, Color)
 			this.width = this.realWidth() - this.marginLeft() - this.marginRight();
 			this.height = this.realHeight() - this.marginTop() - this.marginBottom();
 
+			this.initColorScale();
 			this.initXAxis();
 			this.initYAxis();
+		},
+
+		generateColors: function()
+		{
+			var colors = [];
+			var self = this;
+
+			_.each(this.columns, function(column)
+			{
+				var R, G, B;
+
+				R = Math.round(Math.random() * 255);
+				G = Math.round(Math.random() * 255);
+				B = Math.round(Math.random() * 255);
+
+				var rgb = [R, G, B, .5];
+				var strRGB = "rgba(" + rgb.join(",") + ")";
+				colors.push(strRGB);
+			});
+
+			return colors;
+		},
+
+		/**
+		 * this function needs to be overriden.
+		 */
+		initColorScale: function()
+		{
+			var colors = this.getColorDictionary();
+			this.colorScale = d3.scale.ordinal().range(colors);
 		},
 
 		/**
@@ -189,6 +227,12 @@ function(ViewChart, d3, constants, Color)
 				return row;
 			});
 		},
+
+		/***************************************************************************
+		 *
+		 * DRAWERS
+		 *
+		 **************************************************************************/
 
 		/**
 		 *
@@ -355,6 +399,12 @@ function(ViewChart, d3, constants, Color)
 				.text(d[this.columns[1]]);
 		},
 
+		/***************************************************************************
+		 *
+		 * UPDATERS
+		 *
+		 **************************************************************************/
+
 		/**
 		 * updates all chart's parameters.
 		 *
@@ -419,13 +469,12 @@ function(ViewChart, d3, constants, Color)
 		 */
 		updateBars: function()
 		{
-			var colorsDictionary = this.getColorDictionary();
-			var color = new Color(colorsDictionary[1]);
-			color.setAlpha(.5);
+			var self = this;
 
 			this.svg.selectAll(".bar")
 
-				.style('fill', color.toRGBAString())
+//				.style('fill', color.toRGBAString())
+				.style('fill', function(d) { return self.colorScale(d[self.getXScaleColumn()]); })
 
 				.attr("x", this.getBarsPosX())
 				.attr("y", this.getBarsPosY())
@@ -433,6 +482,12 @@ function(ViewChart, d3, constants, Color)
 				.attr("width", this.getBarsWidth())
 				.attr("height", this.getBarsHeight());
 		},
+
+		/***************************************************************************
+		 *
+		 * GETTERS
+		 *
+		 **************************************************************************/
 
 		/**
 		 * Abstract function
@@ -497,17 +552,37 @@ function(ViewChart, d3, constants, Color)
 		 */
 		getColorDictionary: function()
 		{
-			var columns = this.model.getDatasource().getColumns();
-			var colorsDico = {};
-			var chartData = JSON.parse(this.model.get('chart_data'));
+			var colorsArray = [];
 
-			_.each(columns, function(value, key, list) {
-				_.each(chartData.colors, function(pair) {
-					if(pair[0] === value) colorsDico[key] = pair[1];
-				}, this);
-			}, this);
+			if(!_.isEmpty(this.columns))
+			{
+				var realColumns = _.rest(_.values(this.columns));
 
-			return colorsDico;
+				if(this.model.get('chart_data') !== "")
+				{
+					var chartData = JSON.parse(this.model.get('chart_data'));
+
+					_.each(realColumns, function(value, key, list) {
+						_.each(chartData.colors, function(pair)
+						{
+							if(pair[0] === value)
+							{
+								var color = new Color(pair[1]);
+								color.setAlpha(.5);
+								colorsArray.push(color.toRGBAString());
+
+								//free memory
+								color = null;
+							}
+						}, this);
+					}, this);
+				}
+
+				//free memory
+				realColumns = null;
+			}
+
+			return colorsArray;
 		}
 
 	});

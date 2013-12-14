@@ -78,6 +78,8 @@ function(ViewBarChart, d3, constants, Color)
 
 		/**
 		 * the bars must begin from the x = 0.
+		 *
+		 * @returns {function}
 		 */
 		getBarsPosX: function()
 		{
@@ -85,9 +87,13 @@ function(ViewBarChart, d3, constants, Color)
 			return function(d) {
 				var x = self.xScale;
 				return x(d[self.getXScaleColumn()]);
-			}
+			};
 		},
 
+		/**
+		 *
+		 * @returns {function}
+		 */
 		getBarsPosY: function()
 		{
 			var self = this;
@@ -98,7 +104,7 @@ function(ViewBarChart, d3, constants, Color)
 					return y(Math.max(0, d[self.getYScaleColumn()]));
 				else
 					return y(Math.min(0, d[self.getYScaleColumn()]));
-			}
+			};
 		},
 
 		/**
@@ -110,6 +116,10 @@ function(ViewBarChart, d3, constants, Color)
 			return this.xScale.rangeBand();
 		},
 
+		/**
+		 *
+		 * @returns {function}
+		 */
 		getBarsHeight: function()
 		{
 			var self = this;
@@ -122,22 +132,36 @@ function(ViewBarChart, d3, constants, Color)
 
 		/**
 		 * in the horizontal bars chart, it's the second values that matters.
+		 *
+		 * @returns {String}
 		 */
 		getXScaleColumn: function()
 		{
 			return this.columns[0];
 		},
 
+		/**
+		 *
+		 * @returns {String}
+		 */
 		getYScaleColumn: function()
 		{
 			return this.columns[1];
 		},
 
+		/**
+		 *
+		 * @returns {String}
+		 */
 		getChartValueColumn: function()
 		{
 			return this.getYScaleColumn();
 		},
 
+		/**
+		 *
+		 * @returns {undefined}
+		 */
 		updateXAxis: function()
 		{
 			var y = this.yScale;
@@ -146,6 +170,10 @@ function(ViewBarChart, d3, constants, Color)
 				.call(this.xAxis);
 		},
 
+		/**
+		 *
+		 * @returns {undefined}
+		 */
 		updateYAxis: function()
 		{
 			this.svg.select(".y.axis").call(this.yAxis);

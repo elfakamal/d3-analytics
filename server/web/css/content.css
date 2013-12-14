@@ -8,6 +8,7 @@
 
 #section-content
 {
+	overflow: auto;
 	border-left: 1px solid #eee;
 	width: 85%;
 	height: 100%;
