@@ -1,142 +1,213 @@
-define(["./chart.viz", "d3"],
-function(ViewChart, d3)
+define(["./chart.viz", "d3", "constants", "color"],
+function(ViewChart, d3, constants, Color)
 {
 
 	return ViewChart.extend(
 	{
-		arc: null,
-		percentTexts: null,
-		width : 100,
-		height : 100,
-		twoPi : 2 * Math.PI,
-		progress : .69,
-		total : 1308573, // must be hard-coded if server doesn't report Content-Length
-		formatPercent : d3.format(".0%"),
-		innerRadius : 30,
-		outerRadius : 50,
-		padding : 20,
 
-		events: {
+		arcModel: null,
+		pieLayout: null,
 
+
+		radius :function()
+		{
+			//find out what's with the "10" !!
+			return Math.min(this.width, this.height) / 2 - 10;
 		},
 
-		initialize: function ()
+		innerRadius :function()
 		{
-			this.render();
+			return 0;
 		},
 
-		render: function()
+		/**
+		 *free memory from the other fields.
+		 */
+		dispose: function()
 		{
-			var dsList		= this.model.get('data_sources');
-			var ds			= dsList[0];
-			var fileName	= ds.file_name;//"6d29fe6a24140899e2bb392b8fe1630a.d3a"
+			this.isDonut = false;
+			this.donutTickness = 0;
+			this.arcModel = null;
+			this.pieLayout = null;
 
-			console.log(ds);
+			ViewChart.prototype.dispose.call(this);
+		},
 
-			//foreground
-			this.arc = d3.svg.arc()
-				.startAngle(0)
-				.endAngle(function(d)
-				{
-					return d.weight * this.twoPi;
-				})
-				.innerRadius(this.innerRadius)
-				.outerRadius(this.outerRadius);
 
-			//background
-			var arc2 = d3.svg.arc()
-				.startAngle(0)
-				.endAngle(this.twoPi)
-				.innerRadius(this.innerRadius)
-				.outerRadius(this.outerRadius);
+		/***************************************************************************
+		 *
+		 * INITIALIZERS
+		 *
+		 **************************************************************************/
 
-			var vizSelection = d3.select("#li-viz-" + this.model.get('id'));
-			var skillListSelection = vizSelection.select("#div-viz-content");
+		/**
+		 *
+		 * @returns {undefined}
+		 */
+		initParameters: function()
+		{
+			ViewChart.prototype.initParameters.call(this);
+
+			this.initPie();
+		},
+
+		initPie: function()
+		{
 			var self = this;
 
-			d3.json("uploads/datasources/" + fileName, function(error, data)
+			this.arcModel = d3.svg.arc()
+				.outerRadius(this.radius())
+				.innerRadius(this.innerRadius());
+
+			this.pieLayout = d3.layout.pie()
+				.sort(null)
+				.value(function(d) { return d[self.getValueColumn()]; });
+		},
+
+		/**
+		 * this function needs to be overriden.
+		 */
+		initColorScale: function()
+		{
+			var colors = [];
+			if(this.data) colors = this.generateColors(this.data.length);
+			this.colorScale = d3.scale.ordinal().range(colors);
+		},
+
+		sanitizeData: function()
+		{
+			var self = this;
+			_.map(this.data, function(row)
 			{
-
-				var skillItems = skillListSelection.selectAll("div")
-					.data(data)
-					.enter()
-					.append("div")
-					.style("width", "100%")
-					.style("height", "100%")
-					.attr("class", "center-container");
-
-				var skillSVGs = skillItems.append("svg")
-					.attr("width", self.width)
-					.attr("height", self.height)
-					.attr("class", "absolute-center");
-
-				var pieBases = skillSVGs
-					.append("g")
-					.attr("transform", "translate(" + (self.width/2) + "," + (self.height/2) + ")")
-					.attr("class", function(d)
-					{
-						var classes = "skill-graphic";
-
-						if( d.customClasses != "" )
-						{
-							classes += " " + d.customClasses;
-						}
-
-						return classes;
-					});
-
-
-				pieBases.append("path")
-					.attr("class", "background")
-					.attr("d", arc2)
-					.attr("transform", "scale(0)")
-					.transition()
-					.duration(1000)
-					.attr("transform", "scale(1)");
-
-
-				var pieForegrounds = pieBases.append("path")
-					.attr("class", "foreground")
-					.transition()
-					.delay(1000)
-					.duration(function(d)
-					{
-						return d.duration;
-					})
-					.attrTween("d", self.pieTween());
-
-
-				self.percentTexts = pieBases.append("text")
-					.attr("class", "percent")
-					.attr("text-anchor", "middle")
-					.attr("dy", ".35em")
-					.attr("fill", "gray");
-
+				row[self.getValueColumn()] = +row[self.getValueColumn()];
+				return row;
 			});
-
 		},
 
-		pieTween : function ()
+		/***************************************************************************
+		 *
+		 * DRAWERS
+		 *
+		 **************************************************************************/
+
+		/**
+		 *
+		 */
+		drawChart: function()
+		{
+			ViewChart.prototype.drawChart.call(this);
+
+			this.drawArcs();
+			this.drawPath();
+			this.drawTexts();
+
+			this.update();
+		},
+
+		positionBase: function()
+		{
+			this.svg.attr("transform", "translate(" + this.width/2 + "," + this.height/2 + ")");
+		},
+
+		drawArcs: function()
+		{
+			this.svg.selectAll(".arc")
+				.data(this.pieLayout(this.data))
+				.enter()
+				.append("g")
+					.attr("class", "arc");
+		},
+
+		drawPath: function()
 		{
 			var self = this;
 
-			return function(d, i)
-			{
-				var myInterpolation = d3.interpolate({weight:.0}, {weight: d.weight});
+			this.svg.selectAll(".arc")
+				.append("path")
+					.attr("class", "path")
+					.attr("d", this.arcModel)
+					.style("fill", function(d)
+					{
+						return self.colorScale(d.data[self.getKeyColumn()]);
+					});
+		},
 
-				return function(t)
+		drawTexts: function()
+		{
+			var self = this;
+
+			this.svg.selectAll(".path")
+				.append("text")
+					.attr("class", "text")
+					.attr("transform", function(d)
+					{
+						return "translate(" + self.arcModel.centroid(d) + ")";
+					})
+					.attr("dy", ".35em")
+					.style("text-anchor", "middle")
+					.text(function(d) { return d.data[self.getKeyColumn()]; });
+		},
+
+		/***************************************************************************
+		 *
+		 * UPDATERS
+		 *
+		 **************************************************************************/
+
+		/**
+		 * updates all chart's parameters.
+		 *
+		 * @returns {undefined}
+		 */
+		update: function()
+		{
+			ViewChart.prototype.update.call(this);
+
+			this.updatePath();
+			this.updateTexts();
+		},
+
+		updatePath: function()
+		{
+			var self = this;
+
+			this.svg.selectAll(".path")
+				.attr("d", this.arcModel)
+				.style("fill", function(d)
 				{
-					var progressEnd = myInterpolation(t);
-					var myTexts = self.percentTexts;//d3.selectAll("text.percent");
-					//console.log("my texts : " + myTexts);
-					d3.select(myTexts[0][i]).text(self.formatPercent(progressEnd.weight));
-					return self.arc(progressEnd);
-				}
-			}
-		}
+					return self.colorScale(d.data[self.getKeyColumn()]);
+				});
+		},
 
+		updateTexts: function()
+		{
+			var self = this;
+
+			this.svg.selectAll(".text")
+				.attr("transform", function(d)
+				{
+					return "translate(" + self.arcModel.centroid(d) + ")";
+				})
+				.attr("dy", ".35em")
+				.style("text-anchor", "middle")
+				.text(function(d) { return d.data[self.getKeyColumn()]; });
+		},
+
+		/**
+		 * Abstract function
+		 */
+		getKeyColumn: function()
+		{
+			return this.columns[0];
+		},
+
+		/**
+		 * Abstract function
+		 */
+		getValueColumn: function()
+		{
+			return this.columns[1];
+		}
 	});
 
 });
-
-

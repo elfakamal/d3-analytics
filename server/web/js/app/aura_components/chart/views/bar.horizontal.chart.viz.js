@@ -10,6 +10,9 @@ function(ViewBarChart, d3, constants, Color)
 		{
 			this.defaultOrientation = constants.RIGHT;
 			this.orientation = constants.RIGHT;
+			this.xTicks = true;
+			this.yTicks = false;
+
 			ViewBarChart.prototype.initialize.call(this);
 		},
 
@@ -50,22 +53,6 @@ function(ViewBarChart, d3, constants, Color)
 			this.yScale = d3.scale.ordinal().rangeRoundBands([0, this.height], padding);
 			var orient = this.orientation === constants.LEFT ? constants.RIGHT : constants.LEFT;
 			this.yAxis = d3.svg.axis().scale(this.yScale).orient(orient);
-		},
-
-		/**
-		 * Abstract function
-		 */
-		drawXDomainLines: function()
-		{
-
-		},
-
-		/**
-		 * Abstract function
-		 */
-		drawYDomainLines: function()
-		{
-
 		},
 
 		updateScales: function()

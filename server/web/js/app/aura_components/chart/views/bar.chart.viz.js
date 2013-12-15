@@ -4,22 +4,17 @@ function(ViewChart, d3, constants, Color)
 
 	return ViewChart.extend(
 	{
-		defaultOrtientation	: "",
-		orientation					: "",
 
 		formatPercent	: d3.format(".0%"),
 
-		width					: null,
-		height				: null,
-
 		xScale				: null,
 		yScale				: null,
-		colorScale		: null,
 
 		xAxis					: null,
 		yAxis					: null,
 
-		columns			: {},
+		xTicks				: false,
+		yTicks				: false,
 
 		/**
 		 *free memory from the other fields.
@@ -38,64 +33,6 @@ function(ViewChart, d3, constants, Color)
 			ViewChart.prototype.dispose.call(this);
 		},
 
-		marginTop: function()
-		{
-			var defaultMargin = 10;
-			if(this.chartData && +this.chartData.size === 1) return 10;
-			return defaultMargin;
-		},
-
-		marginRight: function()
-		{
-			var defaultMargin = 10;
-			if(this.chartData && +this.chartData.size === 1) return 10;
-			return defaultMargin;
-		},
-
-		marginBottom: function()
-		{
-			var defaultMargin = 30;
-			if(this.chartData && +this.chartData.size === 1) return 10;
-			return defaultMargin;
-		},
-
-		marginLeft: function()
-		{
-			var defaultMargin = 40;
-			if(this.chartData && +this.chartData.size === 1) return 10;
-			return defaultMargin;
-		},
-
-		/**
-		 *
-		 */
-		realWidth : function()
-		{
-			var defaultWidth = constants.DEFAULT_THUMB_WIDTH;
-			var sizeX = 1;
-
-			if(!_.isEmpty(this.chartData))
-				sizeX = constants.VISUALIZATION_SIZES[this.chartData.size][0];
-
-			//piked from the gridster width computing formula.
-			return (sizeX * defaultWidth + ((sizeX - 1) * constants.DEFAULT_HORIZONTAL_MARGIN) * 2);
-		},
-
-		/**
-		 *
-		 */
-		realHeight : function()
-		{
-			var defaultHeight = constants.DEFAULT_THUMB_HEIGHT;
-			var sizeY = 1;
-
-			if(!_.isEmpty(this.chartData))
-				sizeY = constants.VISUALIZATION_SIZES[this.chartData.size][1];
-
-			//piked from the gridster width computing formula.
-			var height = (sizeY * defaultHeight + ((sizeY - 1) * constants.DEFAULT_VERTICAL_MARGIN) * 2);
-			return height - constants.THUMB_TITLE_HEIGHT;
-		},
 
 		/***************************************************************************
 		 *
@@ -107,66 +44,14 @@ function(ViewChart, d3, constants, Color)
 		 *
 		 * @returns {undefined}
 		 */
-		initialize: function ()
-		{
-			this.initListeners();
-			this.render();
-		},
-
-		initListeners: function()
-		{
-			this.model.on('change', this.onModelChange, this);
-		},
-
-		onModelChange: function()
-		{
-			this.chartData = JSON.parse(this.model.get("chart_data"));
-		},
-
-		/**
-		 *
-		 * @returns {undefined}
-		 */
 		initParameters: function()
 		{
-			this.chartData = JSON.parse(this.model.get("chart_data"));
+			ViewChart.prototype.initParameters.call(this);
 
-			this.width = this.realWidth() - this.marginLeft() - this.marginRight();
-			this.height = this.realHeight() - this.marginTop() - this.marginBottom();
-
-			this.initColorScale();
 			this.initXAxis();
 			this.initYAxis();
-		},
-
-		generateColors: function()
-		{
-			var colors = [];
-			var self = this;
-
-			_.each(this.columns, function(column)
-			{
-				var R, G, B;
-
-				R = Math.round(Math.random() * 255);
-				G = Math.round(Math.random() * 255);
-				B = Math.round(Math.random() * 255);
-
-				var rgb = [R, G, B, .5];
-				var strRGB = "rgba(" + rgb.join(",") + ")";
-				colors.push(strRGB);
-			});
-
-			return colors;
-		},
-
-		/**
-		 * this function needs to be overriden.
-		 */
-		initColorScale: function()
-		{
-			var colors = this.getColorDictionary();
-			this.colorScale = d3.scale.ordinal().range(colors);
+			this.drawXDomainLines();
+			this.drawYDomainLines();
 		},
 
 		/**
@@ -183,39 +68,6 @@ function(ViewChart, d3, constants, Color)
 		initYAxis: function()
 		{
 			throw new Error("This is an abstract method, you must override it.");
-		},
-
-		/**
-		 *
-		 * @returns {undefined}
-		 */
-		render: function()
-		{
-			this.initParameters();
-			this.initDatasource();
-		},
-
-		/**
-		 *
-		 * @returns {undefined}
-		 */
-		initDatasource: function()
-		{
-			if(!this.data)
-				this.model.loadDatasource(this.onLoaderComplete, this);
-		},
-
-		/**
-		 *
-		 * @param {Object} data
-		 * @returns {undefined}
-		 */
-		onLoaderComplete: function(data)
-		{
-			this.columns = this.model.getDatasource().getColumns();
-			this.data = data;
-			this.sanitizeData();
-			this.drawChart();
 		},
 
 		sanitizeData: function()
@@ -239,35 +91,13 @@ function(ViewChart, d3, constants, Color)
 		 */
 		drawChart: function()
 		{
-			this.drawBase();
+			ViewChart.prototype.drawChart.call(this);
+
 			this.drawXAxis();
 			this.drawYAxis();
-			this.drawXDomainLines();
-			this.drawYDomainLines();
 			this.drawBars();
 			this.initBarsListeners();
 			this.update();
-		},
-
-		/**
-		 *
-		 * @returns {undefined}
-		 */
-		drawBase: function()
-		{
-			this.$el.html("");
-			var vizSelection = d3.select("#li-viz-" + this.model.get('id'));
-			var viz = vizSelection.select("#div-chart-component");
-
-			this.svg = viz.append("svg")
-					.attr("width", this.width + this.marginLeft() + this.marginRight())
-					.attr("height", this.height + this.marginTop() + this.marginBottom())
-					.attr("class", "absolute-center")
-					.style("margin-top", "auto")
-					.style("margin-bottom", "0px")
-				.append("g")
-					.attr("class", "first-g")
-					.attr("transform", "translate(" + this.marginLeft() + "," + this.marginTop() + ")");
 		},
 
 		/**
@@ -299,19 +129,21 @@ function(ViewChart, d3, constants, Color)
 		},
 
 		/**
-		 * Abstract function
+		 * intializes the x axis ticks to draw them.
 		 */
 		drawXDomainLines: function()
 		{
-			throw new Error("This is an abstract method, you must override it.");
+			if(this.xTicks === true)
+				this.xAxis.tickSize(-this.height);
 		},
 
 		/**
-		 * Abstract function
+		 * intializes the y axis ticks to draw them.
 		 */
 		drawYDomainLines: function()
 		{
-			throw new Error("This is an abstract method, you must override it.");
+			if(this.yTicks === true)
+				this.yAxis.tickSize(-this.width);
 		},
 
 		/**
@@ -351,6 +183,11 @@ function(ViewChart, d3, constants, Color)
 			return function(d)
 			{
 				var currentRGBAColor = d3.select(this).style('fill');
+//				var sanitized = currentRGBAColor.replace(/\s|[a-z]+|[\(\)]/g, "");
+//				var colorArray = sanitized.split(",");
+//				colorArray[colorArray.length - 1] = "1";
+//				d3.select(this).style('fill', "rgba(" + colorArray.join(",") + ")");
+
 				var color = new Color(currentRGBAColor);
 				color.setAlpha(1);
 				d3.select(this).style('fill', color.toRGBAString());
@@ -365,6 +202,11 @@ function(ViewChart, d3, constants, Color)
 			return function(d)
 			{
 				var currentRGBAColor = d3.select(this).style('fill');
+//				var sanitized = currentRGBAColor.replace(/\s|[a-z]+|[\(\)]/g, "");
+//				var colorArray = sanitized.split(",");
+//				colorArray[colorArray.length - 1] = "0.5";
+//				d3.select(this).style('fill', "rgba(" + colorArray.join(",") + ")");
+
 				var color = new Color(currentRGBAColor);
 				color.setAlpha(.5);
 				d3.select(this).style('fill', color.toRGBAString());
@@ -412,9 +254,9 @@ function(ViewChart, d3, constants, Color)
 		 */
 		update: function()
 		{
-			this.initParameters();
+			ViewChart.prototype.update.call(this);
+
 			this.updateScales();
-			this.updateSVG();
 			this.updateXAxis();
 			this.updateYAxis();
 			this.updateBars();
@@ -426,20 +268,6 @@ function(ViewChart, d3, constants, Color)
 		updateScales: function()
 		{
 			throw new Error("This is an abstract method, you must override it.");
-		},
-
-		/**
-		 *
-		 */
-		updateSVG: function()
-		{
-			d3.select("#li-viz-" + this.model.get('id'))
-				.select("svg")
-				.attr("width", this.width + this.marginLeft() + this.marginRight())
-				.attr("height", this.height + this.marginTop() + this.marginBottom());
-
-			this.svg.select(".first-g")
-				.attr("transform", "translate(" + this.marginLeft() + "," + this.marginTop() + ")");
 		},
 
 		/**
@@ -473,7 +301,6 @@ function(ViewChart, d3, constants, Color)
 
 			this.svg.selectAll(".bar")
 
-//				.style('fill', color.toRGBAString())
 				.style('fill', function(d) { return self.colorScale(d[self.getXScaleColumn()]); })
 
 				.attr("x", this.getBarsPosX())
@@ -543,48 +370,7 @@ function(ViewChart, d3, constants, Color)
 		getChartValueColumn: function()
 		{
 			throw new Error("This is an abstract method, you must override it.");
-		},
-
-		/**
-		 * filling in the dico, example of result: {0 : "#FF5000", 1 : "#50FF00"}
-		 *
-		 * @returns {undefined}
-		 */
-		getColorDictionary: function()
-		{
-			var colorsArray = [];
-
-			if(!_.isEmpty(this.columns))
-			{
-				var realColumns = _.rest(_.values(this.columns));
-
-				if(this.model.get('chart_data') !== "")
-				{
-					var chartData = JSON.parse(this.model.get('chart_data'));
-
-					_.each(realColumns, function(value, key, list) {
-						_.each(chartData.colors, function(pair)
-						{
-							if(pair[0] === value)
-							{
-								var color = new Color(pair[1]);
-								color.setAlpha(.5);
-								colorsArray.push(color.toRGBAString());
-
-								//free memory
-								color = null;
-							}
-						}, this);
-					}, this);
-				}
-
-				//free memory
-				realColumns = null;
-			}
-
-			return colorsArray;
 		}
-
 	});
 
 });

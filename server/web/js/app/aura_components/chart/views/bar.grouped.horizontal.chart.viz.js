@@ -5,6 +5,15 @@ function(ViewBarHorizontalChart, d3, constants, Color)
 	{
 
 		/**
+		 * overriding the parent initialize function in order to assign some fields.
+		 */
+		initialize: function()
+		{
+			ViewBarHorizontalChart.prototype.initialize.call(this);
+			this.orientation = constants.RIGHT;
+		},
+
+		/**
 		 *
 		 * @returns {undefined}
 		 */
@@ -96,7 +105,7 @@ function(ViewBarHorizontalChart, d3, constants, Color)
 			var xDomain;
 
 			//global Y scale
-			this.yScale.domain(this.data.map(function(d) { return d[self.getYScaleColumn()]; }));
+			this.yScale.domain(this.data.map(function(d) { return d[self.columns[0]]; }));
 
 			//group internal Y scale
 			this.yGroupScale.domain(this.groupValues).rangeRoundBands([0, this.yScale.rangeBand()]);
@@ -118,7 +127,7 @@ function(ViewBarHorizontalChart, d3, constants, Color)
 
 			var group = this.svg.selectAll(".group")
 				.attr("transform", function(d) {
-					return "translate(0," + self.yScale(d[self.getYScaleColumn()]) + ")";
+					return "translate(0," + self.yScale(d[self.columns[0]]) + ")";
 				});
 
 			group.selectAll(".bar")
@@ -135,22 +144,6 @@ function(ViewBarHorizontalChart, d3, constants, Color)
 		/**
 		 * Overriden from bar.vertical.chart.viz
 		 *
-		 * We override this because we need to use this.xGroupScale, and the "name"
-		 * key for the groups.
-		 *
-		 * @returns {function}
-		 */
-		getBarsPosX: function()
-		{
-			var self = this;
-			return function(d) {
-				return self.xScale(Math.min(0, d.value));
-			};
-		},
-
-		/**
-		 * Overriden from bar.vertical.chart.viz
-		 *
 		 * We override this because we need to use the "value" key assigned during
 		 * the sanitizeData process.
 		 *
@@ -159,23 +152,7 @@ function(ViewBarHorizontalChart, d3, constants, Color)
 		getBarsPosY: function()
 		{
 			var self = this;
-			return function(d) {
-				return self.yGroupScale(d.name);
-			};
-		},
-
-		/**
-		 * the bars must have the width that correspond to the xScale, because this
-		 * chart is horizontal.
-		 *
-		 * @returns {function}
-		 */
-		getBarsWidth: function()
-		{
-			var self = this;
-			return function(d) {
-				return Math.abs(self.xScale(d.value) - self.xScale(0));
-			};
+			return function(d) { return self.yGroupScale(d.name); };
 		},
 
 		/**
@@ -185,12 +162,19 @@ function(ViewBarHorizontalChart, d3, constants, Color)
 		getBarsHeight: function()
 		{
 			return this.yGroupScale.rangeBand();
+		},
 
-//			var self = this;
-//			return function(d) {
-//				var y = self.yScale;
-//				return Math.abs(y(d.value) - y(0));
-//			};
+		/**
+		 * in the horizontal bars chart, it's the second values that matters.
+		 */
+		getXScaleColumn: function()
+		{
+			return "value"
+		},
+
+		getYScaleColumn: function()
+		{
+			return "name";
 		}
 
 	});

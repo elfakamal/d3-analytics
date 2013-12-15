@@ -27,6 +27,13 @@
 }
 
 
+
+.axis .tick line
+{
+	stroke: lightgrey;
+	opacity: 0.5;
+}
+
 .axis
 {
 	font-size: 10px;
@@ -38,14 +45,9 @@
 .axis line
 {
 	fill: none;
-	stroke: #777;
 	shape-rendering: crispEdges;
 }
 
-/*.x.axis path
-{
-	display: none;
-}*/
 
 .bar
 {

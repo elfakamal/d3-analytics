@@ -515,7 +515,7 @@ define([
 					if (_.has(this.sandbox.visualizationTypes, vizType) &&
 							_.has(this.sandbox.chartIcons, this.sandbox.visualizationTypes[vizType]))
 					{
-						var chartIcon = this.sandbox.chartIcons[this.sandbox.visualizationTypes[vizType]];
+						var chartIcon = constants.CHART_ICONS[constants.VISUALIZATION_TYPES[vizType]];
 						this.$find("#div-viz-content").html('<span id="span-chart-icon" class="icon absolute-center">' + chartIcon + '</span>');
 					}
 				}
