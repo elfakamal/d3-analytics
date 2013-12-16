@@ -14,6 +14,8 @@ define([], function()
 		TIP_WIDTH: 100,
 		TIP_MARGIN_BOTTOM: 5,
 
+		DONUT_TICKNESS: 40,
+
 		TOP: "top",
 		RIGHT: "right",
 		BOTTOM: "bottom",
@@ -41,16 +43,17 @@ define([], function()
 			2: "Vertical Grouped Bar Chart",
 			3: "Horizontal Bar Chart",
 			4: "Horizontal Grouped Bar Chart",
-			5: "Pie",
-			6: "Donut",
-			7: "Line"
+			5: "Pie Chart",
+			6: "Donut Chart",
+			7: "Normal Line Chart",
+			8: "Time Line Chart"
 		},
 
 		VISUALIZATION_TYPE_GROUPS: [
 			{key:"", name: "Bar Charts", children: [1, 2, 3, 4]},
 			{key:"5", name: "Pie Chart", children: []},
 			{key:"6", name: "Donut Chart", children: []},
-			{key:"7", name: "Line Chart", children: []},
+			{key:"", name: "Line Chart", children: [7, 8]},
 		],
 
 		CHART_ICONS: {

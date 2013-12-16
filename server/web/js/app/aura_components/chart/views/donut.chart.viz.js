@@ -4,7 +4,7 @@ function(ViewPieChart, constants)
 
 	return ViewPieChart.extend(
 	{
-		donutTickness: 40, //constants.DONUT_TICKNESS
+		donutTickness: constants.DONUT_TICKNESS,
 
 		innerRadius :function()
 		{

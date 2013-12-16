@@ -1,7 +1,7 @@
 define(["./bar.vertical.chart.viz", "d3", "constants"],
-function(ViewBarVerticalChart, d3, constants)
+function(ViewAxialVerticalChart, d3, constants)
 {
-	return ViewBarVerticalChart.extend(
+	return ViewAxialVerticalChart.extend(
 	{
 		groupValues: null,
 
@@ -11,7 +11,7 @@ function(ViewBarVerticalChart, d3, constants)
 		initialize: function()
 		{
 			this.orientation = constants.TOP;
-			ViewBarVerticalChart.prototype.initialize.call(this);
+			ViewAxialVerticalChart.prototype.initialize.call(this);
 		},
 
 		/**
@@ -20,7 +20,7 @@ function(ViewBarVerticalChart, d3, constants)
 		 */
 		initColorScale: function()
 		{
-			ViewBarVerticalChart.prototype.initColorScale.call(this);
+			ViewAxialVerticalChart.prototype.initColorScale.call(this);
 
 //			this.colorScale.range([
 //				"#98abc5",
@@ -67,7 +67,7 @@ function(ViewBarVerticalChart, d3, constants)
 		 */
 		initXAxis: function()
 		{
-			ViewBarVerticalChart.prototype.initXAxis.call(this);
+			ViewAxialVerticalChart.prototype.initXAxis.call(this);
 			this.xGroupScale = d3.scale.ordinal();
 		},
 
@@ -77,7 +77,7 @@ function(ViewBarVerticalChart, d3, constants)
 		 */
 		initYAxis: function()
 		{
-			ViewBarVerticalChart.prototype.initYAxis.call(this);
+			ViewAxialVerticalChart.prototype.initYAxis.call(this);
 			this.yAxis.tickFormat(d3.format(".2s"));
 		},
 
@@ -122,7 +122,7 @@ function(ViewBarVerticalChart, d3, constants)
 		 *
 		 * @returns {undefined}
 		 */
-		updateBars: function()
+		updateContent: function()
 		{
 			var self = this;
 

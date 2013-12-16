@@ -1,7 +1,7 @@
-define(["./bar.horizontal.chart.viz", "d3", "constants", "color"],
-function(ViewBarHorizontalChart, d3, constants, Color)
+define(["./axial.horizontal.chart.viz", "d3", "constants", "color"],
+function(ViewAxialHorizontalChart, d3, constants, Color)
 {
-	return ViewBarHorizontalChart.extend(
+	return ViewAxialHorizontalChart.extend(
 	{
 
 		/**
@@ -9,7 +9,7 @@ function(ViewBarHorizontalChart, d3, constants, Color)
 		 */
 		initialize: function()
 		{
-			ViewBarHorizontalChart.prototype.initialize.call(this);
+			ViewAxialHorizontalChart.prototype.initialize.call(this);
 			this.orientation = constants.RIGHT;
 		},
 
@@ -19,7 +19,7 @@ function(ViewBarHorizontalChart, d3, constants, Color)
 		 */
 		initColorScale: function()
 		{
-			ViewBarHorizontalChart.prototype.initColorScale.call(this);
+			ViewAxialHorizontalChart.prototype.initColorScale.call(this);
 
 //			this.colorScale.range([
 //				"#98abc5",
@@ -66,7 +66,7 @@ function(ViewBarHorizontalChart, d3, constants, Color)
 		 */
 		initXAxis: function()
 		{
-			ViewBarHorizontalChart.prototype.initXAxis.call(this);
+			ViewAxialHorizontalChart.prototype.initXAxis.call(this);
 			this.xAxis.tickFormat(d3.format(".2s"));
 		},
 
@@ -76,7 +76,7 @@ function(ViewBarHorizontalChart, d3, constants, Color)
 		 */
 		initYAxis: function()
 		{
-			ViewBarHorizontalChart.prototype.initYAxis.call(this);
+			ViewAxialHorizontalChart.prototype.initYAxis.call(this);
 			this.yGroupScale = d3.scale.ordinal();
 		},
 
@@ -121,7 +121,7 @@ function(ViewBarHorizontalChart, d3, constants, Color)
 		 *
 		 * @returns {undefined}
 		 */
-		updateBars: function()
+		updateContent: function()
 		{
 			var self = this;
 

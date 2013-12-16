@@ -9,6 +9,7 @@
 
 
 
+
 .skill-1 .background
 {
 	fill: rgba(217, 77, 77, .25);
@@ -27,6 +28,7 @@
 }
 
 
+/**** AXIAL ****/
 
 .axis .tick line
 {
@@ -48,10 +50,17 @@
 	shape-rendering: crispEdges;
 }
 
-
 .bar
 {
 	cursor: pointer;
 }
 
+
+/**** PIE ****/
+
+.arc path
+{
+	stroke: #F5F5F5;
+	stroke-width: .5;
+}
 

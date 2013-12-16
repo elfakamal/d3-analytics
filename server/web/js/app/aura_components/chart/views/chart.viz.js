@@ -258,7 +258,6 @@ define(["constants", "d3", "color"], function(constants, d3, Color)
 					.style("margin-bottom", "0px")
 				.append("g")
 					.attr("class", "first-g");
-//					.attr("transform", "translate(" + this.marginLeft() + "," + this.marginTop() + ")");
 		},
 
 		positionBase: function()
@@ -286,8 +285,8 @@ define(["constants", "d3", "color"], function(constants, d3, Color)
 				.attr("width", this.width + this.marginLeft() + this.marginRight())
 				.attr("height", this.height + this.marginTop() + this.marginBottom());
 
-			this.svg.select(".first-g")
-				.attr("transform", "translate(" + this.marginLeft() + "," + this.marginTop() + ")");
+//			this.svg.select(".first-g")
+//				.attr("transform", "translate(" + this.marginLeft() + "," + this.marginTop() + ")");
 		},
 
 		/**

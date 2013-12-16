@@ -1,7 +1,7 @@
 define(["./bar.chart.viz", "d3", "constants", "color"],
-function(ViewBarChart, d3, constants, Color)
+function(ViewAxialChart, d3, constants, Color)
 {
-	return ViewBarChart.extend(
+	return ViewAxialChart.extend(
 	{
 		/**
 		 * overriding the parent initialize function in order to assign some fields.
@@ -13,7 +13,7 @@ function(ViewBarChart, d3, constants, Color)
 			this.xTicks = true;
 			this.yTicks = false;
 
-			ViewBarChart.prototype.initialize.call(this);
+			ViewAxialChart.prototype.initialize.call(this);
 		},
 
 		marginRight: function()
