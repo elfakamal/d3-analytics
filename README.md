@@ -1,3 +1,3 @@
-===D3 Analytics
+D3 Analytics
 
-====(in progress)
+A generic data visualization tool
