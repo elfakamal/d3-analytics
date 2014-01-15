@@ -15,7 +15,6 @@ function(StateManager, NaiveComponent)
 				"search"				: new NaiveComponent("search",		{el:"#section-search-component",tagName:"section",parent:"#aside-side-pane",index:0}),
 				"collection"			: new NaiveComponent("collection",	{el:"#section-collection-component",tagName:"section",parent:"#aside-side-pane",index:1}),
 				"datastore"				: new NaiveComponent("data-store",	{el:"#section-data-store-component",tagName:"section",parent:"#aside-side-pane",index:2}),
-//				"workspace"				: new NaiveComponent("workspace",	{el:"#section-workspace-component",tagName:"section",parent:"#section-content",index:0}),
 				"wall"					: new NaiveComponent("wall",		{el:"#section-wall-component",tagName:"section",parent:"#section-content",index:0}),
 				"collection-form"		: new NaiveComponent("entity-form",	{el:"#section-forms-component",entity:"collection",tagName:"section",className:"center-container overlay",parent:"body",index:0}, ["entity"]),
 				"datastore-form"		: new NaiveComponent("entity-form",	{el:"#section-forms-component",entity:"datastore",tagName:"section",className:"center-container overlay",parent:"body",index:0}, ["entity"]),
@@ -30,7 +29,6 @@ function(StateManager, NaiveComponent)
 				allComponents["collection"],
 				allComponents["datastore"],
 				allComponents["wall"],
-//				allComponents["workspace"],
 				allComponents["footer"],
 			]);
 
@@ -40,7 +38,6 @@ function(StateManager, NaiveComponent)
 				allComponents["collection"],
 				allComponents["datastore"],
 				allComponents["wall"],
-//				allComponents["workspace"],
 				allComponents["collection-form"],
 				allComponents["footer"],
 			]);
@@ -51,7 +48,6 @@ function(StateManager, NaiveComponent)
 				allComponents["collection"],
 				allComponents["datastore"],
 				allComponents["wall"],
-//				allComponents["workspace"],
 				allComponents["datastore-form"],
 				allComponents["footer"],
 			]);
@@ -62,7 +58,6 @@ function(StateManager, NaiveComponent)
 				allComponents["collection"],
 				allComponents["datastore"],
 				allComponents["wall"],
-//				allComponents["workspace"],
 				allComponents["visualization-form"],
 				allComponents["footer"],
 			]);
@@ -73,7 +68,6 @@ function(StateManager, NaiveComponent)
 				allComponents["collection"],
 				allComponents["datastore"],
 				allComponents["wall"],
-//				allComponents["workspace"],
 				allComponents["datasource-form"],
 				allComponents["footer"],
 			]);
