@@ -8,7 +8,7 @@ Technologies
 
 Backend: REST API with Symfony2, Doctrine2, MySQL.
 
-Frontend: Aura, BackboneJS, D3JS
+Frontend: [Aura](http://aurajs.com), BackboneJS, D3JS
 
 Screenshots
 -
