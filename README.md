@@ -1,17 +1,17 @@
 D3 Analytics
 ===============
 
-(work in progress)
+A generic data visualization tool. (work in progress)
 
-Technologies:
+Technologies
 -
 
 Backend: REST API with Symfony2, Doctrine2, MySQL.
 
 Frontend: Aura, BackboneJS, D3JS
 
-
-A generic data visualization tool
+Screenshots
+-
 
 ![Screenshot](d3_analytics_3.png)
 ![Screenshot](d3_analytics_1.png)
