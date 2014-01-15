@@ -1,2 +1,3 @@
-===D3 Analytics client
-====(in progress)
+D3 Analytics
+
+A generic data visualization tool
