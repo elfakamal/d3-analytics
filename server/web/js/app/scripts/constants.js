@@ -35,7 +35,10 @@ define([], function()
 			4: "bar.grouped.horizontal",
 			5: "pie",
 			6: "donut",
-			7: "line"
+			7: "line",
+			8: "line", //TODO: change this to line.time
+			9: "area",
+			10: "area" //TODO: change this to area.time
 		},
 
 		VISUALIZATION_TYPE_NAMES: {
@@ -43,10 +46,15 @@ define([], function()
 			2: "Vertical Grouped Bar Chart",
 			3: "Horizontal Bar Chart",
 			4: "Horizontal Grouped Bar Chart",
+			
 			5: "Pie Chart",
 			6: "Donut Chart",
+			
 			7: "Normal Line Chart",
-			8: "Time Line Chart"
+			8: "Time Line Chart",
+
+			9: "Normal Area Chart",
+			10: "Time Area Chart"
 		},
 
 		VISUALIZATION_TYPE_GROUPS: [
@@ -54,6 +62,7 @@ define([], function()
 			{key:"5", name: "Pie Chart", children: []},
 			{key:"6", name: "Donut Chart", children: []},
 			{key:"", name: "Line Chart", children: [7, 8]},
+			{key:"", name: "Area Chart", children: [9, 10]}
 		],
 
 		CHART_ICONS: {
@@ -63,7 +72,8 @@ define([], function()
 			"bar.grouped.horizontal": '&#128202',
 			"pie": '&#9716',
 			"donut": '&#128191',
-			"line": '&#128200'
+			"line": '&#128200',
+			"area": '&#128200'
 		}
 	};
 

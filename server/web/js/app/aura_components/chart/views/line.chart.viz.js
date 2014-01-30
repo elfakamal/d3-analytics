@@ -4,7 +4,7 @@ function(ViewAxialChart, d3, constants, Color)
 	return ViewAxialChart.extend(
 	{
 
-		line: null,
+		path: null,
 		parseDate: d3.time.format("%d-%b-%y").parse,
 
 		/**
@@ -38,13 +38,13 @@ function(ViewAxialChart, d3, constants, Color)
 		initParameters: function()
 		{
 			ViewAxialChart.prototype.initParameters.call(this);
-			this.initLine();
+			this.initPath();
 		},
 
-		initLine:function()
+		initPath:function()
 		{
 			var self = this;
-			this.line = d3.svg.line()
+			this.path = d3.svg.line()
 				.x(function(d) { return self.xScale(d[self.getXScaleColumn()]); })
 				.y(function(d) { return self.yScale(d[self.getYScaleColumn()]); });
 		},
@@ -79,7 +79,7 @@ function(ViewAxialChart, d3, constants, Color)
 		{
 			this.svg.append("path")
 				.datum(this.data)
-				.attr("class", "line")
+				.attr("class", "path line")
 				.style("fill", "none")
 				.style("stroke", "steelblue")
 				.style("stroke-width", "1px");
@@ -120,7 +120,7 @@ function(ViewAxialChart, d3, constants, Color)
 
 		updateContent: function()
 		{
-			this.svg.select(".line").attr("d", this.line);
+			this.svg.select(".path").attr("d", this.path);
 		},
 
 		/**
@@ -154,7 +154,7 @@ function(ViewAxialChart, d3, constants, Color)
 		marginTop: function()
 		{
 			var defaultMargin = 20;
-			if(this.chartData && +this.chartData.size === 1) return 10;
+			if(this.chartData && +this.chartData.size === 1) return 5;
 			return defaultMargin;
 		},
 
@@ -162,7 +162,7 @@ function(ViewAxialChart, d3, constants, Color)
 		{
 			var defaultMargin = 20;
 			if(this.chartData && +this.chartData.size === 1)
-				return 10;
+				return 5;
 
 			if(this.orientation === constants.LEFT)
 				return 40;
@@ -174,7 +174,7 @@ function(ViewAxialChart, d3, constants, Color)
 		{
 			var defaultMargin = 40;
 			if(this.chartData && +this.chartData.size === 1)
-				return 10;
+				return 5;
 
 			return defaultMargin;
 		},
@@ -183,7 +183,7 @@ function(ViewAxialChart, d3, constants, Color)
 		{
 			var defaultMargin = 30;
 			if(this.chartData && +this.chartData.size === 1)
-				return 10;
+				return 5;
 
 			return defaultMargin;
 		}
