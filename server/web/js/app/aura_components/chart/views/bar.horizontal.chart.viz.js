@@ -19,8 +19,9 @@ function(ViewAxialChart, d3, constants, Color)
 		marginRight: function()
 		{
 			var defaultMargin = 20;
+
 			if(this.chartData && +this.chartData.size === 1)
-				return 10;
+				return 5;
 
 			if(this.orientation === constants.LEFT)
 				return 40;
@@ -31,8 +32,9 @@ function(ViewAxialChart, d3, constants, Color)
 		marginLeft: function()
 		{
 			var defaultMargin = 40;
+
 			if(this.chartData && +this.chartData.size === 1)
-				return 10;
+				return 5;
 
 			return defaultMargin;
 		},

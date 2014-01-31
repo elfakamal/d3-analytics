@@ -88,28 +88,40 @@ define(["constants", "d3", "color"], function(constants, d3, Color)
 		marginTop: function()
 		{
 			var defaultMargin = 10;
-			if(this.chartData && +this.chartData.size === 1) return 10;
+
+			if(this.chartData && +this.chartData.size === 1)
+				defaultMargin = 5;
+
 			return defaultMargin;
 		},
 
 		marginRight: function()
 		{
 			var defaultMargin = 10;
-			if(this.chartData && +this.chartData.size === 1) return 10;
+
+			if(this.chartData && +this.chartData.size === 1)
+				defaultMargin = 5;
+
 			return defaultMargin;
 		},
 
 		marginBottom: function()
 		{
 			var defaultMargin = 30;
-			if(this.chartData && +this.chartData.size === 1) return 10;
+
+			if(this.chartData && +this.chartData.size === 1)
+				defaultMargin = 5;
+
 			return defaultMargin;
 		},
 
 		marginLeft: function()
 		{
 			var defaultMargin = 40;
-			if(this.chartData && +this.chartData.size === 1) return 10;
+
+			if(this.chartData && +this.chartData.size === 1)
+				defaultMargin = 5;
+
 			return defaultMargin;
 		},
 
@@ -141,7 +153,7 @@ define(["constants", "d3", "color"], function(constants, d3, Color)
 
 			//piked from the gridster width computing formula.
 			var height = (sizeY * defaultHeight + ((sizeY - 1) * constants.DEFAULT_VERTICAL_MARGIN) * 2);
-			return height - constants.THUMB_TITLE_HEIGHT;
+			return height;// - constants.THUMB_TITLE_HEIGHT;
 		},
 
 		/**

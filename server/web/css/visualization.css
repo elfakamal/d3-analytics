@@ -12,6 +12,12 @@
 	/*opacity: 0.0;*/
 }
 
+.gridster ul li
+{
+	overflow: hidden;
+}
+
+
 .gridster ul li .side
 {
 	position: absolute;
@@ -35,8 +41,17 @@
 .gridster ul li .topSide
 {
 	z-index: 1;
-	top: 0px;
+	top: -40px;
 	left: 0px;
+
+	-webkit-transition-duration: 100ms;
+	-webkit-transition-property: top;
+	-webkit-transition-timing-function: ease-in;
+}
+
+.gridster ul li:hover .topSide
+{
+	top: 0px;
 }
 
 .gridster ul li .bottomSide
@@ -133,5 +148,4 @@
 	padding-top: 10px;
 	padding-bottom: 20px;
 }
-
 

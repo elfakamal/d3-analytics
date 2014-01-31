@@ -1,4 +1,4 @@
-define(["./axial.horizontal.chart.viz", "d3", "constants", "color"],
+define(["./bar.horizontal.chart.viz", "d3", "constants", "color"],
 function(ViewAxialHorizontalChart, d3, constants, Color)
 {
 	return ViewAxialHorizontalChart.extend(
