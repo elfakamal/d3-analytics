@@ -19,35 +19,36 @@ use D3\AnalyticsBundle\Entity\D3Collection;
 class D3CollectionFixtures implements FixtureInterface
 {
 
-	/**
-	 *
-	 * @param \Doctrine\Common\Persistence\ObjectManager $manager
-	 */
-	public function load(ObjectManager $manager)
-	{
-		$collectionLibrary = new D3Collection();
-		$collectionLibrary->setName(D3Collection::LIBRARY_COLLECTION);
-		$collectionLibrary->setDescription("The collection that contains all the visualizations");
-		$collectionLibrary->setCollectionTypeId(D3Collection::SYSTEM_COLLECTION);
+  /**
+   *
+   * @param \Doctrine\Common\Persistence\ObjectManager $manager
+   */
+  public function load( ObjectManager $manager )
+  {
+    $collectionLibrary = new D3Collection();
+    $collectionLibrary->setName(D3Collection::LIBRARY_COLLECTION);
+    $collectionLibrary->setDescription("The collection that contains all the visualizations");
+    $collectionLibrary->setCollectionTypeId(D3Collection::SYSTEM_COLLECTION);
 
-		$manager->persist($collectionLibrary);
+    $manager->persist($collectionLibrary);
 
-		$collectionStarred = new D3Collection();
-		$collectionStarred->setName(D3Collection::STARRED_COLLECTION);
-		$collectionStarred->setDescription("The collection that contains favorite visualizations");
-		$collectionStarred->setCollectionTypeId(D3Collection::SYSTEM_COLLECTION);
+    $collectionStarred = new D3Collection();
+    $collectionStarred->setName(D3Collection::STARRED_COLLECTION);
+    $collectionStarred->setDescription("The collection that contains favorite visualizations");
+    $collectionStarred->setCollectionTypeId(D3Collection::SYSTEM_COLLECTION);
 
-		$manager->persist($collectionStarred);
+    $manager->persist($collectionStarred);
 
-		$collectionDeleted = new D3Collection();
-		$collectionDeleted->setName(D3Collection::DELETED_COLLECTION);
-		$collectionDeleted->setDescription("The collection that contains deleted visualizations");
-		$collectionDeleted->setCollectionTypeId(D3Collection::SYSTEM_COLLECTION);
+    $collectionDeleted = new D3Collection();
+    $collectionDeleted->setName(D3Collection::DELETED_COLLECTION);
+    $collectionDeleted->setDescription("The collection that contains deleted visualizations");
+    $collectionDeleted->setCollectionTypeId(D3Collection::SYSTEM_COLLECTION);
 
-		$manager->persist($collectionDeleted);
+    $manager->persist($collectionDeleted);
 
-		$manager->flush();
-	}
+    $manager->flush();
+  }
+
 }
 
 ?>

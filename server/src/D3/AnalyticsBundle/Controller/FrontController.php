@@ -20,35 +20,35 @@ use D3\AnalyticsBundle\Form\VisualizationType;
 class FrontController extends Controller
 {
 
-	public function indexAction()
-	{
-		return $this->render("D3AnalyticsBundle:Front:index.html.twig");
-	}
+  public function indexAction()
+  {
+    return $this->render("D3AnalyticsBundle:Front:index.html.twig");
+  }
 
-	public function aboutAction()
-	{
-		return $this->render("D3AnalyticsBundle:Front:about.html.twig");
-	}
+  public function aboutAction()
+  {
+    return $this->render("D3AnalyticsBundle:Front:about.html.twig");
+  }
 
-	public function contactAction( Request $request )
-	{
-		$entity = new Visualization();
-		$form = $this->createForm(new VisualizationType(), $entity);
+  public function contactAction( Request $request )
+  {
+    $entity = new Visualization();
+    $form = $this->createForm(new VisualizationType(), $entity);
 
-		if( $request->getMethod() == "POST" )
-		{
-			$form->bind($request);
+    if( $request->getMethod() == "POST" )
+    {
+      $form->bind($request);
 
-			if( $form->isValid() )
-			{
-				$em = $this->getDoctrine()->getManager();
+      if( $form->isValid() )
+      {
+        $em = $this->getDoctrine()->getManager();
 //				$em->persist($entity);
 //				$em->flush();
-			}
-		}
+      }
+    }
 
-		return $this->render("D3AnalyticsBundle:Front:contact.html.twig", array('form' => $form->createView()));
-	}
+    return $this->render("D3AnalyticsBundle:Front:contact.html.twig", array('form' => $form->createView()));
+  }
 
 }
 

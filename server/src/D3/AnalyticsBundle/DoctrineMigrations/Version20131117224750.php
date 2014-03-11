@@ -10,19 +10,21 @@ use Doctrine\DBAL\Schema\Schema;
  */
 class Version20131117224750 extends AbstractMigration
 {
-    public function up(Schema $schema)
-    {
-        // this up() migration is auto-generated, please modify it to your needs
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() != "mysql", "Migration can only be executed safely on 'mysql'.");
-        
-        $this->addSql("ALTER TABLE visualization ADD chartData LONGTEXT NOT NULL");
-    }
 
-    public function down(Schema $schema)
-    {
-        // this down() migration is auto-generated, please modify it to your needs
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() != "mysql", "Migration can only be executed safely on 'mysql'.");
-        
-        $this->addSql("ALTER TABLE visualization DROP chartData");
-    }
+  public function up( Schema $schema )
+  {
+    // this up() migration is auto-generated, please modify it to your needs
+    $this->abortIf($this->connection->getDatabasePlatform()->getName() != "mysql", "Migration can only be executed safely on 'mysql'.");
+
+    $this->addSql("ALTER TABLE visualization ADD chartData LONGTEXT NOT NULL");
+  }
+
+  public function down( Schema $schema )
+  {
+    // this down() migration is auto-generated, please modify it to your needs
+    $this->abortIf($this->connection->getDatabasePlatform()->getName() != "mysql", "Migration can only be executed safely on 'mysql'.");
+
+    $this->addSql("ALTER TABLE visualization DROP chartData");
+  }
+
 }

@@ -8,7 +8,6 @@
 namespace D3\AnalyticsBundle\Entity\Repository;
 
 use D3\AnalyticsBundle\Entity\Visualization;
-
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
 
@@ -20,104 +19,101 @@ use Doctrine\ORM\NonUniqueResultException;
 class VisualizationRepository extends EntityRepository
 {
 
-	/**
-	 *
-	 * @param type $collectionId
-	 * @param type $visualizaitonId
-	 * @return Visualization
-	 */
-	public function	getVisualization($collectionId, $visualizaitonId)
-	{
-		$query = $this->createQueryBuilder("v")
+  /**
+   *
+   * @param type $collectionId
+   * @param type $visualizaitonId
+   * @return Visualization
+   */
+  public function getVisualization( $collectionId, $visualizaitonId )
+  {
+    $query = $this->createQueryBuilder("v")
+      ->leftJoin("v.collections", "c")
+      ->where("v.id = :visualizationId")
+      ->setParameter("visualizationId", $visualizaitonId)
+      ->andWhere("c.id = :collectionId")
+      ->setParameter("collectionId", $collectionId)
+      ->getQuery();
 
-			->leftJoin("v.collections", "c")
+    $sql = $query->getSQL();
 
-			->where("v.id = :visualizationId")
-			->setParameter("visualizationId", $visualizaitonId)
+    $result = null;
 
-			->andWhere("c.id = :collectionId")
-			->setParameter("collectionId", $collectionId)
-
-			->getQuery();
-
-		$sql = $query->getSQL();
-
-		$result = null;
-
-		try
-		{
-			$result = $query->getOneOrNullResult();
+    try
+    {
+      $result = $query->getOneOrNullResult();
 //			$result = $query->getResult();
-		}
-		catch(NonUniqueResultException $exc)
-		{
-			$result = null;
-		}
+    }
+    catch( NonUniqueResultException $exc )
+    {
+      $result = null;
+    }
 
-		return $result;
-	}
+    return $result;
+  }
 
-	/**
-	 *
-	 * @param integer $collectionId
-	 * @return array
-	 */
-	public function	getVisualizations($collectionId)
-	{
-		$query = $this->createQueryBuilder("v")
-			->leftJoin("v.collections", "c")
-			->where("c.id = :collectionId")
-			->setParameter("collectionId", $collectionId)
-			->getQuery();
+  /**
+   *
+   * @param integer $collectionId
+   * @return array
+   */
+  public function getVisualizations( $collectionId )
+  {
+    $query = $this->createQueryBuilder("v")
+      ->leftJoin("v.collections", "c")
+      ->where("c.id = :collectionId")
+      ->setParameter("collectionId", $collectionId)
+      ->getQuery();
 
-		$sql = $query->getSQL();
+    $sql = $query->getSQL();
 
-		return $query->getResult();
-	}
+    return $query->getResult();
+  }
 
-	/**
-	 * Verify whether is already there an association between this visualization
-	 * and this data source.
-	 *
-	 *	array(1) (
-	 *	  [0] => array(1) (
-	 *		[hasAssociation] => (string) 1
-	 *	  )
-	 *	)
-	 *
-	 * @param integer $dataSourceId
-	 * @return Boolean
-	 */
-	public function hasDataSource($visualizaitonId, $dataSourceId)
-	{
-		$conn = $this->getEntityManager()->getConnection();
+  /**
+   * Verify whether is already there an association between this visualization
+   * and this data source.
+   *
+   * 	array(1) (
+   * 	  [0] => array(1) (
+   * 		[hasAssociation] => (string) 1
+   * 	  )
+   * 	)
+   *
+   * @param integer $dataSourceId
+   * @return Boolean
+   */
+  public function hasDataSource( $visualizaitonId, $dataSourceId )
+  {
+    $conn = $this->getEntityManager()->getConnection();
 
-		$sql = "SELECT count(*) as associationCount
+    $sql = "SELECT count(*) as associationCount
 				FROM visualization_data_source_assoc vda
 				WHERE vda.visualization_id = :vid
 				AND vda.data_source_id = :dsid";
 
-		$stmt = $conn->prepare($sql);
-		$stmt->bindValue("vid", $visualizaitonId);
-		$stmt->bindValue("dsid", $dataSourceId);
-		$stmt->execute();
-		$result = $stmt->fetchAll();
+    $stmt = $conn->prepare($sql);
+    $stmt->bindValue("vid", $visualizaitonId);
+    $stmt->bindValue("dsid", $dataSourceId);
+    $stmt->execute();
+    $result = $stmt->fetchAll();
 
-		if( $result !== null && empty($result) === false &&
-			is_array($result) === true && count($result) == 1 &&
-			is_array($result[0]) === true &&
-			array_key_exists("associationCount", $result[0]) )
-		{
-			$associationCount = $result[0]["associationCount"];
+    if( $result !== null && empty($result) === false &&
+      is_array($result) === true && count($result) == 1 &&
+      is_array($result[0]) === true &&
+      array_key_exists("associationCount", $result[0]) )
+    {
+      $associationCount = $result[0]["associationCount"];
 
-			if( $associationCount == 1 )
-			{
-				return true;
-			}
-		}
+      if( $associationCount == 1 )
+      {
+        return true;
+      }
+    }
 
-		return false;
-	}
+    return false;
+  }
+
 }
 
 ?>

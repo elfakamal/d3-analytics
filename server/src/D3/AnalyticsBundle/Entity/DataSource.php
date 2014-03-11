@@ -13,258 +13,258 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 class DataSource
 {
 
-	/**
-	 * @var integer
-	 */
-	protected $id;
+  /**
+   * @var integer
+   */
+  protected $id;
 
-	/**
-	 * @var string
-	 */
-	protected $name;
+  /**
+   * @var string
+   */
+  protected $name;
 
-	/**
-	 * @var string
-	 */
-	protected $fileName;
+  /**
+   * @var string
+   */
+  protected $fileName;
 
-	/**
-	 *
-	 * @var string
-	 */
-	protected $fileExtension;
+  /**
+   *
+   * @var string
+   */
+  protected $fileExtension;
 
-	/**
-	 *
-	 * @var \Symfony\Component\HttpFoundation\File\UploadedFile
-	 */
-	protected $file;
+  /**
+   *
+   * @var \Symfony\Component\HttpFoundation\File\UploadedFile
+   */
+  protected $file;
 
-	/**
-	 *
-	 * @var ArrayCollection
-	 */
-	protected $visualizations;
+  /**
+   *
+   * @var ArrayCollection
+   */
+  protected $visualizations;
 
-	/**
-	 *
-	 * @var ArrayCollection
-	 */
-	protected $dataStores;
+  /**
+   *
+   * @var ArrayCollection
+   */
+  protected $dataStores;
 
-	/**
-	 * Constructor
-	 */
-	public function __construct()
-	{
-		$this->dataStores = new ArrayCollection();
-	}
+  /**
+   * Constructor
+   */
+  public function __construct()
+  {
+    $this->dataStores = new ArrayCollection();
+  }
 
-	public function getAbsolutePath()
-	{
-		if( null === $this->fileName )
-		{
-			return null;
-		}
-		else
-		{
-			return $this->getUploadRootDir() . '/' . $this->fileName;
-		}
-	}
+  public function getAbsolutePath()
+  {
+    if( null === $this->fileName )
+    {
+      return null;
+    }
+    else
+    {
+      return $this->getUploadRootDir() . '/' . $this->fileName;
+    }
+  }
 
-	public function getWebPath()
-	{
-		if( null === $this->fileName )
-		{
-			return null;
-		}
-		else
-		{
-			return $this->getUploadDir() . '/' . $this->fileName;
-		}
-	}
+  public function getWebPath()
+  {
+    if( null === $this->fileName )
+    {
+      return null;
+    }
+    else
+    {
+      return $this->getUploadDir() . '/' . $this->fileName;
+    }
+  }
 
-	protected function getUploadRootDir()
-	{
-		// the absolute directory path where uploaded
-		// documents should be saved
-		return __DIR__ . '/../../../../web/' . $this->getUploadDir();
-	}
+  protected function getUploadRootDir()
+  {
+    // the absolute directory path where uploaded
+    // documents should be saved
+    return __DIR__ . '/../../../../web/' . $this->getUploadDir();
+  }
 
-	protected function getUploadDir()
-	{
-		// get rid of the __DIR__ so it doesn't screw up
-		// when displaying uploaded doc/image in the view.
-		return 'uploads/datasources';
-	}
+  protected function getUploadDir()
+  {
+    // get rid of the __DIR__ so it doesn't screw up
+    // when displaying uploaded doc/image in the view.
+    return 'uploads/datasources';
+  }
 
-	public function upload()
-	{
-		// the file property can be empty if the field is not required
-		if( null === $this->getFile() )
-		{
-			return;
-		}
+  public function upload()
+  {
+    // the file property can be empty if the field is not required
+    if( null === $this->getFile() )
+    {
+      return;
+    }
 
-		$this->setFileExtension($this->getClientOriginalExtension());
+    $this->setFileExtension($this->getClientOriginalExtension());
 
-		// move takes the target directory and then the
-		// target filename to move to
-		$this->getFile()->move($this->getUploadRootDir(), $this->getFileName());
+    // move takes the target directory and then the
+    // target filename to move to
+    $this->getFile()->move($this->getUploadRootDir(), $this->getFileName());
 
-		// clean up the file property as we won't need it anymore
-		$this->file = null;
-	}
+    // clean up the file property as we won't need it anymore
+    $this->file = null;
+  }
 
-	/**
-	 * Get id
-	 *
-	 * @return integer
-	 */
-	public function getId()
-	{
-		return $this->id;
-	}
+  /**
+   * Get id
+   *
+   * @return integer
+   */
+  public function getId()
+  {
+    return $this->id;
+  }
 
-	public function getClientOriginalExtension()
-	{
-		if( null === $this->getFile() )
-		{
-			return;
-		}
+  public function getClientOriginalExtension()
+  {
+    if( null === $this->getFile() )
+    {
+      return;
+    }
 
-		return $this->getFile()->getClientOriginalExtension();
-	}
+    return $this->getFile()->getClientOriginalExtension();
+  }
 
-	/**
-	 * Set name
-	 *
-	 * @param string $name
-	 * @return DataSource
-	 */
-	public function setName( $name )
-	{
-		$this->name = $name;
-		return $this;
-	}
+  /**
+   * Set name
+   *
+   * @param string $name
+   * @return DataSource
+   */
+  public function setName( $name )
+  {
+    $this->name = $name;
+    return $this;
+  }
 
-	/**
-	 * Get name
-	 *
-	 * @return string
-	 */
-	public function getName()
-	{
-		return $this->name;
-	}
+  /**
+   * Get name
+   *
+   * @return string
+   */
+  public function getName()
+  {
+    return $this->name;
+  }
 
-	/**
-	 * Set fileName
-	 *
-	 * @param string $fileName
-	 * @return DataSource
-	 */
-	public function setFileName( $fileName )
-	{
-		$this->fileName = $fileName;
+  /**
+   * Set fileName
+   *
+   * @param string $fileName
+   * @return DataSource
+   */
+  public function setFileName( $fileName )
+  {
+    $this->fileName = $fileName;
 
-		return $this;
-	}
+    return $this;
+  }
 
-	/**
-	 * Get fileName
-	 *
-	 * @return string
-	 */
-	public function getFileName()
-	{
-		return $this->fileName;
-	}
+  /**
+   * Get fileName
+   *
+   * @return string
+   */
+  public function getFileName()
+  {
+    return $this->fileName;
+  }
 
-	public function getFileExtension()
-	{
-		return $this->fileExtension;
-	}
+  public function getFileExtension()
+  {
+    return $this->fileExtension;
+  }
 
-	public function setFileExtension( $fileExtension )
-	{
-		$this->fileExtension = $fileExtension;
-	}
+  public function setFileExtension( $fileExtension )
+  {
+    $this->fileExtension = $fileExtension;
+  }
 
-	public function getVisualizations()
-	{
-		return $this->visualizations;
-	}
+  public function getVisualizations()
+  {
+    return $this->visualizations;
+  }
 
-	public function getDataStores()
-	{
-		return $this->dataStores;
-	}
+  public function getDataStores()
+  {
+    return $this->dataStores;
+  }
 
-	/**
-	 * Add Visualizations
-	 *
-	 * @param \D3\AnalyticsBundle\Entity\Visualization $visualizations
-	 * @return DataSource
-	 */
-	public function addVisualization( Visualization $visualizations )
-	{
-		$this->visualizations[] = $visualizations;
+  /**
+   * Add Visualizations
+   *
+   * @param \D3\AnalyticsBundle\Entity\Visualization $visualizations
+   * @return DataSource
+   */
+  public function addVisualization( Visualization $visualizations )
+  {
+    $this->visualizations[] = $visualizations;
 
-		return $this;
-	}
+    return $this;
+  }
 
-	/**
-	 * Remove visualizations
-	 *
-	 * @param \D3\AnalyticsBundle\Entity\Visualization $visualizations
-	 */
-	public function removeVisualization( Visualization $visualizations )
-	{
-		$this->visualizations->removeElement($visualizations);
-	}
+  /**
+   * Remove visualizations
+   *
+   * @param \D3\AnalyticsBundle\Entity\Visualization $visualizations
+   */
+  public function removeVisualization( Visualization $visualizations )
+  {
+    $this->visualizations->removeElement($visualizations);
+  }
 
-	/**
-	 * Add dataStores
-	 *
-	 * @param \D3\AnalyticsBundle\Entity\DataStore $dataStores
-	 * @return DataSource
-	 */
-	public function addDataStore( DataStore $dataStores )
-	{
-		$this->dataStores[] = $dataStores;
+  /**
+   * Add dataStores
+   *
+   * @param \D3\AnalyticsBundle\Entity\DataStore $dataStores
+   * @return DataSource
+   */
+  public function addDataStore( DataStore $dataStores )
+  {
+    $this->dataStores[] = $dataStores;
 
-		return $this;
-	}
+    return $this;
+  }
 
-	/**
-	 * Remove dataStores
-	 *
-	 * @param \D3\AnalyticsBundle\Entity\DataStore $dataStores
-	 */
-	public function removeDataStore( DataStore $dataStores )
-	{
-		$this->dataStores->removeElement($dataStores);
-	}
+  /**
+   * Remove dataStores
+   *
+   * @param \D3\AnalyticsBundle\Entity\DataStore $dataStores
+   */
+  public function removeDataStore( DataStore $dataStores )
+  {
+    $this->dataStores->removeElement($dataStores);
+  }
 
-	/**
-	 * Sets file.
-	 *
-	 * @param UploadedFile $file
-	 */
-	public function setFile( UploadedFile $file = null )
-	{
-		$this->file = $file;
-	}
+  /**
+   * Sets file.
+   *
+   * @param UploadedFile $file
+   */
+  public function setFile( UploadedFile $file = null )
+  {
+    $this->file = $file;
+  }
 
-	/**
-	 * Get file.
-	 *
-	 * @return UploadedFile
-	 */
-	public function getFile()
-	{
-		return $this->file;
-	}
+  /**
+   * Get file.
+   *
+   * @return UploadedFile
+   */
+  public function getFile()
+  {
+    return $this->file;
+  }
 
 }

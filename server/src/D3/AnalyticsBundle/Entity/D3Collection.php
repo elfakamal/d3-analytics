@@ -10,213 +10,213 @@ use Doctrine\Common\Collections\ArrayCollection;
 class D3Collection
 {
 
-	const SYSTEM_COLLECTION = 1;
-	const REGULAR_COLLECTION = 2;
-	const LIBRARY_COLLECTION = "Library";
-	const STARRED_COLLECTION = "Starred";
-	const DELETED_COLLECTION = "Deleted";
+  const SYSTEM_COLLECTION = 1;
+  const REGULAR_COLLECTION = 2;
+  const LIBRARY_COLLECTION = "Library";
+  const STARRED_COLLECTION = "Starred";
+  const DELETED_COLLECTION = "Deleted";
 
-	/**
-	 * Constructor
-	 */
-	public function __construct()
-	{
-		$this->setCreationDate(new \DateTime());
-		$this->setUpdateDate(new \DateTime());
+  /**
+   * Constructor
+   */
+  public function __construct()
+  {
+    $this->setCreationDate(new \DateTime());
+    $this->setUpdateDate(new \DateTime());
 
-		$this->setCollectionTypeId(self::REGULAR_COLLECTION);
-	}
+    $this->setCollectionTypeId(self::REGULAR_COLLECTION);
+  }
 
-	/**
-	 * @var integer
-	 */
-	protected $id;
+  /**
+   * @var integer
+   */
+  protected $id;
 
-	/**
-	 * @var string
-	 */
-	protected $name;
+  /**
+   * @var string
+   */
+  protected $name;
 
-	/**
-	 * @var string
-	 */
-	protected $description;
+  /**
+   * @var string
+   */
+  protected $description;
 
-	/**
-	 * @var integer
-	 */
-	protected $collectionTypeId;
+  /**
+   * @var integer
+   */
+  protected $collectionTypeId;
 
-	/**
-	 * @var \DateTime
-	 */
-	protected $creationDate;
+  /**
+   * @var \DateTime
+   */
+  protected $creationDate;
 
-	/**
-	 * @var \DateTime
-	 */
-	protected $updateDate;
+  /**
+   * @var \DateTime
+   */
+  protected $updateDate;
 
-	/**
-	 * @var ArrayCollection
-	 */
-	protected $visualizations;
+  /**
+   * @var ArrayCollection
+   */
+  protected $visualizations;
 
-	/**
-	 * Get id
-	 *
-	 * @return integer
-	 */
-	public function getId()
-	{
-		return $this->id;
-	}
+  /**
+   * Get id
+   *
+   * @return integer
+   */
+  public function getId()
+  {
+    return $this->id;
+  }
 
-	/**
-	 * Set name
-	 *
-	 * @param string $name
-	 * @return D3Collection
-	 */
-	public function setName( $name )
-	{
-		$this->name = $name;
+  /**
+   * Set name
+   *
+   * @param string $name
+   * @return D3Collection
+   */
+  public function setName( $name )
+  {
+    $this->name = $name;
 
-		return $this;
-	}
+    return $this;
+  }
 
-	/**
-	 * Get name
-	 *
-	 * @return string
-	 */
-	public function getName()
-	{
-		return $this->name;
-	}
+  /**
+   * Get name
+   *
+   * @return string
+   */
+  public function getName()
+  {
+    return $this->name;
+  }
 
-	/**
-	 * Set description
-	 *
-	 * @param string $description
-	 * @return D3Collection
-	 */
-	public function setDescription( $description )
-	{
-		$this->description = $description;
+  /**
+   * Set description
+   *
+   * @param string $description
+   * @return D3Collection
+   */
+  public function setDescription( $description )
+  {
+    $this->description = $description;
 
-		return $this;
-	}
+    return $this;
+  }
 
-	/**
-	 * Get description
-	 *
-	 * @return string
-	 */
-	public function getDescription()
-	{
-		return $this->description;
-	}
+  /**
+   * Get description
+   *
+   * @return string
+   */
+  public function getDescription()
+  {
+    return $this->description;
+  }
 
-	/**
-	 * Set creationDate
-	 *
-	 * @param \DateTime $creationDate
-	 * @return D3Collection
-	 */
-	public function setCreationDate( $creationDate )
-	{
-		$this->creationDate = $creationDate;
+  /**
+   * Set creationDate
+   *
+   * @param \DateTime $creationDate
+   * @return D3Collection
+   */
+  public function setCreationDate( $creationDate )
+  {
+    $this->creationDate = $creationDate;
 
-		return $this;
-	}
+    return $this;
+  }
 
-	/**
-	 * Get creationDate
-	 *
-	 * @return \DateTime
-	 */
-	public function getCreationDate()
-	{
-		return $this->creationDate;
-	}
+  /**
+   * Get creationDate
+   *
+   * @return \DateTime
+   */
+  public function getCreationDate()
+  {
+    return $this->creationDate;
+  }
 
-	/**
-	 * Set updateDate
-	 *
-	 * @param \DateTime $updateDate
-	 * @return D3Collection
-	 */
-	public function setUpdateDate( $updateDate )
-	{
-		$this->updateDate = $updateDate;
+  /**
+   * Set updateDate
+   *
+   * @param \DateTime $updateDate
+   * @return D3Collection
+   */
+  public function setUpdateDate( $updateDate )
+  {
+    $this->updateDate = $updateDate;
 
-		return $this;
-	}
+    return $this;
+  }
 
-	/**
-	 * Get updateDate
-	 *
-	 * @return \DateTime
-	 */
-	public function getUpdateDate()
-	{
-		return $this->updateDate;
-	}
+  /**
+   * Get updateDate
+   *
+   * @return \DateTime
+   */
+  public function getUpdateDate()
+  {
+    return $this->updateDate;
+  }
 
-	/**
-	 * Set collectionTypeId
-	 *
-	 * @param integer $collectionTypeId
-	 * @return D3Collection
-	 */
-	public function setCollectionTypeId( $collectionTypeId )
-	{
-		$this->collectionTypeId = $collectionTypeId;
+  /**
+   * Set collectionTypeId
+   *
+   * @param integer $collectionTypeId
+   * @return D3Collection
+   */
+  public function setCollectionTypeId( $collectionTypeId )
+  {
+    $this->collectionTypeId = $collectionTypeId;
 
-		return $this;
-	}
+    return $this;
+  }
 
-	/**
-	 * Get collectionTypeId
-	 *
-	 * @return integer
-	 */
-	public function getCollectionTypeId()
-	{
-		return $this->collectionTypeId;
-	}
+  /**
+   * Get collectionTypeId
+   *
+   * @return integer
+   */
+  public function getCollectionTypeId()
+  {
+    return $this->collectionTypeId;
+  }
 
-	/**
-	 * Add visualizations
-	 *
-	 * @param \D3\AnalyticsBundle\Entity\Visualization $visualizations
-	 * @return D3Collection
-	 */
-	public function addVisualization( \D3\AnalyticsBundle\Entity\Visualization $visualizations )
-	{
-		$this->visualizations[] = $visualizations;
-		return $this;
-	}
+  /**
+   * Add visualizations
+   *
+   * @param \D3\AnalyticsBundle\Entity\Visualization $visualizations
+   * @return D3Collection
+   */
+  public function addVisualization( \D3\AnalyticsBundle\Entity\Visualization $visualizations )
+  {
+    $this->visualizations[] = $visualizations;
+    return $this;
+  }
 
-	/**
-	 * Remove visualizations
-	 *
-	 * @param \D3\AnalyticsBundle\Entity\Visualization $visualizations
-	 */
-	public function removeVisualization( \D3\AnalyticsBundle\Entity\Visualization $visualizations )
-	{
-		$this->visualizations->removeElement($visualizations);
-	}
+  /**
+   * Remove visualizations
+   *
+   * @param \D3\AnalyticsBundle\Entity\Visualization $visualizations
+   */
+  public function removeVisualization( \D3\AnalyticsBundle\Entity\Visualization $visualizations )
+  {
+    $this->visualizations->removeElement($visualizations);
+  }
 
-	/**
-	 * Get visualizations
-	 *
-	 * @return \Doctrine\Common\Collections\ArrayCollection
-	 */
-	public function getVisualizations()
-	{
-		return $this->visualizations;
-	}
+  /**
+   * Get visualizations
+   *
+   * @return \Doctrine\Common\Collections\ArrayCollection
+   */
+  public function getVisualizations()
+  {
+    return $this->visualizations;
+  }
 
 }

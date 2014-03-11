@@ -1,65 +1,63 @@
 define(['text!./templates/base.html'], function(tpl)
 {
-	var template = _.template(tpl);
+  var template = _.template(tpl);
 
-	return {
+  return {
+    type: 'Backbone',
+    events: {
+      "click #li-add-data-source": "onAddDataSourceClick",
+      "click #li-add-visualization": "onAddVisualizationClick",
+      "click #li-collect": function()
+      {
+        this.component.onCollectClick();
+      }
+    },
 
-		type: 'Backbone',
+    onCollectClick: function()
+    {
+      var collectionId = this.sandbox.collect("collection.id", this.onCollectionIdCollected, "wall", null, this);
+    },
 
-		events: {
-			"click #li-add-data-source": "onAddDataSourceClick",
-			"click #li-add-visualization": "onAddVisualizationClick",
-			"click #li-collect": function()
-			{
-				this.component.onCollectClick();
-			}
-		},
+    onCollectionIdCollected: function(data)
+    {
+      alert("data came from wall component " + data);
+    },
 
-		onCollectClick: function()
-		{
-			var collectionId = this.sandbox.collect("collection.id", this.onCollectionIdCollected, "wall", null, this);
-		},
+    initialize: function()
+    {
+      this.$el.html(template());
+    },
 
-		onCollectionIdCollected: function(data)
-		{
-			alert("data came from wall component " + data);
-		},
+    onHomeClick: function(event)
+    {
+      if (event)
+      {
+        event.preventDefault();
+      }
 
-		initialize: function ()
-		{
-			this.$el.html(template());
-		},
+      this.sandbox.switchToState("home");
+    },
 
-		onHomeClick: function(event)
-		{
-			if( event )
-			{
-				event.preventDefault();
-			}
+    onBrowseClick: function()
+    {
 
-			this.sandbox.switchToState("home");
-		},
+    },
 
-		onBrowseClick:function()
-		{
+    onSignupClick: function()
+    {
 
-		},
+    },
 
-		onSignupClick:function()
-		{
+    onAddVisualizationClick: function()
+    {
+      this.sandbox.switchToState("add-visualization");
+    },
 
-		},
+    onAddDataSourceClick: function()
+    {
+      this.sandbox.switchToState("add-datasource");
+    }
 
-		onAddVisualizationClick: function()
-		{
-			this.sandbox.switchToState("add-visualization");
-		},
-
-		onAddDataSourceClick: function()
-		{
-			this.sandbox.switchToState("add-datasource");
-		}
-
-	}
+  }
 
 });

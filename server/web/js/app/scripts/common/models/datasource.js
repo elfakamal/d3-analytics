@@ -1,180 +1,178 @@
 define(['backbone', 'd3'], function(Backbone, d3)
 {
-	"use strict";
+  "use strict";
 
-	return Backbone.Model.extend(
-	{
+  return Backbone.Model.extend(
+  {
+    /**
+     * example:
+     *
+     *{
+     *	id: 28
+     *	name: "my data"
+     *	file_name: "7b4b97e9913eb5f7c86c8a664c77a67d.d3a"
+     *	file_extension: "tsv"
+     *}
+     *
+     */
+    defaults:
+    {
+      name: ""
+    },
 
-		/**
-		 * example:
-		 *
-		 *{
-		 *	id: 28
-		 *	name: "my data"
-		 *	file_name: "7b4b97e9913eb5f7c86c8a664c77a67d.d3a"
-		 *	file_extension: "tsv"
-		 *}
-		 *
-		 */
-		defaults:
-		{
-			name: ""
-		},
+    _libraryId: 0,
+    /**
+     * TODO: implement a way to set this property.
+     */
+    _dataStoreId: 3, //temporary
+    _attaching: false,
+    allowedFileTypes: [
+      "text",
+      "json",
+      "html",
+      "xml",
+      "csv",
+      "tsv"
+    ],
 
-		_libraryId: 0,
+    datasourceContent: null,
+    datasourceColumns: null,
 
-		/**
-		 * TODO: implement a way to set this property.
-		 */
-		_dataStoreId: 3, //temporary
+    setLibraryId: function(libraryId)
+    {
+      this._libraryId = libraryId;
+    },
 
-		_attaching: false,
+    setDataStoreId: function(dataStoreId)
+    {
+      this._dataStoreId = dataStoreId;
+    },
 
-		allowedFileTypes : [
-			"text",
-			"json",
-			"html",
-			"xml",
-			"csv",
-			"tsv"
-		],
+    /**
+     * I used 'url' instead of 'urlRoot' because I don't want to let
+     * Backbone add the model 'id' at the end of the final url.
+     */
+    url: function()
+    {
+      var url = 'datastores/' + this._dataStoreId + '/datasources';
 
-		datasourceContent: null,
-		datasourceColumns: null,
+      if (this.get('dataStoreId') === null || this.get('dataStoreId') === 0)
+      {
+        //grab the library id
+      }
 
-		setLibraryId: function(libraryId)
-		{
-			this._libraryId = libraryId;
-		},
+      if (this._attaching === true)
+      {
+        if (this.get('dataSourceId') !== null && this.get('dataSourceId') !== 0)
+        {
+          url += "/" + this.get('id') + "/datasources/" + this._dataSourceId + "/attach";
+        }
+      }
 
-		setDataStoreId: function(dataStoreId)
-		{
-			this._dataStoreId = dataStoreId;
-		},
+      return url;
+    },
 
-		/**
-		 * I used 'url' instead of 'urlRoot' because I don't want to let
-		 * Backbone add the model 'id' at the end of the final url.
-		 */
-		url: function()
-		{
-			var url = 'datastores/' + this._dataStoreId + '/datasources';
 
-			if( this.get('dataStoreId') === null || this.get('dataStoreId') === 0 )
-			{
-				//grab the library id
-			}
+    /**
+     *
+     * @param {string} fileType
+     * @returns {Boolean}
+     */
+    isFileTypeAllowed: function(fileType)
+    {
+      if (typeof fileType === 'undefined')
+      {
+        return false;
+      }
 
-			if( this._attaching === true )
-			{
-				if( this.get('dataSourceId') !== null && this.get('dataSourceId') !== 0 )
-				{
-					url += "/" + this.get('id') + "/datasources/" + this._dataSourceId + "/attach";
-				}
-			}
+      return this.allowedFileTypes.indexOf(fileType) >= 0;
+    },
 
-			return url;
-		},
 
-		/**
-		 *
-		 * @param {string} fileType
-		 * @returns {Boolean}
-		 */
-		isFileTypeAllowed : function(fileType)
-		{
-			if( typeof fileType === 'undefined' )
-			{
-				return false;
-			}
+    /**
+     *
+     * @param {function} callback
+     * @param {Object} context
+     * @returns {undefined}
+     */
+    load: function(callback, context)
+    {
+      if (!this.isFileTypeAllowed(this.get("file_extension")))
+      {
+        throw new Error("D3 Analytics: File not supported");
+        return;
+      }
 
-			return this.allowedFileTypes.indexOf(fileType) >= 0;
-		},
+      var path = "uploads/datasources/" + this.get("file_name");
+      var d3loader = d3[this.get("file_extension")];
 
-		/**
-		 *
-		 * @param {function} callback
-		 * @param {Object} context
-		 * @returns {undefined}
-		 */
-		load: function(callback, context)
-		{
-			if( !this.isFileTypeAllowed(this.get("file_extension")) )
-			{
-				throw new Error("D3 Analytics: File not supported");
-				return;
-			}
+      var deferred = d3loader.apply(d3, [path]);
 
-			var path = "uploads/datasources/" + this.get("file_name");
-			var d3loader = d3[this.get("file_extension")];
+      deferred.get(this.onD3LoaderComplete(callback, context));
+    },
 
-			var deferred = d3loader.apply(d3, [path]);
+    /**
+     *
+     * @param {function} callback
+     * @param {Object} context
+     * @returns {unresolved}
+     */
+    onD3LoaderComplete: function(callback, context)
+    {
+      var self = this;
 
-			deferred.get(this.onD3LoaderComplete(callback, context));
-		},
+      return function(error, data)
+      {
+        if (error)
+        {
+          throw new Error(error);
+        }
 
-		/**
-		 *
-		 * @param {function} callback
-		 * @param {Object} context
-		 * @returns {unresolved}
-		 */
-		onD3LoaderComplete: function(callback, context)
-		{
-			var self = this;
+        self.datasourceContent = data;
+        self.updateColumns();
 
-			return function(error, data)
-			{
-				if(error)
-				{
-					throw new Error(error);
-				}
+        var cntxt = context ? context : null;
 
-				self.datasourceContent = data;
-				self.updateColumns();
+        if (callback)
+        {
+          callback.call(cntxt, data);
+        }
+      };
+    },
 
-				var cntxt = context ? context : null;
+    /**
+     *
+     * @returns {undefined}
+     */
+    updateColumns: function()
+    {
+      if (this.datasourceContent &&
+      _.isArray(this.datasourceContent) &&
+      this.datasourceContent.length > 0)
+      {
+        var columns = _.keys(this.datasourceContent[0]);
+        var keys = _.range(columns.length);
+        this.datasourceColumns = _.object(keys, columns);
+      }
+    },
 
-				if(callback)
-				{
-					callback.call(cntxt, data);
-				}
-			};
-		},
+    /**
+     *
+     * @returns {Object}
+     */
+    getContent: function()
+    {
+      return this.datasourceContent;
+    },
 
-		/**
-		 *
-		 * @returns {undefined}
-		 */
-		updateColumns: function()
-		{
-			if( this.datasourceContent &&
-					_.isArray(this.datasourceContent) &&
-					this.datasourceContent.length > 0 )
-			{
-				var columns = _.keys(this.datasourceContent[0]);
-				var keys = _.range(columns.length);
-				this.datasourceColumns = _.object(keys, columns);
-			}
-		},
-
-		/**
-		 *
-		 * @returns {Object}
-		 */
-		getContent: function()
-		{
-			return this.datasourceContent;
-		},
-
-		/**
-		 *
-		 * @returns {Object}
-		 */
-		getColumns: function()
-		{
-			return this.datasourceColumns;
-		}
-	});
+    /**
+     *
+     * @returns {Object}
+     */
+    getColumns: function()
+    {
+      return this.datasourceColumns;
+    }
+  });
 
 });

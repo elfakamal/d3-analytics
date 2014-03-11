@@ -19,16 +19,16 @@ use D3\AnalyticsBundle\Entity\DataStore;
 class DataStoreFixtures implements FixtureInterface
 {
 
-	public function load( ObjectManager $manager )
-	{
-		$dataStore = new DataStore();
-		$dataStore->setName("All");
-		$dataStore->setDescription("The data store that contains all the data sources");
-		$dataStore->setDataStoreTypeId(DataStore::SYSTEM_DATA_STORE);
+  public function load( ObjectManager $manager )
+  {
+    $dataStore = new DataStore();
+    $dataStore->setName("All");
+    $dataStore->setDescription("The data store that contains all the data sources");
+    $dataStore->setDataStoreTypeId(DataStore::SYSTEM_DATA_STORE);
 
-		$manager->persist($dataStore);
-		$manager->flush();
-	}
+    $manager->persist($dataStore);
+    $manager->flush();
+  }
 
 }
 

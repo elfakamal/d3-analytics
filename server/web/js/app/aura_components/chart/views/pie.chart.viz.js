@@ -2,304 +2,303 @@ define(["./chart.viz", "d3", "constants", "color"],
 function(ViewChart, d3, constants, Color)
 {
 
-	return ViewChart.extend(
-	{
+  return ViewChart.extend(
+  {
+    arcModel: null,
+    pieLayout: null,
+    radius: function()
+    {
+      return Math.min(this.width, this.height) / 2;
+    },
 
-		arcModel: null,
-		pieLayout: null,
+    innerRadius: function()
+    {
+      return 0;
+    },
 
+    /**
+     *free memory from the other fields.
+     */
+    dispose: function()
+    {
+      this.isDonut = false;
+      this.donutTickness = 0;
+      this.arcModel = null;
+      this.pieLayout = null;
 
-		radius :function()
-		{
-			return Math.min(this.width, this.height) / 2;
-		},
+      ViewChart.prototype.dispose.call(this);
+    },
 
-		innerRadius :function()
-		{
-			return 0;
-		},
+    /***************************************************************************
+     *
+     * INITIALIZERS
+     *
+     **************************************************************************/
 
-		/**
-		 *free memory from the other fields.
-		 */
-		dispose: function()
-		{
-			this.isDonut = false;
-			this.donutTickness = 0;
-			this.arcModel = null;
-			this.pieLayout = null;
+    /**
+     *
+     * @returns {undefined}
+     */
+    initParameters: function()
+    {
+      ViewChart.prototype.initParameters.call(this);
 
-			ViewChart.prototype.dispose.call(this);
-		},
+      this.initPie();
+    },
 
+    initPie: function()
+    {
+      var self = this;
 
-		/***************************************************************************
-		 *
-		 * INITIALIZERS
-		 *
-		 **************************************************************************/
+      this.arcModel = d3.svg.arc()
+      .outerRadius(this.radius())
+      .innerRadius(this.innerRadius());
 
-		/**
-		 *
-		 * @returns {undefined}
-		 */
-		initParameters: function()
-		{
-			ViewChart.prototype.initParameters.call(this);
+      this.pieLayout = d3.layout.pie()
+      .sort(null)
+      .value(function(d) {
+        return d[self.getValueColumn()];
+      });
+    },
 
-			this.initPie();
-		},
+    /**
+     * this function needs to be overriden.
+     */
+    initColorScale: function()
+    {
+      var colors = [];
+      if (this.data)
+        colors = this.generateColors(this.data.length);
+      this.colorScale = d3.scale.ordinal().range(colors);
+    },
 
-		initPie: function()
-		{
-			var self = this;
+    sanitizeData: function()
+    {
+      var self = this;
+      _.map(this.data, function(row)
+      {
+        row[self.getValueColumn()] = +row[self.getValueColumn()];
+        return row;
+      });
+    },
 
-			this.arcModel = d3.svg.arc()
-				.outerRadius(this.radius())
-				.innerRadius(this.innerRadius());
+    /***************************************************************************
+     *
+     * DRAWERS
+     *
+     **************************************************************************/
 
-			this.pieLayout = d3.layout.pie()
-				.sort(null)
-				.value(function(d) { return d[self.getValueColumn()]; });
-		},
+    /**
+     *
+     */
+    drawChart: function()
+    {
+      ViewChart.prototype.drawChart.call(this);
 
-		/**
-		 * this function needs to be overriden.
-		 */
-		initColorScale: function()
-		{
-			var colors = [];
-			if(this.data) colors = this.generateColors(this.data.length);
-			this.colorScale = d3.scale.ordinal().range(colors);
-		},
+      this.drawArcs();
+      this.drawPath();
+      this.drawTexts();
 
-		sanitizeData: function()
-		{
-			var self = this;
-			_.map(this.data, function(row)
-			{
-				row[self.getValueColumn()] = +row[self.getValueColumn()];
-				return row;
-			});
-		},
+      this.update();
+    },
 
-		/***************************************************************************
-		 *
-		 * DRAWERS
-		 *
-		 **************************************************************************/
+    positionBase: function()
+    {
+      var posX = this.width / 2 + this.marginLeft();
+      var posY = this.height / 2 + this.marginTop();
 
-		/**
-		 *
-		 */
-		drawChart: function()
-		{
-			ViewChart.prototype.drawChart.call(this);
+      this.svg.attr("transform", "translate(" + posX + "," + posY + ")");
+    },
 
-			this.drawArcs();
-			this.drawPath();
-			this.drawTexts();
+    drawArcs: function()
+    {
+      this.svg.selectAll(".arc")
+      .data(this.pieLayout(this.data))
+      .enter()
+      .append("g")
+      .attr("class", "arc");
+    },
 
-			this.update();
-		},
+    drawPath: function()
+    {
+      this.svg.selectAll(".arc")
+      .append("path")
+      .attr("class", "path")
+      .on('mouseover', this.onPathMouseOver())
+      .on('mouseout', this.onPathMouseOut());
+    },
 
-		positionBase: function()
-		{
-			var posX = this.width/2 + this.marginLeft();
-			var posY = this.height/2 + this.marginTop();
+    onPathMouseOver: function()
+    {
+      var self = this;
 
-			this.svg.attr("transform", "translate(" + posX + "," + posY + ")");
-		},
+      return function(d)
+      {
+        var currentRGBAColor = d3.select(this).style('fill');
+        var color = new Color(currentRGBAColor);
+        color.setAlpha(1);
+        d3.select(this).style('fill', color.toRGBAString());
 
-		drawArcs: function()
-		{
-			this.svg.selectAll(".arc")
-				.data(this.pieLayout(this.data))
-				.enter()
-				.append("g")
-					.attr("class", "arc");
-		},
+        if (self.chartData && +self.chartData.size === 1)
+          d3.select(this.parentNode).select("text").style("display", "block");
+      };
+    },
 
-		drawPath: function()
-		{
-			this.svg.selectAll(".arc")
-				.append("path")
-					.attr("class", "path")
-					.on('mouseover', this.onPathMouseOver())
-					.on('mouseout', this.onPathMouseOut());
-		},
+    onPathMouseOut: function()
+    {
+      var self = this;
 
-		onPathMouseOver: function()
-		{
-			var self = this;
+      return function(d)
+      {
+        var currentRGBAColor = d3.select(this).style('fill');
+        var color = new Color(currentRGBAColor);
+        color.setAlpha(.5);
+        d3.select(this).style('fill', color.toRGBAString());
 
-			return function(d)
-			{
-				var currentRGBAColor = d3.select(this).style('fill');
-				var color = new Color(currentRGBAColor);
-				color.setAlpha(1);
-				d3.select(this).style('fill', color.toRGBAString());
+        if (self.chartData && +self.chartData.size === 1)
+          d3.select(this.parentNode).select("text").style("display", "none");
+      };
+    },
 
-				if(self.chartData && +self.chartData.size === 1)
-					d3.select(this.parentNode).select("text").style("display", "block");
-			};
-		},
+    drawTexts: function()
+    {
+      this.svg.selectAll(".arc")
+      .append("text")
+      .attr("class", "text")
 
-		onPathMouseOut: function()
-		{
-			var self = this;
+      //TODO: complete this stuff ...
+      .on('mouseover', this.onTextMouseOver())
+      .on('mouseout', this.onTextMouseOut());
 
-			return function(d)
-			{
-				var currentRGBAColor = d3.select(this).style('fill');
-				var color = new Color(currentRGBAColor);
-				color.setAlpha(.5);
-				d3.select(this).style('fill', color.toRGBAString());
+      if (this.chartData && +this.chartData.size === 1)
+      {
+        this.svg.selectAll(".text").style("display", "none");
+      }
+      else
+      {
+        this.svg.selectAll(".text").style("display", "block");
+      }
+    },
 
-				if(self.chartData && +self.chartData.size === 1)
-					d3.select(this.parentNode).select("text").style("display", "none");
-			};
-		},
+    onTextMouseOver: function()
+    {
+      var self = this;
+      var accessor = this.onPathMouseOver();
 
-		drawTexts: function()
-		{
-			this.svg.selectAll(".arc")
-				.append("text")
-					.attr("class", "text")
+      return function(d)
+      {
+        var path = d3.select(this.parentNode).select("path")[0][0];
+        accessor.apply(path, [d]);
+      };
+    },
 
-					//TODO: complete this stuff ...
-					.on('mouseover', this.onTextMouseOver())
-					.on('mouseout', this.onTextMouseOut());
+    onTextMouseOut: function()
+    {
+      var self = this;
+      var accessor = this.onPathMouseOut();
 
-			if(this.chartData && +this.chartData.size === 1)
-			{
-				this.svg.selectAll(".text").style("display", "none");
-			}
-			else
-			{
-				this.svg.selectAll(".text").style("display", "block");
-			}
-		},
+      return function(d)
+      {
+        var path = d3.select(this.parentNode).select("path")[0][0];
+        accessor.apply(path, [d]);
+      };
+    },
 
-		onTextMouseOver: function()
-		{
-			var self = this;
-			var accessor = this.onPathMouseOver();
+    /***************************************************************************
+     *
+     * UPDATERS
+     *
+     **************************************************************************/
 
-			return function(d)
-			{
-				var path = d3.select(this.parentNode).select("path")[0][0];
-				accessor.apply(path, [d]);
-			};
-		},
+    /**
+     * updates all chart's parameters.
+     *
+     * @returns {undefined}
+     */
+    update: function()
+    {
+      ViewChart.prototype.update.call(this);
 
-		onTextMouseOut: function()
-		{
-			var self = this;
-			var accessor = this.onPathMouseOut();
+      this.updatePath();
+      this.updateTexts();
+    },
 
-			return function(d)
-			{
-				var path = d3.select(this.parentNode).select("path")[0][0];
-				accessor.apply(path, [d]);
-			};
-		},
+    updatePath: function()
+    {
+      var self = this;
 
-		/***************************************************************************
-		 *
-		 * UPDATERS
-		 *
-		 **************************************************************************/
+      this.svg.selectAll(".path")
+      .attr("d", this.arcModel)
+      .style("fill", function(d)
+      {
+        return self.colorScale(d.data[self.getKeyColumn()]);
+      });
+    },
 
-		/**
-		 * updates all chart's parameters.
-		 *
-		 * @returns {undefined}
-		 */
-		update: function()
-		{
-			ViewChart.prototype.update.call(this);
+    updateTexts: function()
+    {
+      var self = this;
 
-			this.updatePath();
-			this.updateTexts();
-		},
+      this.svg.selectAll(".text")
+      .attr("transform", function(d)
+      {
+        return "translate(" + self.arcModel.centroid(d) + ")";
+      })
+      .attr("dy", ".35em")
+      .style("fill", "white")
+      .style("font-weight", "bold")
+      .style("text-anchor", "middle")
+      .text(function(d)
+      {
+        return d.data[self.getKeyColumn()];
+      });
 
-		updatePath: function()
-		{
-			var self = this;
+      if (this.chartData && +this.chartData.size === 1)
+      {
+        this.svg.selectAll(".text").style("display", "none");
+      }
+      else
+      {
+        this.svg.selectAll(".text").style("display", "block");
+      }
+    },
 
-			this.svg.selectAll(".path")
-				.attr("d", this.arcModel)
-				.style("fill", function(d)
-				{
-					return self.colorScale(d.data[self.getKeyColumn()]);
-				});
-		},
+    /**
+     * Abstract function
+     */
+    getKeyColumn: function()
+    {
+      return this.columns[0];
+    },
 
-		updateTexts: function()
-		{
-			var self = this;
+    /**
+     * Abstract function
+     */
+    getValueColumn: function()
+    {
+      return this.columns[1];
+    },
 
-			this.svg.selectAll(".text")
-				.attr("transform", function(d)
-				{
-					return "translate(" + self.arcModel.centroid(d) + ")";
-				})
-				.attr("dy", ".35em")
-				.style("fill", "white")
-				.style("font-weight", "bold")
-				.style("text-anchor", "middle")
-				.text(function(d)
-				{
-					return d.data[self.getKeyColumn()];
-				});
+    marginTop: function()
+    {
+      return 5;
+    },
 
-			if(this.chartData && +this.chartData.size === 1)
-			{
-				this.svg.selectAll(".text").style("display", "none");
-			}
-			else
-			{
-				this.svg.selectAll(".text").style("display", "block");
-			}
-		},
+    marginRight: function()
+    {
+      return 5;
+    },
 
-		/**
-		 * Abstract function
-		 */
-		getKeyColumn: function()
-		{
-			return this.columns[0];
-		},
+    marginBottom: function()
+    {
+      return 5;
+    },
 
-		/**
-		 * Abstract function
-		 */
-		getValueColumn: function()
-		{
-			return this.columns[1];
-		},
+    marginLeft: function()
+    {
+      return 5;
+    }
 
-		marginTop: function()
-		{
-			return 5;
-		},
-
-		marginRight: function()
-		{
-			return 5;
-		},
-
-		marginBottom: function()
-		{
-			return 5;
-		},
-
-		marginLeft: function()
-		{
-			return 5;
-		}
-
-	});
+  });
 
 });

@@ -10,25 +10,27 @@ use Doctrine\DBAL\Schema\Schema;
  */
 class Version20131024172943 extends AbstractMigration
 {
-    public function up(Schema $schema)
-    {
-        // this up() migration is auto-generated, please modify it to your needs
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() != "mysql", "Migration can only be executed safely on 'mysql'.");
 
-        $this->addSql("ALTER TABLE collection ADD collectionTypeId INT NOT NULL");
-        $this->addSql("ALTER TABLE data_source CHANGE fileName fileName VARCHAR(255) NOT NULL");
-        $this->addSql("ALTER TABLE data_store ADD dataStoreTypeId INT NOT NULL");
-        $this->addSql("ALTER TABLE visualization ADD isStarred TINYINT(1) NOT NULL, ADD isActive TINYINT(1) NOT NULL");
-    }
+  public function up( Schema $schema )
+  {
+    // this up() migration is auto-generated, please modify it to your needs
+    $this->abortIf($this->connection->getDatabasePlatform()->getName() != "mysql", "Migration can only be executed safely on 'mysql'.");
 
-    public function down(Schema $schema)
-    {
-        // this down() migration is auto-generated, please modify it to your needs
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() != "mysql", "Migration can only be executed safely on 'mysql'.");
+    $this->addSql("ALTER TABLE collection ADD collectionTypeId INT NOT NULL");
+    $this->addSql("ALTER TABLE data_source CHANGE fileName fileName VARCHAR(255) NOT NULL");
+    $this->addSql("ALTER TABLE data_store ADD dataStoreTypeId INT NOT NULL");
+    $this->addSql("ALTER TABLE visualization ADD isStarred TINYINT(1) NOT NULL, ADD isActive TINYINT(1) NOT NULL");
+  }
 
-        $this->addSql("ALTER TABLE collection DROP collectionTypeId");
-        $this->addSql("ALTER TABLE data_source CHANGE fileName fileName VARCHAR(32) NOT NULL");
-        $this->addSql("ALTER TABLE data_store DROP dataStoreTypeId");
-        $this->addSql("ALTER TABLE visualization DROP isStarred, DROP isActive");
-    }
+  public function down( Schema $schema )
+  {
+    // this down() migration is auto-generated, please modify it to your needs
+    $this->abortIf($this->connection->getDatabasePlatform()->getName() != "mysql", "Migration can only be executed safely on 'mysql'.");
+
+    $this->addSql("ALTER TABLE collection DROP collectionTypeId");
+    $this->addSql("ALTER TABLE data_source CHANGE fileName fileName VARCHAR(32) NOT NULL");
+    $this->addSql("ALTER TABLE data_store DROP dataStoreTypeId");
+    $this->addSql("ALTER TABLE visualization DROP isStarred, DROP isActive");
+  }
+
 }

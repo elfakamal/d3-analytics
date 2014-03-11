@@ -1,30 +1,29 @@
 define(['text!./templates/base.html'], function(tpl)
 {
-	var template = _.template(tpl);
+  var template = _.template(tpl);
 
-	return {
+  return {
+    type: "Backbone",
 
-		type: "Backbone",
+    initialize: function()
+    {
+      this.render();
+    },
 
-		initialize: function ()
-		{
-			this.render();
-		},
+    render: function()
+    {
+      this.$el.html(template());
+    },
 
-		render: function()
-		{
-			this.$el.html(template());
-		},
+    onAddDataSourceClick: function()
+    {
+      alert('yeaaah');
+    },
 
-		onAddDataSourceClick: function()
-		{
-			alert('yeaaah');
-		},
+    onAddVisualizationClick: function()
+    {
 
-		onAddVisualizationClick: function()
-		{
-
-		}
-	}
+    }
+  };
 
 });

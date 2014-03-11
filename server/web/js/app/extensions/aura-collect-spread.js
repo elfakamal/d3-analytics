@@ -1,139 +1,139 @@
-define(function ()
+define(function()
 {
-	'use strict';
+  'use strict';
 
-	return {
+  return {
+    name: 'Aura collect spread',
+    /**
+     *
+     * @param {type} app
+     * @returns {undefined}
+     */
+    initialize: function(app)
+    {
+      /**
+       *
+       */
+      app.components.before('initialize', function(options)
+      {
+        /**
+         * a hash of data providers (functions), that belongs to "this"
+         * and can be invoked during the spread process.
+         */
+        this.collectProviders = {};
 
-		name: 'Aura collect spread',
+        /**
+         * adds an entry to the data providers hash
+         *
+         * @param {string} event
+         * @param {function} provider
+         * @returns {undefined}
+         */
+        this.registerCollectProvider = function(event, provider)
+        {
+          if (typeof event === 'undefined' || event.indexOf(' ') >= 0)
+            throw new Error("event must be a valid string, like a dictionary key");
 
-		/**
-		 *
-		 * @param {type} app
-		 * @returns {undefined}
-		 */
-		initialize: function (app)
-		{
-			/**
-			 *
-			 */
-			app.components.before('initialize', function(options)
-			{
-				/**
-				 * a hash of data providers (functions), that belongs to "this"
-				 * and can be invoked during the spread process.
-				 */
-				this.collectProviders = {};
+          if (typeof provider !== 'function')
+            throw new Error("provider needs to be a function");
 
-				/**
-				 * adds an entry to the data providers hash
-				 *
-				 * @param {string} event
-				 * @param {function} provider
-				 * @returns {undefined}
-				 */
-				this.registerCollectProvider = function(event, provider)
-				{
-					if(typeof event === 'undefined' || event.indexOf(' ') >= 0)
-						throw new Error("event must be a valid string, like a dictionary key");
+          this.collectProviders[event] = provider;
+        };
 
-					if(typeof provider !== 'function')
-						throw new Error("provider needs to be a function");
+        /**
+         * removes an entry from the data providers hash.
+         *
+         * @param {string} event
+         * @returns {undefined}
+         */
+        this.unregisterCollectProvider = function(event)
+        {
+          if (typeof event === 'undefined' || event.indexOf(' ') >= 0)
+            throw new Error("event must be a valid string, like a dictionary key");
 
-					this.collectProviders[event] = provider;
-				};
+          if (!_.has(this.collectProviders, event))
+            throw new Error("there is no such event in the providers list");
 
-				/**
-				 * removes an entry from the data providers hash.
-				 *
-				 * @param {string} event
-				 * @returns {undefined}
-				 */
-				this.unregisterCollectProvider = function(event)
-				{
-					if(typeof event === 'undefined' || event.indexOf(' ') >= 0)
-						throw new Error("event must be a valid string, like a dictionary key");
+          this.collectProviders[event] = undefined;
+          delete this.collectProviders[event];
+        };
 
-					if(!_.has(this.collectProviders, event))
-						throw new Error("there is no such event in the providers list");
+        /**
+         * the collect event callback.
+         * it redirects the workflow to the spread process.
+         *
+         * @param {Object} collectMetadata
+         * @returns {undefined}
+         */
+        this.onCollectRequest = function(collectMetadata)
+        {
+          this.sandbox.spread(collectMetadata, this);
+        };
 
-					this.collectProviders[event] = undefined;
-					delete this.collectProviders[event];
-				};
+        /**
+         * every component is listening on collect
+         */
+        this.sandbox.on("collect." + this.options.name, this.onCollectRequest, this);
+      });
 
-				/**
-				 * the collect event callback.
-				 * it redirects the workflow to the spread process.
-				 *
-				 * @param {Object} collectMetadata
-				 * @returns {undefined}
-				 */
-				this.onCollectRequest = function(collectMetadata)
-				{
-					this.sandbox.spread(collectMetadata, this);
-				};
+      /**
+       *
+       *
+       * @param {string} event
+       * @param {function} callback
+       * @param {string} component
+       * @param {Object | string | Array | boolean} data
+       * @param {Object} context
+       * @returns {undefined}
+       */
+      app.sandbox.collect = function(event, callback, component, data, context)
+      {
+        var baseEvent = "spread";
+        var spreadEvent = "";
+        var collectEvent = "";
 
-				/**
-				 * every component is listening on collect
-				 */
-				this.sandbox.on("collect." + this.options.name, this.onCollectRequest, this);
-			});
+        spreadEvent += baseEvent + ".";
+        spreadEvent += component;
 
-			/**
-			 *
-			 *
-			 * @param {string} event
-			 * @param {function} callback
-			 * @param {string} component
-			 * @param {Object | string | Array | boolean} data
-			 * @param {Object} context
-			 * @returns {undefined}
-			 */
-			app.sandbox.collect = function(event, callback, component, data, context)
-			{
-				var baseEvent = "spread";
-				var spreadEvent = "";
-				var collectEvent = "";
+        var onSpread = function(data)
+        {
+          context.sandbox.off(spreadEvent, onSpread);
 
-				spreadEvent += baseEvent + ".";
-				spreadEvent += component;
+          if (callback)
+            callback.apply(context, [data]);
+        };
 
-				var onSpread = function(data)
-				{
-					context.sandbox.off(spreadEvent, onSpread);
+        context.sandbox.on(spreadEvent, onSpread, context);
 
-					if(callback)
-						callback.apply(context, [data]);
-				};
+        collectEvent += "collect.";
+        collectEvent += component;
 
-				context.sandbox.on(spreadEvent, onSpread, context);
+        var collectMetadata = {event: event,
+          sentData: data
+        };
+        context.sandbox.emit(collectEvent, collectMetadata);
+      };
 
-				collectEvent += "collect.";
-				collectEvent += component;
+      /**
+       *
+       *
+       * @param {Object} metadata
+       * @param {Object} context
+       * @returns {undefined}
+       */
+      app.sandbox.spread = function(metadata, context)
+      {
+        if (!_.has(metadata, "event") || !_.has(metadata, "sentData"))
+          throw new Error("spread's metadata is missing");
 
-				var collectMetadata = {event: event, sentData: data};
-				context.sandbox.emit(collectEvent, collectMetadata);
-			};
+        if (!_.has(context.collectProviders, metadata.event))
+          throw new Error("there is no such event in the providers list");
 
-			/**
-			 * 
-			 *
-			 * @param {Object} metadata
-			 * @param {Object} context
-			 * @returns {undefined}
-			 */
-			app.sandbox.spread = function(metadata, context)
-			{
-				if(!_.has(metadata, "event") || !_.has(metadata, "sentData"))
-					throw new Error("spread's metadata is missing");
-
-				if(!_.has(context.collectProviders, metadata.event))
-					throw new Error("there is no such event in the providers list");
-
-				var provider = context.collectProviders[metadata.event];
-				var result = provider.apply(context, [metadata.sentData]);
-				context.sandbox.emit("spread." + context.options.name, result);
-			};
-		}
-	};
+        var provider = context.collectProviders[metadata.event];
+        var result = provider.apply(context, [metadata.sentData]);
+        context.sandbox.emit("spread." + context.options.name, result);
+      };
+    }
+  };
 
 });

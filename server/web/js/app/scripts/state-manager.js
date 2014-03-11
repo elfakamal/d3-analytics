@@ -2,194 +2,194 @@ define(['underscore', 'jquery', './state', './naive-component'],
 function(_, $, State, NaiveComponent)
 {
 
-	/**
-	 *
-	 */
-	function StateManager(options)
-	{
-		var self = this;
+  /**
+   *
+   */
+  function StateManager(options)
+  {
+    var self = this;
 
-		if( !(this instanceof StateManager) )
-		{
-			self = Object.create(StateManager.prototype);
-		}
+    if (!(this instanceof StateManager))
+    {
+      self = Object.create(StateManager.prototype);
+    }
 
-		this.options = _.defaults(options || {},
-		{
-			history: false
-		});
+    this.options = _.defaults(options || {},
+    {
+      history: false
+    });
 
-		return self;
-	}
+    return self;
+  }
 
-	/**
-	 *
-	 */
-	StateManager.prototype.states = {};
+  /**
+   *
+   */
+  StateManager.prototype.states = {};
 
-	/**
-	 *
-	 */
-	StateManager.prototype.currentState = "";
+  /**
+   *
+   */
+  StateManager.prototype.currentState = "";
 
-	/**
-	 *
-	 */
-	StateManager.prototype.addState = function(state, componentList)
-	{
-		if( componentList && componentList.length === 0 )
-		{
-			console.warn("component list is empty");
-		}
+  /**
+   *
+   */
+  StateManager.prototype.addState = function(state, componentList)
+  {
+    if (componentList && componentList.length === 0)
+    {
+      console.warn("component list is empty");
+    }
 
-		var stateObject = null;
+    var stateObject = null;
 
-		if( state instanceof State )
-		{
-			stateObject = state;
-		}
-		else if( typeof state === 'string' )
-		{
-			stateObject = new State(state, componentList);
-		}
+    if (state instanceof State)
+    {
+      stateObject = state;
+    }
+    else if (typeof state === 'string')
+    {
+      stateObject = new State(state, componentList);
+    }
 
-		this.states[stateObject.name] = stateObject;
+    this.states[stateObject.name] = stateObject;
 
-		return stateObject;
-	};
+    return stateObject;
+  };
 
-	/**
-	 * @return Array
-	 */
-	StateManager.prototype.findComponentsByState =
-		function(componentCUIDs, stateName, returnAuraObjects)
-	{
-		var components = [];
+  /**
+   * @return Array
+   */
+  StateManager.prototype.findComponentsByState =
+  function(componentCUIDs, stateName, returnAuraObjects)
+  {
+    var components = [];
 
-		if( stateName !== "" && this.states.hasOwnProperty(stateName) )
-		{
-			var state = this.states[stateName];
+    if (stateName !== "" && this.states.hasOwnProperty(stateName))
+    {
+      var state = this.states[stateName];
 
-			if( state )
-			{
-				components = state.getComponentsByCUIDs(componentCUIDs, returnAuraObjects);
-			}
-		}
+      if (state)
+      {
+        components = state.getComponentsByCUIDs(componentCUIDs, returnAuraObjects);
+      }
+    }
 
-		return components;
-	};
-
-
-	/**
-	 *
-	 */
-	StateManager.prototype.preSwitch = function(stateName)
-	{
-		//add the next components to the dom.
-	};
-
-	/**
-	 *
-	 */
-	StateManager.prototype.postSwitch = function(stateName)
-	{
-		//do something
-	};
-
-	/**
-	 *
-	 */
-	StateManager.prototype.compare = function(state1, state2)
-	{
-		if( typeof state1 !== 'undefined' )
-		{
-			if( this.states.hasOwnProperty(state1) )
-			{
-				var stateA = this.states[state1];
-				var stateB = this.states[state2];
-
-				return stateA.compare(stateB);
-			}
-		}
-
-		return [];
-	};
+    return components;
+  };
 
 
-	/**
-	 *
-	 */
-	StateManager.prototype.createElements = function(stateName, componentCUIDs)
-	{
-		if( stateName && componentCUIDs && componentCUIDs.length > 0 )
-		{
-			if( this.states.hasOwnProperty(stateName) )
-			{
-				var self		= this;
-				var state		= this.states[stateName];
-				var components	= state.getComponentsByCUIDs(componentCUIDs, false);
+  /**
+   *
+   */
+  StateManager.prototype.preSwitch = function(stateName)
+  {
+    //add the next components to the dom.
+  };
 
-				components = _.sortBy(components, "getIndex");
+  /**
+   *
+   */
+  StateManager.prototype.postSwitch = function(stateName)
+  {
+    //do something
+  };
 
-				_.each(components, function(component)
-				{
-					var elementID = component.getElementSelector();
-					var elementParentID = component.getParent();
+  /**
+   *
+   */
+  StateManager.prototype.compare = function(state1, state2)
+  {
+    if (typeof state1 !== 'undefined')
+    {
+      if (this.states.hasOwnProperty(state1))
+      {
+        var stateA = this.states[state1];
+        var stateB = this.states[state2];
 
-					if( $(elementParentID).length <= 0 )
-					{
-						console.error("Component Element Parent doesn't exists, component : " + component.name);
-					}
-					else
-					{
-						if( $(elementID).length > 0 )
-						{
-							console.warn("Component Element already exists, component : " + component.name);
-						}
-						else
-						{
-							self.insertAtIndex(
-								component.getIndex(),
-								component.getParent(),
-								component.getTagName(),
-								component.getHTML()
-							);
-						}
-					}
-				});
-			}
-		}
-	};
+        return stateA.compare(stateB);
+      }
+    }
 
-	StateManager.prototype.insertAtIndex = function(index, parent, elementTagName, element)
-	{
-		if( typeof parent === 'undefined' ||
-			typeof element === 'undefined' ||
-			typeof elementTagName === 'undefined' )
-		{
-			throw new Error("some of the paramaters you specified are not valid");
-		}
-
-		if( index === 0 || $(parent).children().length === 0 )
-		{
-			$(parent).prepend(element);
-			return;
-		}
-
-		$(parent + " " + elementTagName + ":nth-child(" + index + ")").after(element);
-	};
+    return [];
+  };
 
 
-	StateManager.prototype.hasState = function(stateName)
-	{
-		if( typeof stateName !== 'undefined' )
-		{
-			return this.states.hasOwnProperty(stateName);
-		}
+  /**
+   *
+   */
+  StateManager.prototype.createElements = function(stateName, componentCUIDs)
+  {
+    if (stateName && componentCUIDs && componentCUIDs.length > 0)
+    {
+      if (this.states.hasOwnProperty(stateName))
+      {
+        var self = this;
+        var state = this.states[stateName];
+        var components = state.getComponentsByCUIDs(componentCUIDs, false);
 
-		return false;
-	};
+        components = _.sortBy(components, "getIndex");
 
-	return StateManager;
+        _.each(components, function(component)
+        {
+          var elementID = component.getElementSelector();
+          var elementParentID = component.getParent();
+
+          if ($(elementParentID).length <= 0)
+          {
+            console.error("Component Element Parent doesn't exists, component : " + component.name);
+          }
+          else
+          {
+            if ($(elementID).length > 0)
+            {
+              console.warn("Component Element already exists, component : " + component.name);
+            }
+            else
+            {
+              self.insertAtIndex(
+              component.getIndex(),
+              component.getParent(),
+              component.getTagName(),
+              component.getHTML()
+              );
+            }
+          }
+        });
+      }
+    }
+  };
+
+  StateManager.prototype.insertAtIndex = function(index, parent, elementTagName, element)
+  {
+    if (typeof parent === 'undefined' ||
+    typeof element === 'undefined' ||
+    typeof elementTagName === 'undefined')
+    {
+      throw new Error("some of the paramaters you specified are not valid");
+    }
+
+    if (index === 0 || $(parent).children().length === 0)
+    {
+      $(parent).prepend(element);
+      return;
+    }
+
+    $(parent + " " + elementTagName + ":nth-child(" + index + ")").after(element);
+  };
+
+
+  StateManager.prototype.hasState = function(stateName)
+  {
+    if (typeof stateName !== 'undefined')
+    {
+      return this.states.hasOwnProperty(stateName);
+    }
+
+    return false;
+  };
+
+  return StateManager;
 
 });

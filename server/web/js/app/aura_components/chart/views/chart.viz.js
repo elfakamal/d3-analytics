@@ -1,320 +1,320 @@
 define(["constants", "d3", "color"], function(constants, d3, Color)
 {
 
-	return Backbone.View.extend(
-	{
+  return Backbone.View.extend(
+  {
+    width: null,
+    height: null,
+    defaultOrtientation: "",
+    orientation: "",
+    data: null,
+    chartData: null,
+    svg: null,
+    colorScale: null,
+    columns: {},
 
-		width								: null,
-		height							: null,
+    /**
+     *
+     * @returns {undefined}
+     */
+    initialize: function()
+    {
+      this.initListeners();
+      this.render();
+    },
 
-		defaultOrtientation	: "",
-		orientation					: "",
-		data								: null,
-		chartData						: null,
-		svg									: null,
-		colorScale					: null,
+    /**
+     *
+     * @returns {undefined}
+     */
+    initParameters: function()
+    {
+      this.chartData = JSON.parse(this.model.get("chart_data"));
 
-		columns							: {},
+      this.width = this.realWidth() - this.marginLeft() - this.marginRight();
+      this.height = this.realHeight() - this.marginTop() - this.marginBottom();
 
+      this.initColorScale();
+    },
 
-		/**
-		 *
-		 * @returns {undefined}
-		 */
-		initialize: function ()
-		{
-			this.initListeners();
-			this.render();
-		},
+    /**
+     * this function needs to be overriden.
+     */
+    initColorScale: function()
+    {
+      var colors = this.getColorDictionary();
+      this.colorScale = d3.scale.ordinal().range(colors);
+    },
 
-		/**
-		 *
-		 * @returns {undefined}
-		 */
-		initParameters: function()
-		{
-			this.chartData = JSON.parse(this.model.get("chart_data"));
+    initListeners: function()
+    {
+      this.model.on('change', this.onModelChange, this);
+    },
 
-			this.width = this.realWidth() - this.marginLeft() - this.marginRight();
-			this.height = this.realHeight() - this.marginTop() - this.marginBottom();
+    onModelChange: function()
+    {
+      this.chartData = JSON.parse(this.model.get("chart_data"));
+    },
 
-			this.initColorScale();
-		},
+    render: function()
+    {
+      this.initParameters();
+      this.initDatasource();
+    },
 
-		/**
-		 * this function needs to be overriden.
-		 */
-		initColorScale: function()
-		{
-			var colors = this.getColorDictionary();
-			this.colorScale = d3.scale.ordinal().range(colors);
-		},
+    initDatasource: function()
+    {
+      if (!this.data)
+        this.model.loadDatasource(this.onLoaderComplete, this);
+    },
 
-		initListeners: function()
-		{
-			this.model.on('change', this.onModelChange, this);
-		},
+    /**
+     *
+     * @param {Object} data
+     * @returns {undefined}
+     */
+    onLoaderComplete: function(data)
+    {
+      this.columns = this.model.getDatasource().getColumns();
+      this.data = data;
+      this.sanitizeData();
+      this.drawChart();
+    },
 
-		onModelChange: function()
-		{
-			this.chartData = JSON.parse(this.model.get("chart_data"));
-		},
+    marginTop: function()
+    {
+      var defaultMargin = 10;
 
-		render: function()
-		{
-			this.initParameters();
-			this.initDatasource();
-		},
+      if (this.chartData && +this.chartData.size === 1)
+        defaultMargin = 5;
 
-		initDatasource: function()
-		{
-			if(!this.data)
-				this.model.loadDatasource(this.onLoaderComplete, this);
-		},
+      return defaultMargin;
+    },
 
-		/**
-		 *
-		 * @param {Object} data
-		 * @returns {undefined}
-		 */
-		onLoaderComplete: function(data)
-		{
-			this.columns = this.model.getDatasource().getColumns();
-			this.data = data;
-			this.sanitizeData();
-			this.drawChart();
-		},
+    marginRight: function()
+    {
+      var defaultMargin = 10;
 
-		marginTop: function()
-		{
-			var defaultMargin = 10;
+      if (this.chartData && +this.chartData.size === 1)
+        defaultMargin = 5;
 
-			if(this.chartData && +this.chartData.size === 1)
-				defaultMargin = 5;
+      return defaultMargin;
+    },
 
-			return defaultMargin;
-		},
+    marginBottom: function()
+    {
+      var defaultMargin = 30;
 
-		marginRight: function()
-		{
-			var defaultMargin = 10;
+      if (this.chartData && +this.chartData.size === 1)
+        defaultMargin = 5;
 
-			if(this.chartData && +this.chartData.size === 1)
-				defaultMargin = 5;
+      return defaultMargin;
+    },
 
-			return defaultMargin;
-		},
+    marginLeft: function()
+    {
+      var defaultMargin = 40;
 
-		marginBottom: function()
-		{
-			var defaultMargin = 30;
+      if (this.chartData && +this.chartData.size === 1)
+        defaultMargin = 5;
 
-			if(this.chartData && +this.chartData.size === 1)
-				defaultMargin = 5;
+      return defaultMargin;
+    },
 
-			return defaultMargin;
-		},
+    /**
+     *
+     */
+    realWidth: function()
+    {
+      var defaultWidth = constants.DEFAULT_THUMB_WIDTH;
+      var sizeX = 1;
 
-		marginLeft: function()
-		{
-			var defaultMargin = 40;
+      if (!_.isEmpty(this.chartData))
+        sizeX = constants.VISUALIZATION_SIZES[this.chartData.size][0];
 
-			if(this.chartData && +this.chartData.size === 1)
-				defaultMargin = 5;
+      //piked from the gridster width computing formula.
+      return (sizeX * defaultWidth + ((sizeX - 1) * constants.DEFAULT_HORIZONTAL_MARGIN) * 2);
+    },
 
-			return defaultMargin;
-		},
+    /**
+     *
+     */
+    realHeight: function()
+    {
+      var defaultHeight = constants.DEFAULT_THUMB_HEIGHT;
+      var sizeY = 1;
 
-		/**
-		 *
-		 */
-		realWidth : function()
-		{
-			var defaultWidth = constants.DEFAULT_THUMB_WIDTH;
-			var sizeX = 1;
+      if (!_.isEmpty(this.chartData))
+        sizeY = constants.VISUALIZATION_SIZES[this.chartData.size][1];
 
-			if(!_.isEmpty(this.chartData))
-				sizeX = constants.VISUALIZATION_SIZES[this.chartData.size][0];
+      //piked from the gridster width computing formula.
+      var height = (sizeY * defaultHeight + ((sizeY - 1) * constants.DEFAULT_VERTICAL_MARGIN) * 2);
+      return height;// - constants.THUMB_TITLE_HEIGHT;
+    },
 
-			//piked from the gridster width computing formula.
-			return (sizeX * defaultWidth + ((sizeX - 1) * constants.DEFAULT_HORIZONTAL_MARGIN) * 2);
-		},
+    /**
+     * Abstract function
+     */
+    generateColors: function(count)
+    {
+      var colors = [];
 
-		/**
-		 *
-		 */
-		realHeight : function()
-		{
-			var defaultHeight = constants.DEFAULT_THUMB_HEIGHT;
-			var sizeY = 1;
+      var iterator = function()
+      {
+        var R, G, B;
 
-			if(!_.isEmpty(this.chartData))
-				sizeY = constants.VISUALIZATION_SIZES[this.chartData.size][1];
+        R = Math.round(Math.random() * 255);
+        G = Math.round(Math.random() * 255);
+        B = Math.round(Math.random() * 255);
 
-			//piked from the gridster width computing formula.
-			var height = (sizeY * defaultHeight + ((sizeY - 1) * constants.DEFAULT_VERTICAL_MARGIN) * 2);
-			return height;// - constants.THUMB_TITLE_HEIGHT;
-		},
+        var rgb = [R, G, B, .5];
+        var strRGB = "rgba(" + rgb.join(",") + ")";
+        colors.push(strRGB);
 
-		/**
-		 * Abstract function
-		 */
-		generateColors: function(count)
-		{
-			var colors = [];
+        //free memory
+        rgb = null;
+        strRGB = "";
+      };
 
-			var iterator = function()
-			{
-				var R, G, B;
+      if (typeof count !== "undefined")
+        for (var i = 0; i < count; i++)
+          iterator();
+      else
+        _.each(this.columns, iterator);
 
-				R = Math.round(Math.random() * 255);
-				G = Math.round(Math.random() * 255);
-				B = Math.round(Math.random() * 255);
+      return colors;
+    },
 
-				var rgb = [R, G, B, .5];
-				var strRGB = "rgba(" + rgb.join(",") + ")";
-				colors.push(strRGB);
+    /**
+     * filling in the dico, example of result: {0 : "#FF5000", 1 : "#50FF00"}
+     *
+     * @returns {undefined}
+     */
+    getColorDictionary: function()
+    {
+      var colorsArray = [];
 
-				//free memory
-				rgb = null;
-				strRGB = "";
-			};
+      if (!_.isEmpty(this.columns))
+      {
+        var realColumns = _.rest(_.values(this.columns));
 
-			if(typeof count !== "undefined")
-				for(var i = 0; i < count; i++) iterator();
-			else
-				_.each(this.columns, iterator);
+        if (this.model.get('chart_data') !== "")
+        {
+          var chartData = JSON.parse(this.model.get('chart_data'));
 
-			return colors;
-		},
+          _.each(realColumns, function(value, key, list) {
+            _.each(chartData.colors, function(pair)
+            {
+              if (pair[0] === value)
+              {
+                var color = new Color(pair[1]);
+                color.setAlpha(.5);
+                colorsArray.push(color.toRGBAString());
 
-		/**
-		 * filling in the dico, example of result: {0 : "#FF5000", 1 : "#50FF00"}
-		 *
-		 * @returns {undefined}
-		 */
-		getColorDictionary: function()
-		{
-			var colorsArray = [];
+                //free memory
+                color = null;
+              }
+            },
 
-			if(!_.isEmpty(this.columns))
-			{
-				var realColumns = _.rest(_.values(this.columns));
+            this);
+          },
 
-				if(this.model.get('chart_data') !== "")
-				{
-					var chartData = JSON.parse(this.model.get('chart_data'));
+          this);
+        }
 
-					_.each(realColumns, function(value, key, list) {
-						_.each(chartData.colors, function(pair)
-						{
-							if(pair[0] === value)
-							{
-								var color = new Color(pair[1]);
-								color.setAlpha(.5);
-								colorsArray.push(color.toRGBAString());
+        //free memory
+        realColumns = null;
+      }
 
-								//free memory
-								color = null;
-							}
-						}, this);
-					}, this);
-				}
+      return colorsArray;
+    },
 
-				//free memory
-				realColumns = null;
-			}
+    /**
+     * Abstract function
+     */
+    getChartIcon: function()
+    {
+      throw new Error("This is an abstract method, you must override it.");
+    },
 
-			return colorsArray;
-		},
+    show: function()
+    {
+      this.$el.css("display", "block").css("overflow", "auto");
+    },
 
-		/**
-		 * Abstract function
-		 */
-		getChartIcon: function()
-		{
-			throw new Error("This is an abstract method, you must override it.");
-		},
+    hide: function()
+    {
+      this.$el.css("display", "none").css("overflow", "hidden");
+    },
 
-		show: function()
-		{
-			this.$el.css("display", "block").css("overflow", "auto");
-		},
+    drawChart: function()
+    {
+      this.drawBase();
+      this.positionBase();
+    },
 
-		hide: function()
-		{
-			this.$el.css("display", "none").css("overflow", "hidden");
-		},
+    /**
+     *
+     * @returns {undefined}
+     */
+    drawBase: function()
+    {
+      this.$el.html("");
+      var vizSelection = d3.select("#li-viz-" + this.model.get('id'));
+      var viz = vizSelection.select("#div-chart-component");
 
-		drawChart: function()
-		{
-			this.drawBase();
-			this.positionBase();
-		},
+      this.svg = viz.append("svg")
+      .attr("width", this.width + this.marginLeft() + this.marginRight())
+      .attr("height", this.height + this.marginTop() + this.marginBottom())
+      .attr("class", "absolute-center")
+      .style("margin-top", "auto")
+      .style("margin-bottom", "0px")
+      .append("g")
+      .attr("class", "first-g");
+    },
 
-		/**
-		 *
-		 * @returns {undefined}
-		 */
-		drawBase: function()
-		{
-			this.$el.html("");
-			var vizSelection = d3.select("#li-viz-" + this.model.get('id'));
-			var viz = vizSelection.select("#div-chart-component");
+    positionBase: function()
+    {
+      this.svg.attr("transform", "translate(" + this.marginLeft() + "," + this.marginTop() + ")");
+    },
 
-			this.svg = viz.append("svg")
-					.attr("width", this.width + this.marginLeft() + this.marginRight())
-					.attr("height", this.height + this.marginTop() + this.marginBottom())
-					.attr("class", "absolute-center")
-					.style("margin-top", "auto")
-					.style("margin-bottom", "0px")
-				.append("g")
-					.attr("class", "first-g");
-		},
+    /**
+     * Abstract function
+     */
+    update: function()
+    {
+      this.initParameters();
+      this.updateSVG();
+    },
 
-		positionBase: function()
-		{
-			this.svg.attr("transform", "translate(" + this.marginLeft() + "," + this.marginTop() + ")");
-		},
-
-
-		/**
-		 * Abstract function
-		 */
-		update: function()
-		{
-			this.initParameters();
-			this.updateSVG();
-		},
-
-		/**
-		 *
-		 */
-		updateSVG: function()
-		{
-			d3.select("#li-viz-" + this.model.get('id'))
-				.select("svg")
-				.attr("width", this.width + this.marginLeft() + this.marginRight())
-				.attr("height", this.height + this.marginTop() + this.marginBottom());
+    /**
+     *
+     */
+    updateSVG: function()
+    {
+      d3.select("#li-viz-" + this.model.get('id'))
+      .select("svg")
+      .attr("width", this.width + this.marginLeft() + this.marginRight())
+      .attr("height", this.height + this.marginTop() + this.marginBottom());
 
 //			this.svg.select(".first-g")
 //				.attr("transform", "translate(" + this.marginLeft() + "," + this.marginTop() + ")");
-		},
+    },
 
-		/**
-		 * free memory.
-		 */
-		dispose: function()
-		{
-			this.data = null;
-			this.chartData = null;
-			this.svg.remove();
-			this.svg = null;
-			this.defaultOrtientation = "";
-			this.orientation = "";
-		}
+    /**
+     * free memory.
+     */
+    dispose: function()
+    {
+      this.data = null;
+      this.chartData = null;
+      this.svg.remove();
+      this.svg = null;
+      this.defaultOrtientation = "";
+      this.orientation = "";
+    }
 
-	});
+  });
 
 });
 

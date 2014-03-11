@@ -14,19 +14,19 @@ use Doctrine\ORM\EntityRepository;
 class VisualizationType extends AbstractType
 {
 
-	/**
-	 * @param FormBuilderInterface $builder
-	 * @param array $options
-	 */
-	public function buildForm( FormBuilderInterface $builder, array $options )
-	{
-		$builder
-						->add('name')
-						->add('description')
-						->add('visualization_type_id')
-						->add('is_active')
-						->add('is_starred')
-						->add('chart_data')
+  /**
+   * @param FormBuilderInterface $builder
+   * @param array $options
+   */
+  public function buildForm( FormBuilderInterface $builder, array $options )
+  {
+    $builder
+      ->add('name')
+      ->add('description')
+      ->add('visualization_type_id')
+      ->add('is_active')
+      ->add('is_starred')
+      ->add('chart_data')
 
 
 ////creation_date: "2013-11-15T01:18:57+0100"
@@ -39,9 +39,6 @@ class VisualizationType extends AbstractType
 ////update_date: "2013-11-15T01:19:25+0100"
 //visualizationTypeId: "1"
 //visualization_type_id: 1
-
-
-
 //            ->add('creationDate')
 //            ->add('updateDate')
 //            ->add('collections', 'entity', array(
@@ -66,30 +63,30 @@ class VisualizationType extends AbstractType
 ////					),
 //				)))
 //            ->add('dataSourceId')
-		;
-	}
+    ;
+  }
 
-	/**
-	 * @param OptionsResolverInterface $resolver
-	 */
-	public function setDefaultOptions( OptionsResolverInterface $resolver )
-	{
-		$resolver->setDefaults(array(
-				'data_class' => 'D3\AnalyticsBundle\Entity\Visualization',
-				'csrf_protection' => false
-		));
-	}
+  /**
+   * @param OptionsResolverInterface $resolver
+   */
+  public function setDefaultOptions( OptionsResolverInterface $resolver )
+  {
+    $resolver->setDefaults(array(
+        'data_class' => 'D3\AnalyticsBundle\Entity\Visualization',
+        'csrf_protection' => false
+    ));
+  }
 
-	/**
-	 * It returns an empty string because there is no form.
-	 * thus the request can get directly to the params without
-	 * passing through the form name.
-	 *
-	 * @return string
-	 */
-	public function getName()
-	{
-		return '';
-	}
+  /**
+   * It returns an empty string because there is no form.
+   * thus the request can get directly to the params without
+   * passing through the form name.
+   *
+   * @return string
+   */
+  public function getName()
+  {
+    return '';
+  }
 
 }

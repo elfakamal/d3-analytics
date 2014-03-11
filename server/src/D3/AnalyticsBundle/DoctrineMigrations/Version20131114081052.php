@@ -10,19 +10,21 @@ use Doctrine\DBAL\Schema\Schema;
  */
 class Version20131114081052 extends AbstractMigration
 {
-    public function up(Schema $schema)
-    {
-        // this up() migration is auto-generated, please modify it to your needs
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() != "mysql", "Migration can only be executed safely on 'mysql'.");
-        
-        $this->addSql("ALTER TABLE data_source ADD fileExtension VARCHAR(32) NOT NULL");
-    }
 
-    public function down(Schema $schema)
-    {
-        // this down() migration is auto-generated, please modify it to your needs
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() != "mysql", "Migration can only be executed safely on 'mysql'.");
-        
-        $this->addSql("ALTER TABLE data_source DROP fileExtension");
-    }
+  public function up( Schema $schema )
+  {
+    // this up() migration is auto-generated, please modify it to your needs
+    $this->abortIf($this->connection->getDatabasePlatform()->getName() != "mysql", "Migration can only be executed safely on 'mysql'.");
+
+    $this->addSql("ALTER TABLE data_source ADD fileExtension VARCHAR(32) NOT NULL");
+  }
+
+  public function down( Schema $schema )
+  {
+    // this down() migration is auto-generated, please modify it to your needs
+    $this->abortIf($this->connection->getDatabasePlatform()->getName() != "mysql", "Migration can only be executed safely on 'mysql'.");
+
+    $this->addSql("ALTER TABLE data_source DROP fileExtension");
+  }
+
 }

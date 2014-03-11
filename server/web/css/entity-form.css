@@ -116,14 +116,14 @@
 #section-forms-component #div-file-upload-mask
 {
 	border: 2px dashed #eee;
-	height: 110px;
+	height: 100px;
 	width: 92%;
 
 	background-color: white;
-
 	color: darkgray;
+
 	font-size: 24px;
-	line-height: 105px;
+	line-height: 90px;
 	text-align: center !important;
 
 	position: relative;
@@ -139,10 +139,10 @@
 	line-height: 90px;
 	text-align: center !important;
 	cursor: pointer;
-
 	opacity: 0;
-
 	position: relative;
-	top: -115px
+	top: -100px;
+	
+	margin: 0 auto;
 }
 
